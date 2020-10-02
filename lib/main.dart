@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:arturo_bruna_app/routes.dart';
 import 'package:arturo_bruna_app/constants.dart';
 
@@ -12,10 +13,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Arturo Bruna App',
       routes: appRoutes,
-      initialRoute: 'login',
+      initialRoute: 'home',
       theme: ThemeData(
-        primaryColor: kPrimaryColor,
-        scaffoldBackgroundColor: Colors.white,
+        primaryColor: kPrimaryColor2,
+        scaffoldBackgroundColor: kScaffoldBackgroundColor,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
     );

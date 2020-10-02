@@ -71,7 +71,12 @@ class __FormState extends State<_Form> {
               hintText: 'Contraseña',
               controller: _passController),
           RoundedButton(
-              size: widget.size, buttonText: "Iniciar sesión", onPressed: () {})
+            size: widget.size,
+            buttonText: "Iniciar sesión",
+            onPressed: () {},
+            buttonColor: Colors.orange[500],
+            buttonTextColor: Colors.black,
+          )
         ],
       ),
     );

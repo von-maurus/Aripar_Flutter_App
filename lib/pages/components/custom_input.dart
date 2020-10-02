@@ -29,6 +29,12 @@ class CustomInput extends StatelessWidget {
           left: size.width * 0.007,
           bottom: size.height * 0.007,
           right: size.width * 0.05),
+      decoration: BoxDecoration(boxShadow: [
+        BoxShadow(
+            color: Colors.black.withOpacity(0.099),
+            offset: Offset(0, 5),
+            blurRadius: 6.5)
+      ], color: Colors.white, borderRadius: BorderRadius.circular(30.0)),
       child: TextField(
         obscureText: isObscure,
         controller: controller,
@@ -42,12 +48,6 @@ class CustomInput extends StatelessWidget {
             focusedBorder: InputBorder.none,
             prefixIcon: prefixIcon),
       ),
-      decoration: BoxDecoration(boxShadow: [
-        BoxShadow(
-            color: Colors.black.withOpacity(0.099),
-            offset: Offset(0, 5),
-            blurRadius: 6.5)
-      ], color: Colors.white, borderRadius: BorderRadius.circular(30.0)),
     );
   }
 }
