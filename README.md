@@ -1,6 +1,6 @@
-# arturo_bruna_app
+# AriApp
 
-Aplicación para la visualizacion de preventas y despachos de pedidos.
+Aplicación para la distribuidora de insumos variados Aripar.
 
 ## Getting Started
 
