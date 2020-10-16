@@ -12,13 +12,17 @@ enum ProductsState {
 class ProductosBLoC extends ChangeNotifier {
   final ApiRepositoryInterface apiRepositoryInterface;
   final LocalRepositoryInterface localRepositoryInterface;
+  final ScrollController scrollController;
 
-  ProductosBLoC({this.apiRepositoryInterface, this.localRepositoryInterface});
+  ProductosBLoC(
+      {this.apiRepositoryInterface,
+      this.localRepositoryInterface,
+      this.scrollController});
 
   List<Producto> productList = <Producto>[];
   var productsState = ProductsState.initial;
 
-  void loadProducts() async {
+  Future<void> loadProducts() async {
     try {
       productsState = ProductsState.loading;
       notifyListeners();

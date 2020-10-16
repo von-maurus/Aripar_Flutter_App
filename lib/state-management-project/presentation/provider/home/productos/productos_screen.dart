@@ -1,9 +1,9 @@
-import 'package:arturo_bruna_app/state-management-project/domain/model/product.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/common/delivery_button.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/common/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:arturo_bruna_app/state-management-project/domain/model/product.dart';
+import 'package:arturo_bruna_app/state-management-project/presentation/common/theme.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/repository/api_repository.dart';
+import 'package:arturo_bruna_app/state-management-project/presentation/common/delivery_button.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/productos/productos_bloc.dart';
 
 class ProductosScreen extends StatelessWidget {
@@ -21,6 +21,8 @@ class ProductosScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final productsBloc = context.watch<ProductosBLoC>();
+    final _scrollController = productsBloc.scrollController;
+    List<Producto> productsListAux = productsBloc.productList;
     // final cartBloc = context.watch<CartBLoC>();
     return Scaffold(
       appBar: AppBar(
@@ -33,24 +35,32 @@ class ProductosScreen extends StatelessWidget {
         backgroundColor: Colors.orange[800],
       ),
       body: productsBloc.productList.isNotEmpty
-          ? GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 2 / 3,
-                crossAxisSpacing: 9,
-                mainAxisSpacing: 9,
-              ),
-              physics: BouncingScrollPhysics(),
-              itemBuilder: (context, index) {
-                final product = productsBloc.productList[index];
-                return _ItemProduct(
-                    product: product,
-                    onTap: () {
-                      print(product.imagen);
-                      // cartBloc.add(product);
-                    });
+          ? RefreshIndicator(
+              color: Colors.black,
+              onRefresh: () async {
+                productsBloc.loadProducts();
               },
-              itemCount: productsBloc.productList.length,
+              backgroundColor: Colors.orange[800],
+              child: GridView.builder(
+                controller: _scrollController,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 2 / 3,
+                  crossAxisSpacing: 9,
+                  mainAxisSpacing: 9,
+                ),
+                physics: BouncingScrollPhysics(),
+                itemBuilder: (context, index) {
+                  final product = productsBloc.productList[index];
+                  return _ItemProduct(
+                      product: product,
+                      onTap: () {
+                        print(product.imagen);
+                        // cartBloc.add(product);
+                      });
+                },
+                itemCount: productsBloc.productList.length,
+              ),
             )
           : const Center(
               child: CircularProgressIndicator(

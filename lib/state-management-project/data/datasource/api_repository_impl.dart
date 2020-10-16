@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:arturo_bruna_app/state-management-project/domain/model/user.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/model/cliente.dart';
@@ -76,8 +77,10 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
     const controller = 'productos/';
     final response = await http.Client()
         .post(apiUrl + controller + 'index', headers: headers);
+    //Utilizando compute(function,variable), se mueve la ejecucion de la tarea a otro thread para que no existan "congelamientos" de la app.
+    //Corre la funcion parseProducto en el "background".
     if (response.statusCode == 200) {
-      return parseProductos(response.body);
+      return compute(parseProductos, response.body);
     }
     throw ProductException();
   }
@@ -88,7 +91,7 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
     final response = await http.Client()
         .post(apiUrl + controller + 'index', headers: headers);
     if (response.statusCode == 200) {
-      return parseClientes(response.body);
+      return compute(parseClientes, response.body);
     }
     throw ClientException();
   }
