@@ -21,11 +21,20 @@ class ProductosScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final productsBloc = context.watch<ProductosBLoC>();
-    final _scrollController = productsBloc.scrollController;
     List<Producto> productsListAux = productsBloc.productList;
     // final cartBloc = context.watch<CartBLoC>();
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.search,
+              size: 30,
+            ),
+            color: Colors.white,
+            onPressed: () {},
+          )
+        ],
         centerTitle: true,
         elevation: 6.0,
         title: Text(
@@ -42,7 +51,6 @@ class ProductosScreen extends StatelessWidget {
               },
               backgroundColor: Colors.orange[800],
               child: GridView.builder(
-                controller: _scrollController,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   childAspectRatio: 2 / 3,
