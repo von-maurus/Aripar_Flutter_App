@@ -8,9 +8,6 @@ import 'package:arturo_bruna_app/state-management-project/domain/repository/loca
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/splash/splash_screen.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/userprofile/user_bloc.dart';
 
-//TODO: Mostrar opciones de configuracion (por el momento solo editar datos).
-//TODO: Actualizar datos del usuario, imagen de perfil.
-
 class UserScreen extends StatelessWidget {
   UserScreen._();
 

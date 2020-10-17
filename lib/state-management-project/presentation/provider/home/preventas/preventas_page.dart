@@ -1,14 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/common/constants.dart';
 
-//TODO: Seleccionar el cliente o crearlo en caso de que no exista.
-//TODO: Seleccionar los productos para una pre-venta.
-//TODO: Opción de cambiar método de pago del cliente.
-//TODO: Filtrar a los clientes que aun no pagan ventas previas (clientes bloqueados).
-//TODO: Enviar una notificación al/los admin para "habilitar" una preventa cuando se crea.
-//TODO: Recibir notificación por parte del/los admin cuando "habilíte" una preventa creada por el usuario. (vista notificaciones)
-//TODO: Si es rol "Admin" mostrar dos secciones extras: "Preventas por Habilitar" y "Preventas habilitadas" (activate and deactivate preventa).
-
 class PreVentasPage extends StatefulWidget {
   @override
   _PreVentasPageState createState() => _PreVentasPageState();
