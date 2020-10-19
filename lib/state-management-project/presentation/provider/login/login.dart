@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/repository/api_repository.dart';
-import 'package:arturo_bruna_app/state-management-project/domain/repository/local_storage_repository.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/login/login_bloc.dart';
+import 'package:arturo_bruna_app/state-management-project/presentation/provider/login/logo.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/common/custom_input.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/common/rounded_button.dart';
+import 'package:arturo_bruna_app/state-management-project/presentation/provider/login/login_bloc.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/home_screen.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/login/background.dart';
+import 'package:arturo_bruna_app/state-management-project/domain/repository/local_storage_repository.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/login/bottom_labels_login.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/login/logo.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage._();
@@ -39,6 +39,7 @@ class LoginPage extends StatelessWidget {
       _scaffoldKey.currentState.showSnackBar(
         SnackBar(
           backgroundColor: Colors.red,
+          duration: Duration(milliseconds: 900),
           content: Text('Email o Contraseña incorrectos.'),
         ),
       );
@@ -59,9 +60,7 @@ class LoginPage extends StatelessWidget {
               child: Background(
                 size: size,
                 child: SafeArea(
-                  top: false,
                   child: SingleChildScrollView(
-                    physics: BouncingScrollPhysics(),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[

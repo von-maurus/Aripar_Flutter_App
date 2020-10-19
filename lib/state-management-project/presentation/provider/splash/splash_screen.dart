@@ -25,11 +25,9 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   void _init() async {
-    // await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(Duration(milliseconds: 900));
     final bloc = context.read<SplashBLoC>();
     final result = await bloc.validateSession();
-    // bool result = true;
-    print(result);
     if (result) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
@@ -59,13 +57,6 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        // decoration: BoxDecoration(
-        //   gradient: LinearGradient(
-        //     begin: Alignment.topCenter,
-        //     end: Alignment.bottomCenter,
-        //     colors: deliveryGradients,
-        //   ),
-        // ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.center,

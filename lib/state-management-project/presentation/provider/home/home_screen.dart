@@ -1,13 +1,13 @@
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/clientes/clientes_screen.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/preventas/preventas_page.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/productos/productos_screen.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/userprofile/user_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:arturo_bruna_app/state-management-project/domain/repository/api_repository.dart';
-import 'package:arturo_bruna_app/state-management-project/domain/repository/local_storage_repository.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/home_bloc.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/common/theme.dart';
+import 'package:arturo_bruna_app/state-management-project/domain/repository/api_repository.dart';
+import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/home_bloc.dart';
+import 'package:arturo_bruna_app/state-management-project/domain/repository/local_storage_repository.dart';
+import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/userprofile/user_screen.dart';
+import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/preventas/preventas_page.dart';
+import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/clientes/clientes_screen.dart';
+import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/productos/productos_screen.dart';
 
 class HomePage extends StatelessWidget {
   HomePage._();

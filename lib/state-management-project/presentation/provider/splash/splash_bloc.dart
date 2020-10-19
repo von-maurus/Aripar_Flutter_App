@@ -13,7 +13,6 @@ class SplashBLoC extends ChangeNotifier {
 
   Future<bool> validateSession() async {
     final token = await localRepositoryInterface.getToken();
-    // print('Token local: ' + token);
     if (token != null) {
       final user = await apiRepositoryInterface.getUserFromToken(token);
       await localRepositoryInterface.saveUser(user);

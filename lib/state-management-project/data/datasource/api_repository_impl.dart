@@ -46,9 +46,12 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
   Future<LoginResponse> login(LoginRequest login) async {
     const controller = 'usuarios/';
     final data = {'email': login.email, 'password': login.password};
-    final response = await http.post(apiUrl + controller + 'login-from-app',
-        headers: headers, body: json.encode(data));
+    final response = await http.Client().post(
+        apiUrl + controller + 'login-from-app',
+        headers: headers,
+        body: json.encode(data));
     final responseData = json.decode(response.body);
+    print(response.statusCode);
     if (response.statusCode == 200) {
       return LoginResponse(
           responseData['token'],
@@ -98,7 +101,6 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
 
   @override
   Future<Cliente> createCliente(Cliente cliente) {
-    // TODO: implement createCliente
     throw UnimplementedError();
   }
 }
