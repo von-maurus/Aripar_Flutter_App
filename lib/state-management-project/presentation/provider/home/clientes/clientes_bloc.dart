@@ -17,7 +17,7 @@ class ClientesBLoC extends ChangeNotifier {
 
   List<Cliente> clientList = <Cliente>[];
   var clientsState = ClientsState.initial;
-  double cardHeight = 174;
+  double cardHeight = 180;
 
   void loadClients() async {
     try {

@@ -71,59 +71,54 @@ class _DeliveryNavigationBar extends StatelessWidget {
     final user = bloc.usuario;
 
     return Padding(
-      padding: const EdgeInsets.all(15.0),
+      padding: const EdgeInsets.all(5.0),
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: Colors.orange[500],
-          border: Border.all(
-            color: Colors.orange[500],
-            width: 2,
+          gradient: LinearGradient(
+            begin: Alignment.centerRight,
+            end: Alignment.centerLeft,
+            colors: deliveryGradients,
           ),
           borderRadius: BorderRadius.circular(18),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(5.0),
+          padding: const EdgeInsets.all(4.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Material(
-                color: Colors.orange[500],
+                color: Colors.transparent,
                 child: IconButton(
                   icon: Icon(
                     Icons.store_mall_directory,
-                    color: index == 0
-                        ? DeliveryColors.white
-                        : Colors.teal.shade800,
+                    color: index == 0 ? DeliveryColors.white : Colors.black87,
                   ),
                   onPressed: () => onIndexSelected(0),
                 ),
               ),
               Material(
-                color: Colors.orange[500],
+                color: Colors.transparent,
                 child: IconButton(
-                  icon: Icon(
-                    Icons.people,
-                    color: index == 1
-                        ? DeliveryColors.white
-                        : Colors.teal.shade800,
-                  ),
+                  icon: Icon(Icons.people,
+                      color:
+                          index == 1 ? DeliveryColors.white : Colors.black87),
                   onPressed: () => onIndexSelected(1),
                 ),
               ),
               Material(
-                color: Colors.orange[500],
+                color: Colors.transparent,
                 child: Stack(
                   children: [
                     CircleAvatar(
-                      backgroundColor: Colors.blue[900],
-                      radius: 25,
+                      backgroundColor: Colors.orange[700],
+                      radius: 27,
                       child: IconButton(
                         icon: Icon(
                           Icons.shopping_basket,
                           size: 32.0,
                           color: index == 2
                               ? DeliveryColors.white
-                              : Colors.teal.shade200,
+                              : Colors.purple[500],
                         ),
                         onPressed: () => onIndexSelected(2),
                       ),
@@ -151,7 +146,7 @@ class _DeliveryNavigationBar extends StatelessWidget {
                 child: user?.imagen == null
                     ? const SizedBox()
                     : CircleAvatar(
-                        radius: 26.5,
+                        radius: 24.0,
                         backgroundImage: NetworkImage(
                           user.imagen,
                         ),

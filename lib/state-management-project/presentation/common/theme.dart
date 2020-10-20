@@ -11,11 +11,13 @@ class DeliveryColors {
   static final veryLightGrey = Color(0xFFF3F3F3);
   static final white = Color(0XFFFFFFFF);
   static final pink = Color(0XFFF5638B);
+  static final blue = Color(0xFF1565C0);
 }
 
 final deliveryGradients = [
-  DeliveryColors.green,
+  // cambiar a azul oscuro
   DeliveryColors.purple,
+  DeliveryColors.blue,
 ];
 
 final _borderLight = OutlineInputBorder(

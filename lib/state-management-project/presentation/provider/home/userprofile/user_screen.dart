@@ -41,7 +41,7 @@ class UserScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final homeBloc = Provider.of<HomeBLoC>(context);
-    final profileBloc = Provider.of<ProfileBLoC>(context);
+    // final profileBloc = Provider.of<ProfileBLoC>(context);
     final user = homeBloc.usuario;
     return Scaffold(
       appBar: AppBar(
@@ -51,7 +51,7 @@ class UserScreen extends StatelessWidget {
           'Perfil',
           style: TextStyle(letterSpacing: 1.0, fontSize: 25.0),
         ),
-        backgroundColor: Colors.orange[800],
+        backgroundColor: Colors.blue[900],
       ),
       body: user?.imagen != null
           ? ListView(
@@ -80,7 +80,7 @@ class UserScreen extends StatelessWidget {
                         Text(
                           user.nombre,
                           style: TextStyle(
-                              color: Colors.white,
+                              color: Colors.black87,
                               fontWeight: FontWeight.w500,
                               fontSize: 20),
                           textAlign: TextAlign.center,
@@ -92,7 +92,7 @@ class UserScreen extends StatelessWidget {
                             ? Text(
                                 'Administrador',
                                 style: TextStyle(
-                                    color: Colors.white,
+                                    color: Colors.black87,
                                     fontWeight: FontWeight.w400,
                                     fontSize: 18.0),
                                 textAlign: TextAlign.center,
@@ -100,7 +100,7 @@ class UserScreen extends StatelessWidget {
                             : Text(
                                 'Vendedor',
                                 style: TextStyle(
-                                    color: Colors.white,
+                                    color: Colors.black87,
                                     fontWeight: FontWeight.w400,
                                     fontSize: 18.0),
                                 textAlign: TextAlign.center,
@@ -130,6 +130,9 @@ class _UserInfo extends StatelessWidget {
       child: Column(
         children: [
           Card(
+            color: Colors.white54,
+            elevation: 20,
+            shadowColor: Colors.black,
             margin: EdgeInsets.only(top: 20, left: 20, right: 20),
             child: Container(
               alignment: Alignment.topLeft,
@@ -141,7 +144,7 @@ class _UserInfo extends StatelessWidget {
                     child: Text(
                       "Información Personal",
                       style: TextStyle(
-                        color: Colors.black87,
+                        color: Colors.black,
                         fontWeight: FontWeight.w500,
                         fontSize: 16.5,
                       ),
@@ -156,8 +159,6 @@ class _UserInfo extends StatelessWidget {
                       child: Column(
                     children: <Widget>[
                       ListTile(
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                         leading: Icon(Icons.person),
                         title: Text("Usuario"),
                         subtitle: Text(user.username),

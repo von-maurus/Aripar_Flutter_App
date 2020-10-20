@@ -13,7 +13,8 @@ abstract class ApiRepositoryInterface {
 
   Future<List<Producto>> getProducts();
 
-// //  Obtener clientes
+  Future<List<Producto>> getProductByName(String name);
+
   Future<List<Cliente>> getClientes();
 
 //  Crear Clientes

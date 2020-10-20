@@ -22,8 +22,8 @@ class ClientesScreen extends StatelessWidget {
     final clientsBloc = context.watch<ClientesBLoC>();
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        elevation: 10,
-        backgroundColor: Colors.orange[800],
+        elevation: 20,
+        backgroundColor: Colors.blue[900],
         child: Icon(
           Icons.add,
           size: 40,
@@ -37,67 +37,23 @@ class ClientesScreen extends StatelessWidget {
           'Clientes',
           style: TextStyle(letterSpacing: 1.0, fontSize: 25.0),
         ),
-        backgroundColor: Colors.orange[800],
+        backgroundColor: Colors.blue[900],
       ),
       body: clientsBloc.clientList.isNotEmpty
-          ? SingleChildScrollView(
-              child: Container(
-                height: MediaQuery.of(context).size.height * 0.789,
-                width: MediaQuery.of(context).size.width,
-                child: Stack(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.only(top: 70),
-                      height: MediaQuery.of(context).size.height,
-                      width: double.infinity,
-                      child: ListView.builder(
-                          itemCount: clientsBloc.clientList.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            final client = clientsBloc.clientList[index];
-                            return buildList(
-                                context, index, client, clientsBloc.cardHeight);
-                          }),
-                    ),
-                    Container(
-                      child: Column(
-                        children: <Widget>[
-                          SizedBox(
-                            height: 18,
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
-                            child: Material(
-                              elevation: 15.0,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(30)),
-                              child: TextField(
-                                // controller: TextEditingController(text: locations[0]),
-                                cursorColor: Theme.of(context).primaryColor,
-                                style: TextStyle(
-                                    color: Colors.black, fontSize: 18),
-                                decoration: InputDecoration(
-                                    hintText:
-                                        "Buscar Cliente. Por Nombre o RUT",
-                                    hintStyle: TextStyle(
-                                        color: Colors.black38, fontSize: 16),
-                                    prefixIcon: Material(
-                                      elevation: 0.0,
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(30)),
-                                      child: Icon(Icons.search),
-                                    ),
-                                    border: InputBorder.none,
-                                    contentPadding: EdgeInsets.symmetric(
-                                        horizontal: 25, vertical: 13)),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
+          ? RefreshIndicator(
+              onRefresh: () async {
+                clientsBloc.loadClients();
+              },
+              color: Colors.white,
+              backgroundColor: Colors.blue[900],
+              child: ListView.builder(
+                  itemCount: clientsBloc.clientList.length,
+                  physics: BouncingScrollPhysics(),
+                  itemBuilder: (BuildContext context, int index) {
+                    final client = clientsBloc.clientList[index];
+                    return buildList(
+                        context, index, client, clientsBloc.cardHeight);
+                  }),
             )
           : const Center(
               child: CircularProgressIndicator(
@@ -114,11 +70,10 @@ class ClientesScreen extends StatelessWidget {
     }
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.0),
-        color: Colors.white,
+        borderRadius: BorderRadius.circular(15.0),
+        color: Colors.grey.shade300,
       ),
       width: double.infinity,
-      height: cardHeight,
       margin: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
       padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
       child: Row(
@@ -140,7 +95,7 @@ class ClientesScreen extends StatelessWidget {
                   children: <Widget>[
                     Icon(
                       Icons.location_on,
-                      color: Color(0xfff29a94),
+                      color: Colors.black,
                       size: 25,
                     ),
                     SizedBox(
@@ -159,11 +114,17 @@ class ClientesScreen extends StatelessWidget {
                 ),
                 Row(
                   children: <Widget>[
-                    Icon(
-                      Icons.payment,
-                      color: Color(0xfff29a94),
-                      size: 25,
-                    ),
+                    client.tipopago == 1
+                        ? Icon(
+                            Icons.monetization_on_rounded,
+                            color: Colors.black,
+                            size: 25,
+                          )
+                        : Icon(
+                            Icons.payment,
+                            color: Colors.black,
+                            size: 25,
+                          ),
                     SizedBox(
                       width: 5,
                     ),
@@ -183,36 +144,34 @@ class ClientesScreen extends StatelessWidget {
                 SizedBox(
                   height: 5,
                 ),
-                client.numerocuotas != null
-                    ? Row(
-                        children: <Widget>[
-                          Icon(
-                            Icons.timer,
-                            color: Color(0xfff29a94),
-                            size: 25,
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Text('${client.numerocuotas} Días a pagar',
-                              maxLines: 1,
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  letterSpacing: .3,
-                                  fontWeight: FontWeight.w400))
-                        ],
-                      )
-                    : SizedBox.shrink(),
+                client.tipopago == 1
+                    ? SizedBox.shrink()
+                    : client.numerocuotas != null
+                        ? Row(
+                            children: <Widget>[
+                              Icon(
+                                Icons.timer,
+                                color: Colors.black,
+                                size: 25,
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text('${client.numerocuotas} Días a pagar',
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      letterSpacing: .3,
+                                      fontWeight: FontWeight.w400))
+                            ],
+                          )
+                        : SizedBox.shrink(),
                 SizedBox(
                   height: 5,
                 ),
                 Container(
+                  width: MediaQuery.of(context).size.width,
                   child: DeliveryButton(
-                    onTap: () {
-                      print("Añadir cliente");
-                    },
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10.5, horizontal: 142.0),
                     text: "Añadir",
                   ),
                 )

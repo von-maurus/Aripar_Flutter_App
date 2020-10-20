@@ -18,7 +18,7 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
   static const apiUrl = urlBase + 'web/index.php?r=';
   static const urlUserImage = urlBase + "assets/avatares/";
   static const urlProductImage = urlBase + "assets/productos/";
-  Map<String, String> headers = {"content-type": "application/json"};
+  Map<String, String> headers = {"Content-Type": "application/json"};
 
   @override
   Future<Usuario> getUserFromToken(String token) async {
@@ -79,7 +79,7 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
   Future<List<Producto>> getProducts() async {
     const controller = 'productos/';
     final response = await http.Client()
-        .post(apiUrl + controller + 'index', headers: headers);
+        .post(apiUrl + controller + 'index-activo', headers: headers);
     //Utilizando compute(function,variable), se mueve la ejecucion de la tarea a otro thread para que no existan "congelamientos" de la app.
     //Corre la funcion parseProducto en el "background".
     if (response.statusCode == 200) {
@@ -100,8 +100,24 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
   }
 
   @override
-  Future<Cliente> createCliente(Cliente cliente) {
+  Future<Cliente> createCliente(Cliente cliente) async {
     throw UnimplementedError();
+  }
+
+  @override
+  Future<List<Producto>> getProductByName(String query) async {
+    const controller = 'productos/';
+    final data = {'query': query};
+    print(data);
+    final response = await http.Client()
+        .post(apiUrl + controller + 'get-product-by-name-code',
+            // headers: headers,
+            body: data);
+    print(response.body);
+    if (response.statusCode == 200) {
+      return compute(parseProductos, response.body);
+    }
+    throw ProductException();
   }
 }
 

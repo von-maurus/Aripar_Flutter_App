@@ -1,5 +1,9 @@
+import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:numberpicker/numberpicker.dart';
+import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/productos/product_search_delegate.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/model/product.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/common/theme.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/repository/api_repository.dart';
@@ -21,7 +25,6 @@ class ProductosScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final productsBloc = context.watch<ProductosBLoC>();
-    List<Producto> productsListAux = productsBloc.productList;
     // final cartBloc = context.watch<CartBLoC>();
     return Scaffold(
       appBar: AppBar(
@@ -32,7 +35,12 @@ class ProductosScreen extends StatelessWidget {
               size: 30,
             ),
             color: Colors.white,
-            onPressed: () {},
+            onPressed: () {
+              showSearch(
+                  context: context,
+                  delegate: ProductSearchDelegate(productosBLoC: productsBloc));
+            },
+            splashColor: Colors.transparent,
           )
         ],
         centerTitle: true,
@@ -41,15 +49,15 @@ class ProductosScreen extends StatelessWidget {
           'Productos',
           style: TextStyle(letterSpacing: 1.0, fontSize: 25.0),
         ),
-        backgroundColor: Colors.orange[800],
+        backgroundColor: Colors.blue[900],
       ),
       body: productsBloc.productList.isNotEmpty
           ? RefreshIndicator(
-              color: Colors.black,
+              color: Colors.white,
               onRefresh: () async {
                 productsBloc.loadProducts();
               },
-              backgroundColor: Colors.orange[800],
+              backgroundColor: Colors.blue[800],
               child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
@@ -63,7 +71,7 @@ class ProductosScreen extends StatelessWidget {
                   return _ItemProduct(
                       product: product,
                       onTap: () {
-                        print(product.imagen);
+                        print(product.nombre);
                         // cartBloc.add(product);
                       });
                 },
@@ -90,67 +98,185 @@ class _ItemProduct extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final productsBloc = context.watch<ProductosBLoC>();
+
+    Widget _buildAlertDialog(BuildContext context) {
+      if (Platform.isIOS) {
+        return CupertinoAlertDialog(
+          title: Text('Cantidad'),
+          content: NumberPicker.integer(
+              initialValue: 0,
+              minValue: 0,
+              maxValue: product.stock,
+              onChanged: (newValue) {
+                productsBloc.cantidadProducto = newValue;
+              }),
+          actions: [
+            FlatButton(
+              child: Text('Continuar'),
+              onPressed: () {
+                print(productsBloc.cantidadProducto);
+                // Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      } else {
+        return AlertDialog(
+          title: Text('Cantidad'),
+          content: NumberPicker.integer(
+              initialValue: 0,
+              minValue: 0,
+              maxValue: product.stock,
+              onChanged: (newValue) {
+                productsBloc.cantidadProducto = newValue;
+              }),
+          actions: [
+            FlatButton(
+              child: Text('Continuar'),
+              onPressed: () {
+                print(productsBloc.cantidadProducto);
+                // Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      }
+    }
+
+    Future _showMyDialog(BuildContext context) async {
+      return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => _buildAlertDialog(_),
+      );
+    }
+
     return Card(
       margin: EdgeInsets.only(right: 12, left: 12, top: 10),
       elevation: 10,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(17.0)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
       color: Theme.of(context).canvasColor,
       child: Padding(
           padding: const EdgeInsets.all(9.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+          child: Stack(
             children: [
-              Expanded(
-                child: CircleAvatar(
-                  radius: 10,
-                  backgroundColor: Colors.transparent,
-                  child: ClipOval(
-                    child: Image.network(
-                      product.imagen,
-                      fit: BoxFit.cover,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    child: CircleAvatar(
+                      radius: 10,
+                      backgroundColor: Colors.transparent,
+                      child: ClipOval(
+                        child: Image.network(
+                          product.imagen,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Text(
+                          product.nombre,
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          maxLines: 1,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          product.descripcion,
+                          style: Theme.of(context).textTheme.subtitle2.copyWith(
+                              color: DeliveryColors.dark, fontSize: 11.5),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          '\$${product.precioventa} CLP',
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontSize: 20.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  DeliveryButton(
+                    onTap: () => _showMyDialog(context),
+                    padding: const EdgeInsets.symmetric(vertical: 9.5),
+                    text: "Añadir",
+                  )
+                ],
+              ),
+              Positioned(
+                child: Container(
+                  padding: EdgeInsets.all(1),
+                  decoration: BoxDecoration(
+                    color: product.stock < product.stockminimo
+                        ? Colors.red
+                        : Colors.green,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  constraints: BoxConstraints(
+                    minWidth: 32,
+                    minHeight: 32,
+                  ),
+                  child: Center(
+                    child: Text(
+                      product.stock.toString(),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12.5,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: Column(
-                  children: [
-                    Text(
-                      product.nombre,
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      maxLines: 2,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      product.descripcion,
-                      style: Theme.of(context)
-                          .textTheme
-                          .subtitle2
-                          .copyWith(color: DeliveryColors.dark, fontSize: 11.5),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      '\$${product.precioventa} CLP',
-                      style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontSize: 20.0,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              DeliveryButton(
-                onTap: () {},
-                padding: const EdgeInsets.symmetric(vertical: 9.5),
-                text: "Añadir",
+                right: 0,
               )
             ],
           )),
     );
   }
 }
+
+// class ProductItemSearch extends SearchDelegate<Producto> {
+//   @override
+//   List<Widget> buildActions(BuildContext context) {
+//     return [
+//       IconButton(
+//         icon: Icon(Icons.clear),
+//         onPressed: () => this.query = '',
+//       )
+//     ];
+//   }
+
+//   @override
+//   Widget buildLeading(BuildContext context) {}
+
+//   @override
+//   Widget buildResults(BuildContext context) {}
+
+//   @override
+//   Widget buildSuggestions(BuildContext context) {}
+// }

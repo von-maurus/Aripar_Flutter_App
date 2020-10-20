@@ -21,7 +21,9 @@ dependencies:
   provider: ^4.3.2+2
   shared_preferences: ^0.5.12
   http: ^0.12.2
-
+  numberpicker: ^1.2.1
+  flutter_number_picker: 
+    path: ./packages/custom_number_picker
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -25,7 +25,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   void _init() async {
-    await Future.delayed(Duration(milliseconds: 900));
+    await Future.delayed(Duration(milliseconds: 500));
     final bloc = context.read<SplashBLoC>();
     final result = await bloc.validateSession();
     if (result) {
@@ -56,22 +56,28 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              radius: 75.0,
-              backgroundColor: Colors.transparent,
-              child: Padding(
-                padding: EdgeInsets.all(12.0),
-                child: Image.asset(
-                  'assets/images/aripar_white_logo.png',
+      backgroundColor: Colors.blue[800],
+      body: Center(
+        child: Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircleAvatar(
+                radius: 90.0,
+                backgroundColor: Colors.blue[900],
+                child: Padding(
+                  padding: EdgeInsets.all(12.0),
+                  child: Image.asset(
+                    'assets/images/aripar_white_logo.png',
+                  ),
                 ),
               ),
-            ),
-          ],
+              SizedBox(
+                height: 20,
+              ),
+              CircularProgressIndicator()
+            ],
+          ),
         ),
       ),
     );

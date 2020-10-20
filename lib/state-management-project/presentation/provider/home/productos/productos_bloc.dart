@@ -1,7 +1,8 @@
-import 'package:arturo_bruna_app/state-management-project/domain/exception/product_exception.dart';
 import 'package:flutter/material.dart';
+
 import 'package:arturo_bruna_app/state-management-project/domain/model/product.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/repository/api_repository.dart';
+import 'package:arturo_bruna_app/state-management-project/domain/exception/product_exception.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/repository/local_storage_repository.dart';
 
 enum ProductsState {
@@ -16,8 +17,9 @@ class ProductosBLoC extends ChangeNotifier {
   ProductosBLoC({this.apiRepositoryInterface, this.localRepositoryInterface});
 
   List<Producto> productList = <Producto>[];
+  List<Producto> productsByName = <Producto>[];
   var productsState = ProductsState.initial;
-
+  int cantidadProducto = 1;
   Future<void> loadProducts() async {
     try {
       productsState = ProductsState.loading;
@@ -30,8 +32,21 @@ class ProductosBLoC extends ChangeNotifier {
       productsState = ProductsState.initial;
       notifyListeners();
     }
-    // print('LISTA DE PRODUCTOS ');
-    // print(productList);
     notifyListeners();
+  }
+
+  Future<void> getProductsByNameCode(String name) async {
+    try {
+      // productsState = ProductsState.loading;
+      // notifyListeners();
+      final result = await apiRepositoryInterface.getProductByName(name);
+      productsByName = result;
+      // productsState = ProductsState.initial;
+      // notifyListeners();
+    } on ProductException catch (e) {
+      print(e);
+      // productsState = ProductsState.initial;
+      // notifyListeners();
+    }
   }
 }

@@ -15,7 +15,7 @@ class MainBLoC extends ChangeNotifier {
     // final isDark = await localRepositoryInterface.isDarkMode() ?? false;
     updateTheme(ThemeData(
       primaryColor: kPrimaryColor2,
-      scaffoldBackgroundColor: kScaffoldBackgroundColor,
+      scaffoldBackgroundColor: Colors.grey.shade100,
     ));
   }
 
