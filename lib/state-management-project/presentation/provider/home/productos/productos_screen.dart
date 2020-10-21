@@ -41,7 +41,15 @@ class ProductosScreen extends StatelessWidget {
                   delegate: ProductSearchDelegate('Buscar producto',
                       productosBLoC: productsBloc));
               if (producto != null) {
-                productsBloc.historial.insert(0, producto);
+                if (!productsBloc.historial
+                    .any((element) => element.id == producto.id)) {
+                  if (productsBloc.historial.length >= 10) {
+                    productsBloc.historial.removeLast();
+                    productsBloc.historial.insert(0, producto);
+                  } else {
+                    productsBloc.historial.insert(0, producto);
+                  }
+                }
               }
             },
             splashColor: Colors.transparent,
