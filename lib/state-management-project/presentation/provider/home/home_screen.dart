@@ -89,6 +89,7 @@ class _DeliveryNavigationBar extends StatelessWidget {
               Material(
                 color: Colors.transparent,
                 child: IconButton(
+                  splashColor: Colors.transparent,
                   icon: Icon(
                     Icons.store_mall_directory,
                     color: index == 0 ? DeliveryColors.white : Colors.black87,
@@ -99,6 +100,7 @@ class _DeliveryNavigationBar extends StatelessWidget {
               Material(
                 color: Colors.transparent,
                 child: IconButton(
+                  splashColor: Colors.transparent,
                   icon: Icon(Icons.people,
                       color:
                           index == 1 ? DeliveryColors.white : Colors.black87),
@@ -113,6 +115,7 @@ class _DeliveryNavigationBar extends StatelessWidget {
                       backgroundColor: Colors.orange[700],
                       radius: 27,
                       child: IconButton(
+                        splashColor: Colors.transparent,
                         icon: Icon(
                           Icons.shopping_basket,
                           size: 32.0,

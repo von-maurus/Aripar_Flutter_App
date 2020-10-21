@@ -92,7 +92,39 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
   Future<List<Cliente>> getClientes() async {
     const controller = 'clientes/';
     final response = await http.Client()
-        .post(apiUrl + controller + 'index', headers: headers);
+        .post(apiUrl + controller + 'index-activo', headers: headers);
+    if (response.statusCode == 200) {
+      return compute(parseClientes, response.body);
+    }
+    throw ClientException();
+  }
+
+  @override
+  Future<List<Producto>> getProductByName(String query) async {
+    const controller = 'productos/';
+    final data = {'query': query};
+    // print(data);
+    final response = await http.Client()
+        .post(apiUrl + controller + 'get-product-by-name-code',
+            // headers: headers,
+            body: data);
+    // print(response.body);
+    if (response.statusCode == 200) {
+      return compute(parseProductos, response.body);
+    }
+    throw ProductException();
+  }
+
+  @override
+  Future<List<Cliente>> getClientByNameRunEmail(String query) async {
+    const controller = 'clientes/';
+    final data = {'query': query};
+    // print(data);
+    final response = await http.Client()
+        .post(apiUrl + controller + 'get-client-by-name-run-email',
+            // headers: headers,
+            body: data);
+    // print(response.body);
     if (response.statusCode == 200) {
       return compute(parseClientes, response.body);
     }
@@ -101,23 +133,12 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
 
   @override
   Future<Cliente> createCliente(Cliente cliente) async {
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<List<Producto>> getProductByName(String query) async {
-    const controller = 'productos/';
-    final data = {'query': query};
-    print(data);
-    final response = await http.Client()
-        .post(apiUrl + controller + 'get-product-by-name-code',
-            // headers: headers,
-            body: data);
+    const controller = 'clientes/';
+    final data = cliente.toJson();
+    final response =
+        await http.Client().post(apiUrl + controller + 'create', body: data);
     print(response.body);
-    if (response.statusCode == 200) {
-      return compute(parseProductos, response.body);
-    }
-    throw ProductException();
+    throw ClientException();
   }
 }
 

@@ -16,6 +16,7 @@ class ClientesBLoC extends ChangeNotifier {
   ClientesBLoC({this.apiRepositoryInterface, this.localRepositoryInterface});
 
   List<Cliente> clientList = <Cliente>[];
+  List<Cliente> clientsByName = <Cliente>[];
   var clientsState = ClientsState.initial;
   double cardHeight = 180;
 
@@ -32,6 +33,22 @@ class ClientesBLoC extends ChangeNotifier {
       notifyListeners();
     }
     notifyListeners();
+  }
+
+  Future<void> getClientByNameRunEmail(String query) async {
+    try {
+      // productsState = ProductsState.loading;
+      // notifyListeners();
+      final result =
+          await apiRepositoryInterface.getClientByNameRunEmail(query);
+      clientsByName = result;
+      // productsState = ProductsState.initial;
+      // notifyListeners();
+    } on ClientException catch (e) {
+      print(e);
+      // productsState = ProductsState.initial;
+      // notifyListeners();
+    }
   }
 
   void insertClient() async {

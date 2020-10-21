@@ -13,10 +13,11 @@ abstract class ApiRepositoryInterface {
 
   Future<List<Producto>> getProducts();
 
-  Future<List<Producto>> getProductByName(String name);
+  Future<List<Producto>> getProductByName(String query);
 
   Future<List<Cliente>> getClientes();
 
+  Future<List<Cliente>> getClientByNameRunEmail(String query);
 //  Crear Clientes
   Future<Cliente> createCliente(Cliente cliente);
 

@@ -54,4 +54,8 @@ class Cliente {
         "numerocuotas": numerocuotas,
         "estado": estado,
       };
+  @override
+  String toString() {
+    return 'Instancia de Cliente: $nombre';
+  }
 }

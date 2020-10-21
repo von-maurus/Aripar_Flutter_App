@@ -35,10 +35,14 @@ class ProductosScreen extends StatelessWidget {
               size: 30,
             ),
             color: Colors.white,
-            onPressed: () {
-              showSearch(
+            onPressed: () async {
+              final producto = await showSearch(
                   context: context,
-                  delegate: ProductSearchDelegate(productosBLoC: productsBloc));
+                  delegate: ProductSearchDelegate('Buscar producto',
+                      productosBLoC: productsBloc));
+              if (producto != null) {
+                productsBloc.historial.insert(0, producto);
+              }
             },
             splashColor: Colors.transparent,
           )
@@ -234,11 +238,11 @@ class _ItemProduct extends StatelessWidget {
                     color: product.stock < product.stockminimo
                         ? Colors.red
                         : Colors.green,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(17),
                   ),
                   constraints: BoxConstraints(
-                    minWidth: 32,
-                    minHeight: 32,
+                    minWidth: 36,
+                    minHeight: 36,
                   ),
                   child: Center(
                     child: Text(
@@ -246,7 +250,7 @@ class _ItemProduct extends StatelessWidget {
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontSize: 12.5,
+                        fontSize: 13.5,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -259,24 +263,3 @@ class _ItemProduct extends StatelessWidget {
     );
   }
 }
-
-// class ProductItemSearch extends SearchDelegate<Producto> {
-//   @override
-//   List<Widget> buildActions(BuildContext context) {
-//     return [
-//       IconButton(
-//         icon: Icon(Icons.clear),
-//         onPressed: () => this.query = '',
-//       )
-//     ];
-//   }
-
-//   @override
-//   Widget buildLeading(BuildContext context) {}
-
-//   @override
-//   Widget buildResults(BuildContext context) {}
-
-//   @override
-//   Widget buildSuggestions(BuildContext context) {}
-// }

@@ -55,4 +55,9 @@ class Producto {
         "stock": stock,
         "stockminimo": stockminimo,
       };
+
+  @override
+  String toString() {
+    return 'Instancia de Producto: $nombre';
+  }
 }

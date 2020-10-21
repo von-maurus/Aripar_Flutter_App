@@ -18,8 +18,10 @@ class ProductosBLoC extends ChangeNotifier {
 
   List<Producto> productList = <Producto>[];
   List<Producto> productsByName = <Producto>[];
+  List<Producto> historial = [];
   var productsState = ProductsState.initial;
   int cantidadProducto = 1;
+
   Future<void> loadProducts() async {
     try {
       productsState = ProductsState.loading;

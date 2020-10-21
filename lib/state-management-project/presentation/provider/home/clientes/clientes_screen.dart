@@ -1,5 +1,6 @@
 import 'package:arturo_bruna_app/state-management-project/domain/model/cliente.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/common/delivery_button.dart';
+import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/clientes/client_search_delegate.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/repository/api_repository.dart';
@@ -31,6 +32,22 @@ class ClientesScreen extends StatelessWidget {
         onPressed: () {},
       ),
       appBar: AppBar(
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.search,
+              size: 30,
+            ),
+            color: Colors.white,
+            onPressed: () {
+              showSearch(
+                  context: context,
+                  delegate: ClientSearchDelegate('Buscar cliente',
+                      clientesBLoC: clientsBloc));
+            },
+            splashColor: Colors.transparent,
+          )
+        ],
         centerTitle: true,
         elevation: 6.0,
         title: Text(

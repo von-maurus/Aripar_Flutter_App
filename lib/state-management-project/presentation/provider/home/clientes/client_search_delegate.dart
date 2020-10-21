@@ -2,15 +2,14 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:arturo_bruna_app/state-management-project/domain/model/product.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/productos/productos_bloc.dart';
-import 'package:flutter_number_picker/flutter_number_picker.dart';
+import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/clientes/clientes_bloc.dart';
+import 'package:arturo_bruna_app/state-management-project/domain/model/cliente.dart';
 
-class ProductSearchDelegate extends SearchDelegate<Producto> {
-  final ProductosBLoC productosBLoC;
+class ClientSearchDelegate extends SearchDelegate<Cliente> {
+  final ClientesBLoC clientesBLoC;
   @override
   final String searchFieldLabel;
-  ProductSearchDelegate(this.searchFieldLabel, {this.productosBLoC});
+  ClientSearchDelegate(this.searchFieldLabel, {this.clientesBLoC});
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -37,14 +36,14 @@ class ProductSearchDelegate extends SearchDelegate<Producto> {
       return Center(child: Text("Ingrese un valor válido"));
     }
     return FutureBuilder(
-        future: productosBLoC.getProductsByNameCode(query),
+        future: clientesBLoC.getClientByNameRunEmail(query),
         builder: (_, AsyncSnapshot snapshot) {
-          if (productosBLoC.productsByName.length != 0) {
+          if (clientesBLoC.clientsByName.length != 0) {
             // Crear lista
-            return _showProducts(productosBLoC.productsByName);
+            return _showClients(clientesBLoC.clientsByName);
           } else if (snapshot.connectionState == ConnectionState.done &&
-              productosBLoC.productsByName.length == 0) {
-            return Center(child: Text("No se encontró el producto"));
+              clientesBLoC.clientsByName.length == 0) {
+            return Center(child: Text("No se encontró el cliente"));
           } else {
             return Center(
               child: CircularProgressIndicator(
@@ -57,52 +56,72 @@ class ProductSearchDelegate extends SearchDelegate<Producto> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return _showProducts(productosBLoC.historial);
+    return ListTile(
+      title: Text('Sugerencias'),
+    );
   }
 
-  Widget _showProducts(List<Producto> productos) {
+  Widget _showClients(List<Cliente> clientes) {
     return ListView.builder(
-      itemBuilder: (context, index) {
-        final product = productos[index];
+      itemBuilder: (BuildContext context, index) {
+        final cliente = clientes[index];
         return ListTile(
           onTap: () {
-            _showMyDialog(context, product)
-                .then((value) => this.close(context, product));
+            _showMyDialog(context, cliente);
           },
-          leading: product.imagen != null
-              ? Image(
-                  width: 45,
-                  image: NetworkImage(product.imagen),
+          leading: cliente.tipopago == 1
+              ? Icon(
+                  Icons.monetization_on,
+                  color: Colors.green,
                 )
-              : '',
+              : Icon(
+                  Icons.credit_card,
+                  color: Colors.blue,
+                ),
           title: Text(
-            product.nombre,
+            cliente.nombre,
             maxLines: 1,
             style: TextStyle(fontSize: 15),
           ),
           subtitle: Text(
-            'Codigo:' + product.codigo,
+            'RUN:' + cliente.rut,
             maxLines: 1,
             style: TextStyle(fontSize: 11.5),
           ),
-          trailing: Text('\$' + product.precioventa.toString()),
         );
       },
-      itemCount: productos.length,
+      itemCount: clientes.length,
     );
   }
 
-  Widget _buildAlertDialog(BuildContext context, Producto producto) {
+  Widget _buildAlertDialog(BuildContext context, Cliente cliente) {
     if (Platform.isIOS) {
       return CupertinoAlertDialog(
         title: Text('Cantidad'),
-        content: CustomNumberPicker(
-            onValue: (value) {
-              print(value);
+        content: Text('Contenido'),
+        actions: [
+          FlatButton(
+            child: Text('Continuar'),
+            onPressed: () {
+              // print(productsBloc.cantidadProducto);
+              Navigator.of(context).pop();
             },
-            initialValue: 1,
-            maxValue: producto.stock,
-            minValue: 1),
+          ),
+          FlatButton(
+            child: Text('Cancelar'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    } else {
+      return AlertDialog(
+        title: Center(child: Text('Aviso')),
+        content: Text(
+          '¿Desea agregar a ' + cliente.nombre + ' a la venta?',
+          textAlign: TextAlign.center,
+        ),
         actions: [
           FlatButton(
             child: Text('Agregar'),
@@ -119,45 +138,14 @@ class ProductSearchDelegate extends SearchDelegate<Producto> {
           ),
         ],
       );
-    } else {
-      return AlertDialog(
-        title: Text('Cantidad'),
-        content: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CustomNumberPicker(
-                onValue: (value) {
-                  print(value);
-                },
-                initialValue: 1,
-                maxValue: 50,
-                minValue: 1)
-          ],
-        ),
-        actions: [
-          FlatButton(
-            child: Text('Continuar'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          FlatButton(
-            child: Text('Cancelar'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
     }
   }
 
-  Future _showMyDialog(BuildContext context, Producto producto) async {
+  Future _showMyDialog(BuildContext context, Cliente cliente) async {
     return showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (_) => _buildAlertDialog(_, producto),
+      builder: (_) => _buildAlertDialog(_, cliente),
     );
   }
 }
