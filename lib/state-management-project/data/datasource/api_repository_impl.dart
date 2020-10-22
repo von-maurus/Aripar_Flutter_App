@@ -14,7 +14,7 @@ import 'package:arturo_bruna_app/state-management-project/domain/exception/produ
 //Implementacion de los servicios para el Backend
 //en ApiRepositoryInterface (..domain/repository/) van estas funciones
 class ApiRepositoryImpl extends ApiRepositoryInterface {
-  static const urlBase = 'http://192.168.1.86/sab-backend/';
+  static const urlBase = 'http://192.168.0.100/sab-backend/';
   static const apiUrl = urlBase + 'web/index.php?r=';
   static const urlUserImage = urlBase + "assets/avatares/";
   static const urlProductImage = urlBase + "assets/productos/";

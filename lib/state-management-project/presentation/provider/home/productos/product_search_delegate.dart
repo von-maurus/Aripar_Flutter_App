@@ -81,7 +81,7 @@ class ProductSearchDelegate extends SearchDelegate<Producto> {
             style: TextStyle(fontSize: 15),
           ),
           subtitle: Text(
-            'Codigo:' + product.codigo,
+            'Código: ' + product.codigo,
             maxLines: 1,
             style: TextStyle(fontSize: 11.5),
           ),

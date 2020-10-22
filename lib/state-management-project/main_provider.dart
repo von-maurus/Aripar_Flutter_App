@@ -1,5 +1,7 @@
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/clientes/clientes_bloc.dart';
+import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/clientes/clientes_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:arturo_bruna_app/state-management-project/main_bloc.dart';
 import 'package:arturo_bruna_app/state-management-project/data/datasource/api_repository_impl.dart';
@@ -14,7 +16,7 @@ class MainProvider extends StatelessWidget {
     return MultiProvider(
       providers: [
         Provider<ApiRepositoryInterface>(
-          create: (_) => ApiRepositoryImpl(),
+          create: (c) => ApiRepositoryImpl(),
         ),
         Provider<LocalRepositoryInterface>(
           create: (_) => LocalRepositoryImpl(),
@@ -25,18 +27,23 @@ class MainProvider extends StatelessWidget {
                 localRepositoryInterface: _.read<LocalRepositoryInterface>())
               ..loadTheme();
           },
-        )
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ClientesBLoC(
+              apiRepositoryInterface: context.read<ApiRepositoryInterface>())
+            ..loadClients(),
+        ),
       ],
       child: Builder(builder: (newContext) {
         return Consumer<MainBLoC>(
           builder: (context, bloc, _) {
-            return bloc.currentTheme == null
-                ? const SizedBox.shrink()
-                : MaterialApp(
-                    debugShowCheckedModeBanner: false,
-                    theme: bloc.currentTheme,
-                    home: SplashScreen.init(newContext),
-                  );
+            return MaterialApp(
+              debugShowCheckedModeBanner: false,
+              theme: bloc.currentTheme == null
+                  ? ThemeData.light()
+                  : bloc.currentTheme,
+              home: SplashScreen.init(newContext),
+            );
           },
         );
       }),
