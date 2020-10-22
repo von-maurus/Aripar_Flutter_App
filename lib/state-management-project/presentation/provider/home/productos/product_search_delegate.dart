@@ -62,6 +62,8 @@ class ProductSearchDelegate extends SearchDelegate<Producto> {
 
   Widget _showProducts(List<Producto> productos) {
     return ListView.builder(
+      physics: BouncingScrollPhysics(),
+      itemCount: productos.length,
       itemBuilder: (context, index) {
         final product = productos[index];
         return ListTile(
@@ -88,7 +90,6 @@ class ProductSearchDelegate extends SearchDelegate<Producto> {
           trailing: Text('\$' + product.precioventa.toString()),
         );
       },
-      itemCount: productos.length,
     );
   }
 
