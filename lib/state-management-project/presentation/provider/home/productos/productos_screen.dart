@@ -72,7 +72,10 @@ class ProductosScreen extends StatelessWidget {
               backgroundColor: Colors.blue[800],
               child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
+                  crossAxisCount: MediaQuery.of(context).orientation ==
+                          Orientation.landscape
+                      ? 4
+                      : 2,
                   childAspectRatio: 2 / 3,
                   crossAxisSpacing: 9,
                   mainAxisSpacing: 9,

@@ -7,21 +7,12 @@ import 'package:arturo_bruna_app/state-management-project/presentation/common/ro
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/clientes/clientes_bloc.dart';
 
 class ClientCreate extends StatelessWidget {
-  ClientCreate._();
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  static Widget init(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => ClientesBLoC(
-          apiRepositoryInterface: context.read<ApiRepositoryInterface>()),
-      builder: (_, __) => ClientCreate._(),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    final clientsBloc = Provider.of<ClientesBLoC>(context);
+    final clientsBloc = context.watch<ClientesBLoC>();
     print(clientsBloc.clientList.length);
     SizeConfig().init(context);
     Size size = MediaQuery.of(context).size;

@@ -9,16 +9,6 @@ import 'package:arturo_bruna_app/state-management-project/domain/repository/api_
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/clientes/clientes_bloc.dart';
 
 class ClientesScreen extends StatelessWidget {
-  ClientesScreen._();
-
-  static Widget init(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => ClientesBLoC(
-          apiRepositoryInterface: context.read<ApiRepositoryInterface>())
-        ..loadClients(),
-      builder: (_, __) => ClientesScreen._(),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +23,7 @@ class ClientesScreen extends StatelessWidget {
         ),
         onPressed: () async {
           final response = await Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => ClientCreate.init(context)));
+              builder: (context) => ClientCreate()));
           print('Respuesta del create $response');
         },
       ),

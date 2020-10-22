@@ -13,16 +13,12 @@ class HomePage extends StatelessWidget {
   HomePage._();
 
   static Widget init(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (_) => HomeBLoC(
-            apiRepositoryInterface: context.read<ApiRepositoryInterface>(),
-            localRepositoryInterface: context.read<LocalRepositoryInterface>(),
-          )..loadUser(),
-          builder: (_, __) => HomePage._(),
-        ),
-      ],
+    return ChangeNotifierProvider(
+      create: (_) => HomeBLoC(
+        apiRepositoryInterface: context.read<ApiRepositoryInterface>(),
+        localRepositoryInterface: context.read<LocalRepositoryInterface>(),
+      )..loadUser(),
+      builder: (_, __) => HomePage._(),
     );
   }
 
@@ -40,7 +36,7 @@ class HomePage extends StatelessWidget {
               index: bloc.indexSelected,
               children: [
                 ProductosScreen.init(context),
-                ClientesScreen.init(context),
+                ClientesScreen(),
                 const Placeholder() ?? PreVentasPage(),
                 UserScreen.init(context)
               ],
