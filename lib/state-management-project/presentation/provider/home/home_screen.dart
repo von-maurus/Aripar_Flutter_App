@@ -29,6 +29,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bloc = Provider.of<HomeBLoC>(context);
+    // final bloc = context.watch()<HomeBLoC>();
     return Scaffold(
       extendBodyBehindAppBar: true,
       body: Column(

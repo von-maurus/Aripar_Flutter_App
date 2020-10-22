@@ -131,7 +131,7 @@ class ProductSearchDelegate extends SearchDelegate<Producto> {
                   print(value);
                 },
                 initialValue: 1,
-                maxValue: 50,
+                maxValue: producto.stock,
                 minValue: 1)
           ],
         ),

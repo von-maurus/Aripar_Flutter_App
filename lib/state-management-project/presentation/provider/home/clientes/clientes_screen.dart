@@ -1,8 +1,10 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:arturo_bruna_app/state-management-project/domain/model/cliente.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/common/delivery_button.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/clientes/client_search_delegate.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/clientes/cliente_create.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/repository/api_repository.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/clientes/clientes_bloc.dart';
 
@@ -23,13 +25,17 @@ class ClientesScreen extends StatelessWidget {
     final clientsBloc = context.watch<ClientesBLoC>();
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        elevation: 20,
-        backgroundColor: Colors.blue[900],
+        elevation: 25,
+        backgroundColor: Colors.blue[700],
         child: Icon(
           Icons.add,
-          size: 40,
+          size: 38,
         ),
-        onPressed: () {},
+        onPressed: () async {
+          final response = await Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => ClientCreate.init(context)));
+          print('Respuesta del create $response');
+        },
       ),
       appBar: AppBar(
         actions: [

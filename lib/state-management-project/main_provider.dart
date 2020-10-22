@@ -1,3 +1,4 @@
+import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/clientes/clientes_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:arturo_bruna_app/state-management-project/main_bloc.dart';
@@ -19,10 +20,9 @@ class MainProvider extends StatelessWidget {
           create: (_) => LocalRepositoryImpl(),
         ),
         ChangeNotifierProvider(
-          create: (context) {
+          create: (_) {
             return MainBLoC(
-                localRepositoryInterface:
-                    context.read<LocalRepositoryInterface>())
+                localRepositoryInterface: _.read<LocalRepositoryInterface>())
               ..loadTheme();
           },
         )

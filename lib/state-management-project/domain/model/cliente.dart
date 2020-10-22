@@ -44,7 +44,7 @@ class Cliente {
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
+        "id": id != null ? id : null,
         "nombre": nombre,
         "rut": rut,
         "correo": correo,
@@ -52,8 +52,18 @@ class Cliente {
         "fono": fono,
         "tipopago": tipopago,
         "numerocuotas": numerocuotas,
-        "estado": estado,
+        "estado": estado != null ? estado : 1,
       };
+  Map<String, dynamic> createToJson() => {
+        "nombre": nombre,
+        "rut": rut,
+        "correo": correo,
+        "direccion": direccion,
+        "fono": fono,
+        "tipopago": tipopago,
+        "numerocuotas": numerocuotas,
+      };
+
   @override
   String toString() {
     return 'Instancia de Cliente: $nombre';

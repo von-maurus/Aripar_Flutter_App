@@ -18,7 +18,10 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
   static const apiUrl = urlBase + 'web/index.php?r=';
   static const urlUserImage = urlBase + "assets/avatares/";
   static const urlProductImage = urlBase + "assets/productos/";
-  Map<String, String> headers = {"Content-Type": "application/json"};
+  Map<String, String> headers = {"Content-type": "application/json"};
+  Map<String, String> headers2 = {
+    "Content-type": "application/x-www-form-urlencoded",
+  };
 
   @override
   Future<Usuario> getUserFromToken(String token) async {
@@ -134,12 +137,24 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
   @override
   Future<Cliente> createCliente(Cliente cliente) async {
     const controller = 'clientes/';
-    final data = cliente.toJson();
-    final response =
-        await http.Client().post(apiUrl + controller + 'create', body: data);
-    print(response.body);
+    print(' Cliente en la api $cliente');
+    final data = cliente.createToJson();
+    print(data);
+    final dataEncode = json.encode(data);
+    final response = await http.Client().post(
+        apiUrl + controller + 'create-from-app',
+        headers: headers,
+        body: dataEncode);
+    print('EL RESPONSE ${response.body}');
+    if (response.statusCode == 201) {
+      return parseClient(response.body);
+    }
     throw ClientException();
   }
+}
+
+Cliente parseClient(String responseBody) {
+  return Cliente.fromJson(json.decode(responseBody)['model']);
 }
 
 List<Producto> parseProductos(String responseBody) {

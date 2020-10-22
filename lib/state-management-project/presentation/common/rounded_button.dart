@@ -8,6 +8,7 @@ class RoundedButton extends StatelessWidget {
   final String buttonText;
   final Function onPressed;
   final Color buttonTextColor;
+  final double height;
 
   const RoundedButton(
       {Key key,
@@ -16,20 +17,21 @@ class RoundedButton extends StatelessWidget {
       this.borderColor = kBorderButton,
       this.buttonColor = kButtonPrimary,
       this.buttonText = 'TextButton',
-      this.buttonTextColor = kTextRoundedButton})
+      this.buttonTextColor = kTextRoundedButton,
+      this.height = 55.0})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return RaisedButton(
       elevation: 3.5,
-      highlightElevation: 8,
+      highlightElevation: 9,
       color: buttonColor,
       shape: StadiumBorder(side: BorderSide(color: borderColor)),
       onPressed: onPressed,
       child: Container(
         width: double.infinity,
-        height: size.height * 0.069,
+        height: height,
         child: Center(
             child: Text(
           buttonText,
