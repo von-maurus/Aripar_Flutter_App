@@ -28,10 +28,11 @@ class UserScreen extends StatelessWidget {
     final profileBloc = Provider.of<ProfileBLoC>(context, listen: false);
     await profileBloc.logOut();
     Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(
-          builder: (_) => SplashScreen.init(context),
-        ),
-        (route) => false);
+      MaterialPageRoute(
+        builder: (_) => SplashScreen.init(context),
+      ),
+      (route) => false,
+    );
   }
 
   void onThemeUpdated(BuildContext context, bool isDark) {
