@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:arturo_bruna_app/state-management-project/presentation/common/alert_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -27,6 +28,7 @@ class ProductosScreen extends StatelessWidget {
     final productsBloc = context.watch<ProductosBLoC>();
     // final cartBloc = context.watch<CartBLoC>();
     return Scaffold(
+      backgroundColor: Colors.white70,
       appBar: AppBar(
         actions: [
           IconButton(
@@ -36,18 +38,19 @@ class ProductosScreen extends StatelessWidget {
             ),
             color: Colors.white,
             onPressed: () async {
-              final producto = await showSearch(
+              final product = await showSearch(
                   context: context,
                   delegate: ProductSearchDelegate('Buscar producto',
                       productosBLoC: productsBloc));
-              if (producto != null) {
+              if (product != null) {
+                //TODO: Guardar historial de busqueda en SharedPreferences localmente
                 if (!productsBloc.historial
-                    .any((element) => element.id == producto.id)) {
+                    .any((element) => element.id == product.id)) {
                   if (productsBloc.historial.length >= 10) {
                     productsBloc.historial.removeLast();
-                    productsBloc.historial.insert(0, producto);
+                    productsBloc.historial.insert(0, product);
                   } else {
-                    productsBloc.historial.insert(0, producto);
+                    productsBloc.historial.insert(0, product);
                   }
                 }
               }
@@ -115,67 +118,52 @@ class _ItemProduct extends StatelessWidget {
   Widget build(BuildContext context) {
     final productsBloc = context.watch<ProductosBLoC>();
 
-    Widget _buildAlertDialog(BuildContext context) {
-      if (Platform.isIOS) {
-        return CupertinoAlertDialog(
-          title: Text('Cantidad'),
-          content: NumberPicker.integer(
-              initialValue: 0,
-              minValue: 0,
-              maxValue: product.stock,
-              onChanged: (newValue) {
-                productsBloc.cantidadProducto = newValue;
-              }),
-          actions: [
-            FlatButton(
-              child: Text('Continuar'),
-              onPressed: () {
-                print(productsBloc.cantidadProducto);
-                // Navigator.of(context).pop();
-              },
-            ),
-            FlatButton(
-              child: Text('Cancelar'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      } else {
-        return AlertDialog(
-          title: Text('Cantidad'),
-          content: NumberPicker.integer(
-              initialValue: 0,
-              minValue: 0,
-              maxValue: product.stock,
-              onChanged: (newValue) {
-                productsBloc.cantidadProducto = newValue;
-              }),
-          actions: [
-            FlatButton(
-              child: Text('Continuar'),
-              onPressed: () {
-                print(productsBloc.cantidadProducto);
-                // Navigator.of(context).pop();
-              },
-            ),
-            FlatButton(
-              child: Text('Cancelar'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      }
-    }
-
     Future _showMyDialog(BuildContext context) async {
       return showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (_) => _buildAlertDialog(_),
+        builder: (_) => AlertDialogPage(
+          oldContext: _,
+          title: Center(
+            child: Text("Seleccione la cantidad"),
+          ),
+          content: NumberPicker.integer(
+            initialValue: 0,
+            minValue: 0,
+            highlightSelectedValue: true,
+            haptics: true,
+            maxValue: product.stock,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30.0),
+              border: Border.all(
+                color: Colors.blue,
+                width: 2,
+              ),
+            ),
+            onChanged: (newValue) {
+              productsBloc.cantidadProducto = newValue;
+            },
+          ),
+          actions: [
+            FlatButton(
+              color: Colors.green,
+              child: Text("Agregar"),
+              shape: StadiumBorder(),
+              onPressed: () {
+                print(productsBloc.cantidadProducto);
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              color: Colors.red,
+              shape: StadiumBorder(),
+              child: Text("Cancelar"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ),
       );
     }
 

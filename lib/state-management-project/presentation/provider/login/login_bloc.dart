@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/exception/auth_exception.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/repository/api_repository.dart';
@@ -22,7 +24,7 @@ class LoginBLoC extends ChangeNotifier {
   final passwordTextController = TextEditingController();
   var loginState = LoginState.initial;
 
-  Future<bool> login() async {
+  Future<bool> login(GlobalKey<ScaffoldState> scaffoldKey) async {
     final email = emailTextController.text;
     final password = passwordTextController.text;
     if (email.isNotEmpty && password.isNotEmpty) {
@@ -38,11 +40,38 @@ class LoginBLoC extends ChangeNotifier {
         notifyListeners();
         return true;
       } on AuthException catch (_) {
+        print(_);
         loginState = LoginState.initial;
         notifyListeners();
+        scaffoldKey.currentState.showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.red,
+            duration: Duration(milliseconds: 900),
+            content: Text('Email o Contraseña incorrectos.'),
+          ),
+        );
+        return false;
+      } on Exception catch (e) {
+        print(e);
+        loginState = LoginState.initial;
+        notifyListeners();
+        scaffoldKey.currentState.showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.red,
+            duration: Duration(milliseconds: 900),
+            content: Text('Error de conexión. $e'),
+          ),
+        );
         return false;
       }
     } else {
+      scaffoldKey.currentState.showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.red,
+          duration: Duration(milliseconds: 900),
+          content: Text('Las credenciales son incorrectas'),
+        ),
+      );
       return false;
     }
   }

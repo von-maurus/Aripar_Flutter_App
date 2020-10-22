@@ -1,4 +1,3 @@
-import 'package:arturo_bruna_app/state-management-project/domain/repository/api_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -7,7 +6,6 @@ import 'package:arturo_bruna_app/state-management-project/presentation/common/ro
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/clientes/clientes_bloc.dart';
 
 class ClientCreate extends StatelessWidget {
-
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override

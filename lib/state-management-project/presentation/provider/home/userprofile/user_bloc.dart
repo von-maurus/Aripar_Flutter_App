@@ -25,7 +25,7 @@ class ProfileBLoC extends ChangeNotifier {
 
   Future<void> logOut() async {
     final token = await localRepositoryInterface.getToken();
-    print('TOKEN ACTUAL' + token);
+    // print('TOKEN ACTUAL' + token);
     await apiRepositoryInterface.logout(token);
     await localRepositoryInterface.clearData();
   }

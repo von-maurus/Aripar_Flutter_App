@@ -1,5 +1,5 @@
-import 'package:arturo_bruna_app/state-management-project/presentation/common/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:arturo_bruna_app/state-management-project/presentation/common/constants.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/repository/local_storage_repository.dart';
 
 class MainBLoC extends ChangeNotifier {
@@ -15,7 +15,7 @@ class MainBLoC extends ChangeNotifier {
     // final isDark = await localRepositoryInterface.isDarkMode() ?? false;
     updateTheme(ThemeData(
       primaryColor: kPrimaryColor2,
-      scaffoldBackgroundColor: Colors.grey.shade100,
+      scaffoldBackgroundColor: Colors.blue,
     ));
   }
 

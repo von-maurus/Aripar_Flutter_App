@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'package:arturo_bruna_app/state-management-project/domain/repository/api_repository.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/login/logo.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/common/custom_input.dart';
@@ -28,19 +29,11 @@ class LoginPage extends StatelessWidget {
   void login(BuildContext context) async {
     FocusScope.of(context).unfocus();
     final bloc = context.read<LoginBLoC>();
-    final result = await bloc.login();
+    final result = await bloc.login(_scaffoldKey);
     if (result) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (_) => HomePage.init(context),
-        ),
-      );
-    } else {
-      _scaffoldKey.currentState.showSnackBar(
-        SnackBar(
-          backgroundColor: Colors.red,
-          duration: Duration(milliseconds: 900),
-          content: Text('Email o Contraseña incorrectos.'),
         ),
       );
     }
@@ -51,6 +44,7 @@ class LoginPage extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     final bloc = context.watch<LoginBLoC>();
     return Scaffold(
+      backgroundColor: Colors.blue,
       key: _scaffoldKey,
       body: Stack(
         children: [
@@ -92,13 +86,13 @@ class LoginPage extends StatelessWidget {
                                 onPressed: () => login(context),
                                 buttonColor: Colors.orange[500],
                                 buttonTextColor: Colors.black,
-                              )
+                              ),
                             ],
                           ),
                         ),
                         BottomLabels(
                           size: size,
-                        )
+                        ),
                       ],
                     ),
                   ),

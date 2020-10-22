@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'package:arturo_bruna_app/state-management-project/presentation/common/theme.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/repository/api_repository.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/home_bloc.dart';
@@ -25,7 +26,6 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bloc = Provider.of<HomeBLoC>(context);
-    // final bloc = context.watch()<HomeBLoC>();
     return Scaffold(
       extendBodyBehindAppBar: true,
       body: Column(

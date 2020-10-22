@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -14,7 +15,7 @@ import 'package:arturo_bruna_app/state-management-project/domain/exception/produ
 //Implementacion de los servicios para el Backend
 //en ApiRepositoryInterface (..domain/repository/) van estas funciones
 class ApiRepositoryImpl extends ApiRepositoryInterface {
-  static const urlBase = 'http://192.168.0.100/sab-backend/';
+  static const urlBase = 'http://192.168.1.86/sab-backend/';
   static const apiUrl = urlBase + 'web/index.php?r=';
   static const urlUserImage = urlBase + "assets/avatares/";
   static const urlProductImage = urlBase + "assets/productos/";
@@ -30,6 +31,7 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
     final response = await http.post(apiUrl + controller + 'is-logged-from-app',
         headers: headers, body: json.encode(data));
     final responseData = json.decode(response.body);
+
     if (response.statusCode == 200) {
       return Usuario(
           id: responseData['model']['id'],
@@ -49,27 +51,34 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
   Future<LoginResponse> login(LoginRequest login) async {
     const controller = 'usuarios/';
     final data = {'email': login.email, 'password': login.password};
-    final response = await http.Client().post(
-        apiUrl + controller + 'login-from-app',
-        headers: headers,
-        body: json.encode(data));
-    final responseData = json.decode(response.body);
-    print(response.statusCode);
-    if (response.statusCode == 200) {
-      return LoginResponse(
-          responseData['token'],
-          Usuario(
-              id: responseData['model']['id'],
-              nombre: responseData['model']['nombre'],
-              username: responseData['model']['username'],
-              correo: responseData['model']['correo'],
-              tipo: responseData['model']['tipo'],
-              fono: responseData['model']['fono'],
-              comision: responseData['model']['comision'],
-              imagen: urlUserImage + responseData['model']['imagen'],
-              estado: responseData['model']['estado']));
+    try {
+      final response = await http.Client()
+          .post(apiUrl + controller + 'login-from-app',
+              headers: headers, body: json.encode(data))
+          .timeout(Duration(seconds: 7), onTimeout: () {
+        throw TimeoutException('Tiempo de espera agotado.');
+      });
+      final responseData = json.decode(response.body);
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        return LoginResponse(
+            responseData['token'],
+            Usuario(
+                id: responseData['model']['id'],
+                nombre: responseData['model']['nombre'],
+                username: responseData['model']['username'],
+                correo: responseData['model']['correo'],
+                tipo: responseData['model']['tipo'],
+                fono: responseData['model']['fono'],
+                comision: responseData['model']['comision'],
+                imagen: urlUserImage + responseData['model']['imagen'],
+                estado: responseData['model']['estado']));
+      }
+      throw AuthException();
+    } on Exception catch (e) {
+      print(e);
+      throw e;
     }
-    throw AuthException();
   }
 
   @override

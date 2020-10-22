@@ -5,16 +5,16 @@ import 'package:arturo_bruna_app/state-management-project/domain/model/cliente.d
 import 'package:arturo_bruna_app/state-management-project/presentation/common/delivery_button.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/clientes/client_search_delegate.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/clientes/cliente_create.dart';
-import 'package:arturo_bruna_app/state-management-project/domain/repository/api_repository.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/clientes/clientes_bloc.dart';
 
 class ClientesScreen extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     final clientsBloc = context.watch<ClientesBLoC>();
     return Scaffold(
+      backgroundColor: Colors.white70,
       floatingActionButton: FloatingActionButton(
+        heroTag: "btnCreateClient",
         elevation: 25,
         backgroundColor: Colors.blue[700],
         child: Icon(
@@ -22,8 +22,8 @@ class ClientesScreen extends StatelessWidget {
           size: 38,
         ),
         onPressed: () async {
-          final response = await Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => ClientCreate()));
+          final response = await Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => ClientCreate()));
           print('Respuesta del create $response');
         },
       ),
@@ -84,7 +84,7 @@ class ClientesScreen extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15.0),
-        color: Colors.grey.shade300,
+        color: Colors.white,
       ),
       width: double.infinity,
       margin: EdgeInsets.symmetric(vertical: 8, horizontal: 20),

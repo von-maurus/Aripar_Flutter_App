@@ -1,5 +1,8 @@
+import 'package:arturo_bruna_app/state-management-project/presentation/common/alert_dialog.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'package:arturo_bruna_app/state-management-project/main_bloc.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/model/user.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/repository/api_repository.dart';
@@ -38,12 +41,59 @@ class UserScreen extends StatelessWidget {
     mainBloc.loadTheme();
   }
 
+  Future<void> _showMyDialog(BuildContext context) async {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => AlertDialogPage(
+        oldContext: _,
+        title: Center(
+          child: Text("Cerrar sesión"),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text("¿Desea salir de la aplicación?"),
+          ],
+        ),
+        actions: [
+          FlatButton(
+            color: Colors.green,
+            child: Text("Quiero descansar"),
+            shape: StadiumBorder(),
+            onPressed: () async {
+              await logout(context);
+            },
+          ),
+          SizedBox(
+            width: 45.0,
+          ),
+          FlatButton(
+            color: Colors.red,
+            shape: StadiumBorder(),
+            child: Text("Sigamos"),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final homeBloc = Provider.of<HomeBLoC>(context);
-    // final profileBloc = Provider.of<ProfileBLoC>(context);
+    final profileBloc = Provider.of<ProfileBLoC>(context);
     final user = homeBloc.usuario;
     return Scaffold(
+      backgroundColor: Colors.white,
+      floatingActionButton: FloatingActionButton(
+          heroTag: "btnLogout",
+          backgroundColor: Colors.red[600],
+          child: Icon(Icons.logout),
+          elevation: 10,
+          onPressed: () => _showMyDialog(context)),
       appBar: AppBar(
         centerTitle: true,
         elevation: 6.0,
@@ -121,7 +171,6 @@ class UserScreen extends StatelessWidget {
 
 class _UserInfo extends StatelessWidget {
   final Usuario user;
-
   const _UserInfo({Key key, this.user}) : super(key: key);
 
   @override
@@ -188,124 +237,4 @@ class _UserInfo extends StatelessWidget {
       ),
     );
   }
-}
-
-Widget body() {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.stretch,
-    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    children: [
-      Expanded(
-        flex: 0,
-        child: Column(
-          children: [
-            // Container(
-            //   margin: EdgeInsets.only(top: 15),
-            //   // decoration: BoxDecoration(
-            //   //     shape: BoxShape.circle, color: Colors.orange[700]),
-            //   child: Padding(
-            //     padding: const EdgeInsets.all(4.0),
-            //     child: CircleAvatar(
-            //       radius: 55.0,
-            //       backgroundImage: NetworkImage(user.imagen),
-            //     ),
-            //   ),
-            // ),
-            const SizedBox(height: 10),
-            // Text(
-            //   user.nombre,
-            //   style: TextStyle(
-            //       fontWeight: FontWeight.bold,
-            //       color: Colors.white70,
-            //       fontSize: 20.0),
-            // ),
-          ],
-        ),
-      ),
-      Expanded(
-        flex: 2,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(height: 30),
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              // child: Card(
-              //   color: Theme.of(context).canvasColor,
-              //   child: Padding(
-              //     padding: const EdgeInsets.all(25.0),
-              //     child: Column(
-              //       crossAxisAlignment: CrossAxisAlignment.stretch,
-              //       children: [
-              //         Text(
-              //           'Información Personal',
-              //           style: TextStyle(
-              //               fontWeight: FontWeight.bold, fontSize: 18.5),
-              //           textAlign: TextAlign.center,
-              //         ),
-              //         const SizedBox(height: 25),
-              //         Row(
-              //           mainAxisAlignment: MainAxisAlignment.start,
-              //           children: [
-              //             Icon(Icons.person),
-              //             Text(
-              //               user.username,
-              //               style: TextStyle(),
-              //               textAlign: TextAlign.justify,
-              //             ),
-              //             Icon(Icons.phone_android),
-              //             Text(
-              //               user.fono,
-              //             )
-              //           ],
-              //         ),
-              //         // Row(
-              //         //   children: [
-              //         //     Text(
-              //         //       'Modo Oscuro',
-              //         //     ),
-              //         //     Spacer(),
-              //         //     ValueListenableBuilder<bool>(
-              //         //       valueListenable:
-              //         //           profileBloc.switchNotifier,
-              //         //       builder: (_, value, __) {
-              //         //         return Switch(
-              //         //           value: value,
-              //         //           onChanged: (val) =>
-              //         //               onThemeUpdated(context, val),
-              //         //           activeColor: Colors.purple,
-              //         //         );
-              //         //       },
-              //         //     ),
-              //         //   ],
-              //         // ),
-              //       ],
-              //     ),
-              //   ),
-              // ),
-            ),
-            Spacer(),
-            // Center(
-            //   child: RaisedButton(
-            //     onPressed: () => logout(context),
-            //     shape: RoundedRectangleBorder(
-            //       borderRadius: BorderRadius.circular(20),
-            //     ),
-            //     color: Colors.blue[900],
-            //     child: Padding(
-            //       padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            //       child: Text(
-            //         'Cerrar Sesión',
-            //         style: TextStyle(
-            //           color: Colors.white,
-            //         ),
-            //       ),
-            //     ),
-            //   ),
-            // ),
-          ],
-        ),
-      )
-    ],
-  );
 }
