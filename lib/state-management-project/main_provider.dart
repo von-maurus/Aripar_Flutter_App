@@ -1,8 +1,7 @@
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/clientes/clientes_bloc.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/clientes/clientes_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+
+import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/clientes/clientes_bloc.dart';
 import 'package:arturo_bruna_app/state-management-project/main_bloc.dart';
 import 'package:arturo_bruna_app/state-management-project/data/datasource/api_repository_impl.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/repository/api_repository.dart';
@@ -39,9 +38,9 @@ class MainProvider extends StatelessWidget {
           builder: (context, bloc, _) {
             return MaterialApp(
               debugShowCheckedModeBanner: false,
-              theme: bloc.currentTheme == null
-                  ? ThemeData.light()
-                  : bloc.currentTheme,
+              // theme: bloc.currentTheme == null
+              //     ? ThemeData.light()
+              //     : bloc.currentTheme,
               home: SplashScreen.init(newContext),
             );
           },
