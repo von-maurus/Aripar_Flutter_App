@@ -1,3 +1,5 @@
+import 'package:arturo_bruna_app/state-management-project/domain/exception/preventa_exception.dart';
+import 'package:arturo_bruna_app/state-management-project/domain/repository/local_storage_repository.dart';
 import 'package:flutter/material.dart';
 
 import 'package:arturo_bruna_app/state-management-project/domain/repository/api_repository.dart';
@@ -5,16 +7,24 @@ import 'package:arturo_bruna_app/state-management-project/domain/model/cliente.d
 import 'package:arturo_bruna_app/state-management-project/domain/model/product.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/model/preventa_cart.dart';
 
+enum PreSaleState {
+  loading,
+  stable,
+}
+
 class PreSaleBLoC extends ChangeNotifier {
   final ApiRepositoryInterface apiRepositoryInterface;
+  final LocalRepositoryInterface localRepositoryInterface;
+
   int payType;
   List<PreSaleCart> preSaleList = <PreSaleCart>[];
   Cliente client = new Cliente();
   int totalItems = 0;
   int totalPrice = 0;
   int productsCount = 0;
-
-  PreSaleBLoC({this.apiRepositoryInterface});
+  var preSaleState = PreSaleState.stable;
+  int diasCuota;
+  PreSaleBLoC({this.apiRepositoryInterface, this.localRepositoryInterface});
 
   void add(Producto product, int quantity) {
     print(quantity);
@@ -48,6 +58,7 @@ class PreSaleBLoC extends ChangeNotifier {
     } else {
       client = newClient;
       payType = newClient.tipopago;
+      diasCuota = newClient.numerocuotas;
       notifyListeners();
       return true;
     }
@@ -56,6 +67,7 @@ class PreSaleBLoC extends ChangeNotifier {
   void updateClient(Cliente newClient) {
     client = newClient;
     payType = newClient.tipopago;
+    diasCuota = newClient.numerocuotas;
     notifyListeners();
   }
 
@@ -95,5 +107,51 @@ class PreSaleBLoC extends ChangeNotifier {
     notifyListeners();
     preSaleList.remove(productCart);
     calculateTotals(preSaleList);
+  }
+
+  void deleteCart() {
+    preSaleList.clear();
+    calculateTotals(preSaleList);
+  }
+
+  // void updatePayType(String tipoPago) {
+  //   if (tipoPago != "1") {
+  //     payType = int.parse(tipoPago);
+  //     diasCuota =
+  //   } else {
+  //     payType = int.parse(tipoPago);
+  //   }
+  //   diasCuota = int.parse(days);
+  //   notifyListeners();
+  // }
+
+  Future<dynamic> checkOut() async {
+    preSaleState = PreSaleState.loading;
+    notifyListeners();
+    // await Future.delayed(Duration(seconds: 2));
+    if (client.id == null) {
+      preSaleState = PreSaleState.stable;
+      notifyListeners();
+      return 'Por favor, ingrese un cliente a su venta.';
+    }
+    try {
+      //Api request
+      final token = await localRepositoryInterface.getToken();
+      final response = await apiRepositoryInterface.createPreSale(
+          preSaleList, client.id, payType, totalPrice, token, diasCuota);
+      preSaleState = PreSaleState.stable;
+      notifyListeners();
+      return response;
+    } on PreSaleException catch (e) {
+      print(e);
+      preSaleState = PreSaleState.stable;
+      notifyListeners();
+      return 'Ocurrio un error: $e';
+    } on Exception catch (e) {
+      print(e);
+      preSaleState = PreSaleState.stable;
+      notifyListeners();
+      return 'Ocurrio un error: $e';
+    }
   }
 }

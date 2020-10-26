@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:arturo_bruna_app/state-management-project/domain/model/preventa_cart.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:arturo_bruna_app/state-management-project/domain/model/user.dart';
@@ -159,6 +160,29 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
       return parseClient(response.body);
     }
     throw ClientException();
+  }
+
+  @override
+  Future<dynamic> createPreSale(List<PreSaleCart> preSaleList, int clientId,
+      int payType, int total, String token, int diasCuota) async {
+    const controller = 'ventas/';
+    final data = {
+      "listaPreVenta": preSaleList,
+      "idClient": clientId,
+      "tipoPago": payType,
+      "total": total,
+      "token": token,
+      "diasCuota": diasCuota,
+    };
+    final response = await http.Client()
+        .post(apiUrl + controller + 'create',
+            headers: headers, body: json.encode(data))
+        .timeout(Duration(seconds: 7), onTimeout: () {
+      throw TimeoutException('Tiempo de espera agotado.');
+    });
+    print(response.body);
+    final decodeResponse = jsonDecode(response.body);
+    return decodeResponse['response'];
   }
 }
 

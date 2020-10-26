@@ -3,13 +3,14 @@ import 'package:provider/provider.dart';
 
 import 'package:arturo_bruna_app/state-management-project/domain/model/preventa_cart.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/preventas/preventas_bloc.dart';
+import 'package:arturo_bruna_app/state-management-project/presentation/common/alert_dialog.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/common/delivery_button.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/common/theme.dart';
 
-//TODO: Bug 1: Cuando el precioLinea aumenta a 100k ocurre overflow
 //TODO: Bug 2: Arreglar vista horizontal del ListView
 class PreSalePage extends StatelessWidget {
   final VoidCallback onShopping;
+
   PreSalePage({Key key, this.onShopping});
 
   @override
@@ -29,7 +30,19 @@ class PreSalePage extends StatelessWidget {
           ? EmptyCart(
               onShopping: onShopping,
             )
-          : _FullCart(),
+          : Stack(children: [
+              _FullCart(),
+              if (bloc.preSaleState == PreSaleState.loading)
+                Container(
+                  color: Colors.black45,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      backgroundColor: Colors.orange,
+                      strokeWidth: 18.0,
+                    ),
+                  ),
+                )
+            ]),
     );
   }
 }
@@ -40,15 +53,16 @@ class _FullCart extends StatelessWidget {
     final bloc = context.watch<PreSaleBLoC>();
     final total = bloc.totalPrice;
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Expanded(
           flex: 3,
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20.0),
+            padding: const EdgeInsets.symmetric(vertical: 18.0),
             child: OrientationBuilder(
               builder: (_, orientation) {
-                if (orientation == Orientation.landscape) {
+                if (orientation == Orientation.portrait) {
                   return ListView.builder(
                     physics: BouncingScrollPhysics(),
                     itemCount: bloc.preSaleList.length,
@@ -74,8 +88,8 @@ class _FullCart extends StatelessWidget {
                 return ListView.builder(
                   physics: BouncingScrollPhysics(),
                   itemCount: bloc.preSaleList.length,
-                  scrollDirection: Axis.vertical,
-                  itemExtent: 250,
+                  scrollDirection: Axis.horizontal,
+                  itemExtent: 300,
                   itemBuilder: (context, index) {
                     final preSaleCart = bloc.preSaleList[index];
                     return _ShoppingCartProduct(
@@ -101,11 +115,6 @@ class _FullCart extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(15.0),
             child: SingleChildScrollView(
-              physics: ClampingScrollPhysics(),
-              // shape: RoundedRectangleBorder(
-              //   borderRadius: BorderRadius.circular(20),
-              // ),
-              // color: Theme.of(context).canvasColor,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -120,7 +129,7 @@ class _FullCart extends StatelessWidget {
                               'Cliente',
                               style:
                                   Theme.of(context).textTheme.caption.copyWith(
-                                        color: Colors.blue,
+                                        color: Colors.blue[900],
                                         fontSize: 16.5,
                                       ),
                             ),
@@ -156,7 +165,8 @@ class _FullCart extends StatelessWidget {
                               style: Theme.of(context)
                                   .textTheme
                                   .caption
-                                  .copyWith(color: Colors.blue, fontSize: 16.5),
+                                  .copyWith(
+                                      color: Colors.blue[900], fontSize: 16.5),
                             ),
                             bloc.payType == null
                                 ? Text(
@@ -183,7 +193,7 @@ class _FullCart extends StatelessWidget {
                                             ),
                                       )
                                     : Text(
-                                        'Crédito',
+                                        'Crédito\n${bloc.diasCuota} días a pagar',
                                         textAlign: TextAlign.right,
                                         style: Theme.of(context)
                                             .textTheme
@@ -204,7 +214,7 @@ class _FullCart extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
-                                color: Theme.of(context).accentColor,
+                                color: Colors.black,
                               ),
                             ),
                             Text(
@@ -212,7 +222,7 @@ class _FullCart extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
-                                color: Theme.of(context).accentColor,
+                                color: Colors.blue,
                               ),
                             ),
                           ],
@@ -221,9 +231,47 @@ class _FullCart extends StatelessWidget {
                     ),
                   ),
                   DeliveryButton(
-                    text: 'Realizar preventa',
-                    onTap: () {
-                      // TODO: Llamar al servicio de createPreventa
+                    text: 'Realizar Pre-Venta',
+                    onTap: () async {
+                      //Esperar respuesta
+                      final response = await bloc.checkOut();
+                      //Mostrar AlertDialog con respuesta
+                      return showDialog(
+                        context: context,
+                        builder: (_) => AlertDialogPage(
+                          oldContext: _,
+                          title: Center(
+                            child: Text("Pre-Venta"),
+                          ),
+                          content: Text(
+                            '$response',
+                            style: TextStyle(fontSize: 17.5),
+                            textAlign: TextAlign.center,
+                          ),
+                          actions: [
+                            FlatButton(
+                              child: Text(
+                                "Aceptar",
+                                style: TextStyle(fontSize: 17.0),
+                              ),
+                              shape: StadiumBorder(),
+                              onPressed: () async {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                            FlatButton(
+                              shape: StadiumBorder(),
+                              child: Text(
+                                "Cancelar",
+                                style: TextStyle(fontSize: 17.0),
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        ),
+                      );
                     },
                   )
                 ],
@@ -255,7 +303,6 @@ class _ShoppingCartProduct extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: Stack(
-        overflow: Overflow.visible,
         children: [
           Card(
             elevation: 12.0,

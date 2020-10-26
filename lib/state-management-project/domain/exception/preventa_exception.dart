@@ -1,0 +1,1 @@
+class PreSaleException implements Exception {}

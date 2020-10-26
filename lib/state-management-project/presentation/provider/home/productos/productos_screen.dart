@@ -149,8 +149,32 @@ class ProductosScreen extends StatelessWidget {
                   final product = productsBloc.productList[index];
                   return _ItemProduct(
                     product: product,
-                    onTap: () async => _showMyDialog(
-                        context, product, productsBloc, preSaleBLoC),
+                    onTap: () async {
+                      if (product.stock != 0) {
+                        _showMyDialog(
+                            context, product, productsBloc, preSaleBLoC);
+                      } else {
+                        return showDialog(
+                          context: context,
+                          builder: (_) => AlertDialogPage(
+                            oldContext: _,
+                            content: Text(
+                              "\n\nSin Stock!, avisar al administrador.",
+                              style: TextStyle(fontSize: 18.5),
+                              textAlign: TextAlign.center,
+                            ),
+                            actions: [
+                              FlatButton(
+                                child: Text("Aceptar"),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                    },
                   );
                 },
                 itemCount: productsBloc.productList.length,

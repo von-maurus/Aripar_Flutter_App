@@ -12,7 +12,7 @@ class PreSaleCart {
 
   @override
   String toString() {
-    return 'Instancia de PreSaleCart: $product';
+    return 'Instancia de PreSaleCart: ${product.nombre + '-' + precioLinea.toString()}';
   }
 
   Map<String, dynamic> toJson() => {

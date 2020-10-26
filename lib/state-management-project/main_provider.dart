@@ -34,9 +34,11 @@ class MainProvider extends StatelessWidget {
             ..loadClients(),
         ),
         ChangeNotifierProvider(
-            create: (context) => PreSaleBLoC(
-                apiRepositoryInterface:
-                    context.read<ApiRepositoryInterface>())),
+          create: (context) => PreSaleBLoC(
+            apiRepositoryInterface: context.read<ApiRepositoryInterface>(),
+            localRepositoryInterface: context.read<LocalRepositoryInterface>(),
+          ),
+        ),
       ],
       child: Builder(builder: (newContext) {
         return Consumer<MainBLoC>(
