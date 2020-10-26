@@ -48,31 +48,28 @@ class UserScreen extends StatelessWidget {
       barrierDismissible: false,
       builder: (_) => AlertDialogPage(
         oldContext: _,
-        title: Center(
-          child: Text("Cerrar sesión"),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text("¿Desea salir de la aplicación?"),
-          ],
+        content: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text("¿Desea cerrar sesión?"),
+            ],
+          ),
         ),
         actions: [
           FlatButton(
-            color: Colors.green,
-            child: Text("Quiero descansar"),
+            child: Text("Si"),
             shape: StadiumBorder(),
             onPressed: () async {
               await logout(context);
             },
           ),
-          SizedBox(
-            width: 45.0,
-          ),
           FlatButton(
-            color: Colors.red,
             shape: StadiumBorder(),
-            child: Text("Sigamos"),
+            child: Text("No"),
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -85,7 +82,7 @@ class UserScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final homeBloc = Provider.of<HomeBLoC>(context);
-    final profileBloc = Provider.of<ProfileBLoC>(context);
+    // final profileBloc = Provider.of<ProfileBLoC>(context);
     final user = homeBloc.usuario;
     return Scaffold(
       backgroundColor: Colors.white,

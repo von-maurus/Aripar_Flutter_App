@@ -8,13 +8,14 @@ class CustomInput extends StatelessWidget {
   final TextEditingController controller;
   final TextInputType textInputType;
   final bool isObscure;
-
+  final FocusNode focusNode;
   const CustomInput(
       {Key key,
       @required this.size,
       @required this.controller,
       @required this.hintText,
       @required this.prefixIcon,
+      this.focusNode,
       this.textInputType = TextInputType.text,
       this.errorText,
       this.isObscure = false})
@@ -36,6 +37,7 @@ class CustomInput extends StatelessWidget {
             blurRadius: 6.5)
       ], color: Colors.white, borderRadius: BorderRadius.circular(30.0)),
       child: TextField(
+        focusNode: focusNode,
         obscureText: isObscure,
         controller: controller,
         onEditingComplete: () {

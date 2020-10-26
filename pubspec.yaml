@@ -24,6 +24,7 @@ dependencies:
   http: ^0.12.2
   numberpicker: ^1.2.1
   mask_text_input_formatter: ^1.1.0
+  intl: ^0.16.1
   flutter_number_picker: 
     path: ./packages/custom_number_picker
 dev_dependencies:

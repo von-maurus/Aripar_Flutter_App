@@ -14,6 +14,7 @@ enum LoginState {
 class LoginBLoC extends ChangeNotifier {
   final LocalRepositoryInterface localRepositoryInterface;
   final ApiRepositoryInterface apiRepositoryInterface;
+  bool isObscure = true;
 
   LoginBLoC({
     this.localRepositoryInterface,
@@ -74,5 +75,10 @@ class LoginBLoC extends ChangeNotifier {
       );
       return false;
     }
+  }
+
+  void showHidePassword() {
+    isObscure = !isObscure;
+    notifyListeners();
   }
 }

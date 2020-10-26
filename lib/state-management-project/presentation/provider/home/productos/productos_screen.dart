@@ -1,15 +1,17 @@
-import 'dart:io';
-import 'package:arturo_bruna_app/state-management-project/presentation/common/alert_dialog.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:numberpicker/numberpicker.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/productos/product_search_delegate.dart';
+
 import 'package:arturo_bruna_app/state-management-project/domain/model/product.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/common/theme.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/repository/api_repository.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/common/delivery_button.dart';
+import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/preventas/preventas_bloc.dart';
+import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/productos/product_search_delegate.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/productos/productos_bloc.dart';
+import 'package:arturo_bruna_app/state-management-project/presentation/common/alert_dialog.dart';
+import 'package:arturo_bruna_app/state-management-project/presentation/common/theme.dart';
+import 'package:arturo_bruna_app/state-management-project/presentation/common/delivery_button.dart';
 
 class ProductosScreen extends StatelessWidget {
   ProductosScreen._();
@@ -23,10 +25,66 @@ class ProductosScreen extends StatelessWidget {
     );
   }
 
+  Future _showMyDialog(BuildContext context, Producto product,
+      ProductosBLoC productsBLoC, PreSaleBLoC preSaleBLoC) async {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => AlertDialogPage(
+        oldContext: _,
+        title: Center(
+          child: Text("Seleccione la cantidad"),
+        ),
+        content: NumberPicker.integer(
+          initialValue: 1,
+          minValue: 1,
+          highlightSelectedValue: true,
+          haptics: true,
+          maxValue: product.stock,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30.0),
+            border: Border.all(
+              color: Colors.blue,
+              width: 2,
+            ),
+          ),
+          onChanged: (newValue) {
+            productsBLoC.cantidadProducto = newValue;
+          },
+        ),
+        actions: [
+          FlatButton(
+            child: Text(
+              "Agregar",
+              style: TextStyle(fontSize: 17.0),
+            ),
+            shape: StadiumBorder(),
+            onPressed: () async {
+              print('Cantidad que le paso  ${productsBLoC.cantidadProducto}');
+              preSaleBLoC.add(product, productsBLoC.cantidadProducto);
+              productsBLoC.cantidadProducto = 1;
+              Navigator.of(context).pop();
+            },
+          ),
+          FlatButton(
+            shape: StadiumBorder(),
+            child: Text(
+              "Cancelar",
+              style: TextStyle(fontSize: 17.0),
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final productsBloc = context.watch<ProductosBLoC>();
-    // final cartBloc = context.watch<CartBLoC>();
+    final preSaleBLoC = context.watch<PreSaleBLoC>();
     return Scaffold(
       backgroundColor: Colors.white70,
       appBar: AppBar(
@@ -62,7 +120,7 @@ class ProductosScreen extends StatelessWidget {
         elevation: 6.0,
         title: Text(
           'Productos',
-          style: TextStyle(letterSpacing: 1.0, fontSize: 25.0),
+          style: TextStyle(fontSize: 25.0),
         ),
         backgroundColor: Colors.blue[900],
       ),
@@ -79,7 +137,10 @@ class ProductosScreen extends StatelessWidget {
                           Orientation.landscape
                       ? 4
                       : 2,
-                  childAspectRatio: 2 / 3,
+                  childAspectRatio: MediaQuery.of(context).orientation ==
+                          Orientation.landscape
+                      ? 2 / 4
+                      : 2 / 3,
                   crossAxisSpacing: 9,
                   mainAxisSpacing: 9,
                 ),
@@ -87,11 +148,10 @@ class ProductosScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final product = productsBloc.productList[index];
                   return _ItemProduct(
-                      product: product,
-                      onTap: () {
-                        print(product.nombre);
-                        // cartBloc.add(product);
-                      });
+                    product: product,
+                    onTap: () async => _showMyDialog(
+                        context, product, productsBloc, preSaleBLoC),
+                  );
                 },
                 itemCount: productsBloc.productList.length,
               ),
@@ -112,61 +172,14 @@ class _ItemProduct extends StatelessWidget {
     this.onTap,
   }) : super(key: key);
   final Producto product;
-  final VoidCallback onTap;
-
+  final Function onTap;
+  final formatter = new NumberFormat.currency(
+    locale: 'es',
+    decimalDigits: 0,
+    symbol: 'CLP',
+  );
   @override
   Widget build(BuildContext context) {
-    final productsBloc = context.watch<ProductosBLoC>();
-
-    Future _showMyDialog(BuildContext context) async {
-      return showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (_) => AlertDialogPage(
-          oldContext: _,
-          title: Center(
-            child: Text("Seleccione la cantidad"),
-          ),
-          content: NumberPicker.integer(
-            initialValue: 0,
-            minValue: 0,
-            highlightSelectedValue: true,
-            haptics: true,
-            maxValue: product.stock,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30.0),
-              border: Border.all(
-                color: Colors.blue,
-                width: 2,
-              ),
-            ),
-            onChanged: (newValue) {
-              productsBloc.cantidadProducto = newValue;
-            },
-          ),
-          actions: [
-            FlatButton(
-              color: Colors.green,
-              child: Text("Agregar"),
-              shape: StadiumBorder(),
-              onPressed: () {
-                print(productsBloc.cantidadProducto);
-                Navigator.of(context).pop();
-              },
-            ),
-            FlatButton(
-              color: Colors.red,
-              shape: StadiumBorder(),
-              child: Text("Cancelar"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        ),
-      );
-    }
-
     return Card(
       margin: EdgeInsets.only(right: 12, left: 12, top: 10),
       elevation: 10,
@@ -208,13 +221,15 @@ class _ItemProduct extends StatelessWidget {
                         Text(
                           product.descripcion,
                           style: Theme.of(context).textTheme.subtitle2.copyWith(
-                              color: DeliveryColors.dark, fontSize: 11.5),
+                                color: DeliveryColors.dark,
+                                fontSize: 11.5,
+                              ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          '\$${product.precioventa} CLP',
+                          '\$${formatter.format(product.precioventa)}',
                           style: TextStyle(
                             color: Theme.of(context).primaryColor,
                             fontSize: 20.0,
@@ -224,7 +239,7 @@ class _ItemProduct extends StatelessWidget {
                     ),
                   ),
                   DeliveryButton(
-                    onTap: () => _showMyDialog(context),
+                    onTap: onTap,
                     padding: const EdgeInsets.symmetric(vertical: 9.5),
                     text: "Añadir",
                   )

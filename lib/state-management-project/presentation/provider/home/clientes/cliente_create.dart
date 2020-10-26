@@ -40,6 +40,7 @@ class _CustomForm extends StatelessWidget {
   final Size size;
   final maskFormatter;
   final scaffoldKey;
+
   const _CustomForm(
       {Key key,
       this.clientsBLoC,
@@ -161,22 +162,6 @@ class _CustomForm extends StatelessWidget {
                   SizedBox(
                     height: 25,
                   ),
-                  TextFormField(
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.attach_money_rounded),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20)),
-                      labelText: "Número de Cuotas",
-                      errorText: clientsBLoC.numCuotas.error,
-                    ),
-                    onChanged: (String value) {
-                      clientsBLoC.changeNumCuotas(value);
-                    },
-                  ),
-                  SizedBox(
-                    height: 28,
-                  ),
                   Row(
                     children: [
                       Flexible(
@@ -213,6 +198,24 @@ class _CustomForm extends StatelessWidget {
                       ),
                     ],
                   ),
+                  SizedBox(
+                    height: 28,
+                  ),
+                  clientsBLoC.tipoPago.value == "1"
+                      ? Container()
+                      : TextFormField(
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(Icons.timelapse),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20)),
+                            labelText: "Días a pagar",
+                            errorText: clientsBLoC.numCuotas.error,
+                          ),
+                          onChanged: (String value) {
+                            clientsBLoC.changeNumCuotas(value);
+                          },
+                        ),
                   SizedBox(
                     height: 28,
                   ),

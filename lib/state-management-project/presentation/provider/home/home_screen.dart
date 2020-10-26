@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:arturo_bruna_app/state-management-project/presentation/common/theme.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/repository/api_repository.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/home_bloc.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/repository/local_storage_repository.dart';
+import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/preventas/preventas_bloc.dart';
+import 'package:arturo_bruna_app/state-management-project/presentation/common/theme.dart';
+import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/home_bloc.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/userprofile/user_screen.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/preventas/preventas_page.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/clientes/clientes_screen.dart';
@@ -37,7 +38,11 @@ class HomePage extends StatelessWidget {
               children: [
                 ProductosScreen.init(context),
                 ClientesScreen(),
-                const Placeholder() ?? PreVentasPage(),
+                PreSalePage(
+                  onShopping: () {
+                    bloc.updateIndexSelected(0);
+                  },
+                ),
                 UserScreen.init(context)
               ],
             ),
@@ -64,7 +69,7 @@ class _DeliveryNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bloc = Provider.of<HomeBLoC>(context);
-    // final cartBloc = Provider.of<PreVentaBLoC>(context);
+    final preSaleBLoC = Provider.of<PreSaleBLoC>(context);
     final user = bloc.usuario;
 
     return Padding(
@@ -123,18 +128,18 @@ class _DeliveryNavigationBar extends StatelessWidget {
                         onPressed: () => onIndexSelected(2),
                       ),
                     ),
-                    // Positioned(
-                    //   right: 0,
-                    //   child: cartBloc.totalItems == 0
-                    //       ? const SizedBox.shrink()
-                    //       : CircleAvatar(
-                    //     radius: 10,
-                    //     backgroundColor: Colors.pinkAccent,
-                    //     child: Text(
-                    //       cartBloc.totalItems.toString(),
-                    //     ),
-                    //   ),
-                    // )
+                    Positioned(
+                      right: 0,
+                      child: preSaleBLoC.productsCount == 0
+                          ? const SizedBox.shrink()
+                          : CircleAvatar(
+                              radius: 10,
+                              backgroundColor: Colors.pinkAccent,
+                              child: Text(
+                                preSaleBLoC.productsCount.toString(),
+                              ),
+                            ),
+                    )
                   ],
                 ),
               ),

@@ -27,7 +27,11 @@ class ClientSearchDelegate extends SearchDelegate<Cliente> {
     return IconButton(
         icon: Icon(Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
         splashColor: Colors.transparent,
-        onPressed: () => this.close(context, null));
+        onPressed: () async {
+          FocusScope.of(context).unfocus();
+          await Future.delayed(Duration(milliseconds: 100));
+          this.close(context, null);
+        });
   }
 
   @override

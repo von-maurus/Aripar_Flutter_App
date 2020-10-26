@@ -30,7 +30,10 @@ class DeliveryButton extends StatelessWidget {
           padding: padding,
           child: Text(
             text,
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 16.5),
             textAlign: TextAlign.center,
           ),
         ),

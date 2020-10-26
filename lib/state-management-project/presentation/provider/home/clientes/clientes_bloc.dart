@@ -150,10 +150,10 @@ class ClientesBLoC extends ChangeNotifier {
         client.correo = _correo.value;
         client.direccion = _direccion.value;
         client.fono = _fono.value;
-        client.numerocuotas = int.parse(_numCuotas.value);
+        client.numerocuotas =
+            _tipoPago.value == "1" ? null : int.parse(_numCuotas.value);
         client.tipopago = int.parse(_tipoPago.value);
         clientsState = ClientsState.loading;
-        print('Lista antes del notify ${clientList.length}');
         notifyListeners();
         final result = await apiRepositoryInterface.createCliente(client);
         print('resultado de create $result');

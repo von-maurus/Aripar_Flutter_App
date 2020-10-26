@@ -25,9 +25,9 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   void _init() async {
-    await Future.delayed(Duration(milliseconds: 500));
     final bloc = context.read<SplashBLoC>();
     final result = await bloc.validateSession();
+    await Future.delayed(Duration(milliseconds: 1000));
     if (result) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(

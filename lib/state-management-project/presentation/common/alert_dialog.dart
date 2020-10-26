@@ -10,9 +10,9 @@ class AlertDialogPage extends StatelessWidget {
   const AlertDialogPage({
     Key key,
     @required this.oldContext,
-    @required this.title,
     @required this.content,
     @required this.actions,
+    this.title,
   }) : super(key: key);
 
   @override
@@ -25,6 +25,7 @@ class AlertDialogPage extends StatelessWidget {
       );
     } else {
       return AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
         title: title,
         content: content,
         actions: actions,
