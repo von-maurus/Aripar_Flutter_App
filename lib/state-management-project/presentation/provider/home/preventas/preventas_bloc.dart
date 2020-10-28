@@ -40,6 +40,17 @@ class PreSaleBLoC extends ChangeNotifier {
     }
   }
 
+  void cleanSalesCart() {
+    preSaleList.clear();
+    calculateTotals(preSaleList);
+    client = new Cliente();
+    totalItems = 0;
+    totalPrice = 0;
+    productsCount = 0;
+    diasCuota = 7;
+    notifyListeners();
+  }
+
   void add(Producto product, int quantity) {
     print(quantity);
     final tempList = List<PreSaleCart>.from(preSaleList);
@@ -126,11 +137,6 @@ class PreSaleBLoC extends ChangeNotifier {
     productsCount = productsCount - 1;
     notifyListeners();
     preSaleList.remove(productCart);
-    calculateTotals(preSaleList);
-  }
-
-  void deleteCart() {
-    preSaleList.clear();
     calculateTotals(preSaleList);
   }
 

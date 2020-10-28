@@ -1,10 +1,10 @@
-import 'package:arturo_bruna_app/state-management-project/presentation/common/alert_dialog.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/preventas/preventas_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:arturo_bruna_app/state-management-project/domain/model/cliente.dart';
+import 'package:arturo_bruna_app/state-management-project/presentation/common/alert_dialog.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/common/delivery_button.dart';
+import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/preventas/preventas_bloc.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/clientes/client_search_delegate.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/clientes/cliente_create.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/clientes/clientes_bloc.dart';
@@ -34,38 +34,7 @@ class ClientesScreen extends StatelessWidget {
               print(response);
               if (!response) {
                 Navigator.of(context).pop();
-                return showDialog(
-                    context: context,
-                    barrierDismissible: false,
-                    builder: (_) => AlertDialogPage(
-                          oldContext: _,
-                          content: Text(
-                            "Ya existe un cliente en la Pre-Venta.\n¿Desea reemplazarlo?",
-                            style: TextStyle(fontSize: 17.5),
-                            textAlign: TextAlign.center,
-                          ),
-                          actions: [
-                            FlatButton(
-                              child: Text(
-                                "Reemplazar",
-                                style: TextStyle(fontSize: 17.0),
-                              ),
-                              onPressed: () {
-                                preSaleBLoC.updateClient(client);
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                            FlatButton(
-                              child: Text(
-                                "Cancelar",
-                                style: TextStyle(fontSize: 17.0),
-                              ),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            )
-                          ],
-                        ));
+                return showReplaceClientDialog(context, preSaleBLoC, client);
               } else {
                 Navigator.of(context).pop();
               }
@@ -86,103 +55,164 @@ class ClientesScreen extends StatelessWidget {
     );
   }
 
+  Future<void> showReplaceClientDialog(
+      BuildContext context, PreSaleBLoC preSaleBLoC, Cliente client) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => AlertDialogPage(
+              oldContext: _,
+              title: Center(
+                child: Text(
+                  "Advertencia",
+                  style: TextStyle(
+                    fontSize: 25.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              content: Text(
+                "Ya existe un cliente en la \nPre-Venta.\n¿Desea reemplazarlo?",
+                style: TextStyle(fontSize: 17.5),
+                textAlign: TextAlign.center,
+              ),
+              actions: [
+                FlatButton(
+                  child: Text(
+                    "Reemplazar",
+                    style: TextStyle(fontSize: 17.0),
+                  ),
+                  onPressed: () {
+                    preSaleBLoC.updateClient(client);
+                    Navigator.of(context).pop();
+                  },
+                ),
+                FlatButton(
+                  child: Text(
+                    "Cancelar",
+                    style: TextStyle(fontSize: 17.0),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            ));
+  }
+
   @override
   Widget build(BuildContext context) {
     final clientsBloc = context.watch<ClientesBLoC>();
     final preSaleBloc = context.watch<PreSaleBLoC>();
-    return Scaffold(
-      backgroundColor: Colors.white70,
-      floatingActionButton: FloatingActionButton(
-        heroTag: "btnCreateClient",
-        elevation: 25,
-        backgroundColor: Colors.blue[700],
-        child: Icon(
-          Icons.add,
-          size: 38,
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white70,
+        floatingActionButton: FloatingActionButton(
+          heroTag: "btnCreateClient",
+          elevation: 25,
+          backgroundColor: Colors.blue[700],
+          child: Icon(
+            Icons.add,
+            size: 38,
+          ),
+          onPressed: () async {
+            final response = await Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => ClientCreate()));
+            print('Respuesta del create $response');
+          },
         ),
-        onPressed: () async {
-          final response = await Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => ClientCreate()));
-          print('Respuesta del create $response');
-        },
-      ),
-      appBar: AppBar(
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.search,
-              size: 30,
-            ),
-            color: Colors.white,
-            onPressed: () {
-              showSearch(
-                  context: context,
-                  delegate: ClientSearchDelegate('Buscar cliente',
-                      clientesBLoC: clientsBloc));
-            },
-            splashColor: Colors.transparent,
-          )
-        ],
-        centerTitle: true,
-        elevation: 6.0,
-        title: Text(
-          'Clientes',
-          style: TextStyle(fontSize: 25.0),
-        ),
-        backgroundColor: Colors.blue[900],
-      ),
-      body: clientsBloc.clientList.isNotEmpty
-          ? RefreshIndicator(
-              onRefresh: () async {
-                clientsBloc.loadClients();
-              },
+        appBar: AppBar(
+          actions: [
+            IconButton(
+              icon: Icon(
+                Icons.search,
+                size: 30,
+              ),
               color: Colors.white,
-              backgroundColor: Colors.blue[900],
-              child: OrientationBuilder(
-                builder: (_, orientation) {
-                  if (orientation == Orientation.landscape) {
-                    return GridView.builder(
-                        physics: BouncingScrollPhysics(),
+              onPressed: () async {
+                final client = await showSearch(
+                    context: context,
+                    delegate: ClientSearchDelegate('Buscar cliente',
+                        clientesBLoC: clientsBloc, preSaleBLoC: preSaleBloc));
+                if (client != null) {
+                  //TODO: Guardar historial de busqueda en SharedPreferences localmente
+                  if (!clientsBloc.historial
+                      .any((element) => element.id == client.id)) {
+                    if (clientsBloc.historial.length >= 10) {
+                      clientsBloc.historial.removeLast();
+                      clientsBloc.historial.insert(0, client);
+                    } else {
+                      clientsBloc.historial.insert(0, client);
+                    }
+                  }
+                }
+              },
+              splashColor: Colors.transparent,
+            )
+          ],
+          centerTitle: true,
+          elevation: 6.0,
+          title: Text(
+            'Clientes',
+            style: TextStyle(fontSize: 25.0),
+          ),
+          backgroundColor: Colors.blue[900],
+        ),
+        body: clientsBloc.clientList.isNotEmpty
+            ? RefreshIndicator(
+                onRefresh: () async {
+                  clientsBloc.loadClients();
+                },
+                color: Colors.white,
+                backgroundColor: Colors.blue[900],
+                child: OrientationBuilder(
+                  builder: (_, orientation) {
+                    if (orientation == Orientation.landscape) {
+                      return GridView.builder(
+                          physics: BouncingScrollPhysics(),
+                          itemCount: clientsBloc.clientList.length,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            childAspectRatio: 1,
+                            crossAxisSpacing: 1,
+                            mainAxisSpacing: 1,
+                          ),
+                          itemBuilder: (context, index) {
+                            final client = clientsBloc.clientList[index];
+                            return buildList(
+                              context,
+                              index,
+                              client,
+                              clientsBloc.cardHeight,
+                              () async {
+                                _showMyDialog(
+                                    context, client, clientsBloc, preSaleBloc);
+                              },
+                            );
+                          });
+                    }
+                    return ListView.builder(
                         itemCount: clientsBloc.clientList.length,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          childAspectRatio: 1,
-                          crossAxisSpacing: 1,
-                          mainAxisSpacing: 1,
-                        ),
-                        itemBuilder: (context, index) {
+                        physics: BouncingScrollPhysics(),
+                        itemBuilder: (BuildContext context, int index) {
                           final client = clientsBloc.clientList[index];
                           return buildList(
-                            context,
-                            index,
-                            client,
-                            clientsBloc.cardHeight,
-                            () async {
-                              _showMyDialog(
-                                  context, client, clientsBloc, preSaleBloc);
-                            },
-                          );
+                              context, index, client, clientsBloc.cardHeight,
+                              () {
+                            _showMyDialog(
+                                context, client, clientsBloc, preSaleBloc);
+                          });
                         });
-                  }
-                  return ListView.builder(
-                      itemCount: clientsBloc.clientList.length,
-                      physics: BouncingScrollPhysics(),
-                      itemBuilder: (BuildContext context, int index) {
-                        final client = clientsBloc.clientList[index];
-                        return buildList(
-                            context, index, client, clientsBloc.cardHeight, () {
-                          _showMyDialog(
-                              context, client, clientsBloc, preSaleBloc);
-                        });
-                      });
-                },
+                  },
+                ),
+              )
+            : const Center(
+                child: CircularProgressIndicator(
+                  backgroundColor: Colors.black45,
+                ),
               ),
-            )
-          : const Center(
-              child: CircularProgressIndicator(
-                backgroundColor: Colors.black45,
-              ),
-            ),
+      ),
     );
   }
 

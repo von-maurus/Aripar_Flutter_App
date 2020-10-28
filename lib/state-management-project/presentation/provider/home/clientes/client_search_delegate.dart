@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:arturo_bruna_app/state-management-project/presentation/common/alert_dialog.dart';
+import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/preventas/preventas_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -7,9 +9,12 @@ import 'package:arturo_bruna_app/state-management-project/domain/model/cliente.d
 
 class ClientSearchDelegate extends SearchDelegate<Cliente> {
   final ClientesBLoC clientesBLoC;
+  final PreSaleBLoC preSaleBLoC;
+
   @override
   final String searchFieldLabel;
-  ClientSearchDelegate(this.searchFieldLabel, {this.clientesBLoC});
+  ClientSearchDelegate(this.searchFieldLabel,
+      {this.clientesBLoC, this.preSaleBLoC});
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -25,19 +30,27 @@ class ClientSearchDelegate extends SearchDelegate<Cliente> {
   @override
   Widget buildLeading(BuildContext context) {
     return IconButton(
-        icon: Icon(Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
-        splashColor: Colors.transparent,
-        onPressed: () async {
-          FocusScope.of(context).unfocus();
-          await Future.delayed(Duration(milliseconds: 100));
-          this.close(context, null);
-        });
+      icon: Icon(Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
+      splashColor: Colors.transparent,
+      onPressed: () async {
+        FocusScope.of(context).unfocus();
+        await Future.delayed(Duration(milliseconds: 100));
+        this.close(context, null);
+      },
+    );
   }
 
   @override
   Widget buildResults(BuildContext context) {
     if (query.trim().length == 0) {
-      return Center(child: Text("Ingrese un valor válido"));
+      return Center(
+          child: Text(
+        "Ingrese un cliente",
+        style: TextStyle(
+          fontSize: 20.0,
+          fontWeight: FontWeight.w500,
+        ),
+      ));
     }
     return FutureBuilder(
         future: clientesBLoC.getClientByNameRunEmail(query),
@@ -47,11 +60,19 @@ class ClientSearchDelegate extends SearchDelegate<Cliente> {
             return _showClients(clientesBLoC.clientsByName);
           } else if (snapshot.connectionState == ConnectionState.done &&
               clientesBLoC.clientsByName.length == 0) {
-            return Center(child: Text("No se encontró el cliente"));
+            return Center(
+              child: Text(
+                "No se encontró el cliente",
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            );
           } else {
             return Center(
               child: CircularProgressIndicator(
-                strokeWidth: 5,
+                strokeWidth: 8,
               ),
             );
           }
@@ -60,18 +81,18 @@ class ClientSearchDelegate extends SearchDelegate<Cliente> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return ListTile(
-      title: Text('Sugerencias'),
-    );
+    return _showClients(clientesBLoC.historial);
   }
 
   Widget _showClients(List<Cliente> clientes) {
     return ListView.builder(
+      physics: BouncingScrollPhysics(),
+      itemCount: clientes.length,
       itemBuilder: (BuildContext context, index) {
         final cliente = clientes[index];
         return ListTile(
-          onTap: () {
-            _showMyDialog(context, cliente);
+          onTap: () async {
+            _showMyDialog(context, cliente, clientesBLoC, preSaleBLoC);
           },
           leading: cliente.tipopago == 1
               ? Icon(
@@ -94,62 +115,101 @@ class ClientSearchDelegate extends SearchDelegate<Cliente> {
           ),
         );
       },
-      itemCount: clientes.length,
     );
   }
 
-  Widget _buildAlertDialog(BuildContext context, Cliente cliente) {
-    if (Platform.isIOS) {
-      return CupertinoAlertDialog(
-        title: Text('Cantidad'),
-        content: Text('Contenido'),
-        actions: [
-          FlatButton(
-            child: Text('Continuar'),
-            onPressed: () {
-              // print(productsBloc.cantidadProducto);
-              Navigator.of(context).pop();
-            },
-          ),
-          FlatButton(
-            child: Text('Cancelar'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    } else {
-      return AlertDialog(
-        title: Center(child: Text('Aviso')),
+  Future _showMyDialog(BuildContext context, Cliente cliente,
+      ClientesBLoC clientsBLoC, PreSaleBLoC preSaleBLoC) async {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => AlertDialogPage(
+        oldContext: _,
         content: Text(
-          '¿Desea agregar a ' + cliente.nombre + ' a la venta?',
+          "\n¿Confirma agregar al cliente\n\"${cliente.nombre}\" \nen la Pre-Venta?",
+          style: TextStyle(fontSize: 17.5),
           textAlign: TextAlign.center,
         ),
         actions: [
           FlatButton(
-            child: Text('Agregar'),
-            onPressed: () {
-              // print(productsBloc.cantidadProducto);
-              Navigator.of(context).pop();
+            shape: StadiumBorder(),
+            child: Text(
+              "Agregar",
+              style: TextStyle(fontSize: 17.0),
+            ),
+            onPressed: () async {
+              bool response = await preSaleBLoC.addClient(cliente);
+              print(response);
+              if (!response) {
+                Navigator.of(context).pop();
+                return showReplaceClientDialog(context, preSaleBLoC, cliente);
+              } else {
+                Navigator.of(context).pop();
+                this.close(context, cliente);
+              }
             },
           ),
           FlatButton(
-            child: Text('Cancelar'),
+            shape: StadiumBorder(),
+            child: Text(
+              "Cancelar",
+              style: TextStyle(fontSize: 17.0),
+            ),
             onPressed: () {
               Navigator.of(context).pop();
+              this.close(context, cliente);
             },
           ),
         ],
-      );
-    }
+      ),
+    );
   }
 
-  Future _showMyDialog(BuildContext context, Cliente cliente) async {
+  Future<void> showReplaceClientDialog(
+      BuildContext context, PreSaleBLoC preSaleBLoC, Cliente client) {
     return showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (_) => _buildAlertDialog(_, cliente),
+      builder: (_) => AlertDialogPage(
+        oldContext: _,
+        title: Center(
+          child: Text(
+            "Advertencia",
+            style: TextStyle(
+              fontSize: 25.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        content: Text(
+          "Ya existe un cliente en la \nPre-Venta.\n¿Desea reemplazarlo?",
+          style: TextStyle(fontSize: 17.5),
+          textAlign: TextAlign.center,
+        ),
+        actions: [
+          FlatButton(
+            child: Text(
+              "Reemplazar",
+              style: TextStyle(fontSize: 17.0),
+            ),
+            onPressed: () {
+              preSaleBLoC.updateClient(client);
+              Navigator.of(context).pop();
+              this.close(context, client);
+            },
+          ),
+          FlatButton(
+            child: Text(
+              "Cancelar",
+              style: TextStyle(fontSize: 17.0),
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+              this.close(context, client);
+            },
+          ),
+        ],
+      ),
     );
   }
 }

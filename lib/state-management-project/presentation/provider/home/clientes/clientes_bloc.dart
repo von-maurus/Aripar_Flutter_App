@@ -21,6 +21,7 @@ class ClientesBLoC extends ChangeNotifier {
   //ClientBloc Variables
   List<Cliente> clientList = <Cliente>[];
   List<Cliente> clientsByName = <Cliente>[];
+  List<Cliente> historial = [];
   Cliente client = new Cliente();
   var clientsState = ClientsState.initial;
   var maskFormatter = new MaskTextInputFormatter(
@@ -39,18 +40,23 @@ class ClientesBLoC extends ChangeNotifier {
 
   //Getters
   ValidationItem get nombre => _nombre;
-
   ValidationItem get rut => _rut;
-
   ValidationItem get correo => _correo;
-
   ValidationItem get direccion => _direccion;
-
   ValidationItem get fono => _fono;
-
   ValidationItem get tipoPago => _tipoPago;
-
   ValidationItem get numCuotas => _numCuotas;
+
+  void clearFields() {
+    _nombre = ValidationItem(null, null);
+    _rut = ValidationItem(null, null);
+    _correo = ValidationItem(null, null);
+    _direccion = ValidationItem(null, null);
+    _fono = ValidationItem(null, null);
+    _tipoPago = ValidationItem("1", null);
+    _numCuotas = ValidationItem(null, null);
+    notifyListeners();
+  }
 
   bool get isValid {
     if (_tipoPago.value == "1") {

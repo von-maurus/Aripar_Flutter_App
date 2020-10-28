@@ -1,13 +1,13 @@
 import 'dart:ui';
-import 'package:arturo_bruna_app/state-management-project/presentation/common/alert_dialog.dart';
+import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/home_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:arturo_bruna_app/state-management-project/domain/model/preventa_cart.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/preventas/preventas_bloc.dart';
+import 'package:arturo_bruna_app/state-management-project/presentation/common/alert_dialog.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/common/theme.dart';
-import 'package:smart_select/smart_select.dart';
+import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/preventas/preventas_bloc.dart';
 
 class PreSalePage extends StatelessWidget {
   final VoidCallback onShopping;
@@ -16,47 +16,111 @@ class PreSalePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bloc = context.watch<PreSaleBLoC>();
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.blue[900],
-          toolbarHeight: 80,
-          elevation: 6.0,
-          bottom: TabBar(
-            indicatorWeight: 6.5,
-            indicatorColor: Colors.blue[200],
-            tabs: [
-              Tab(
-                text: "Productos",
-                icon: Icon(
-                  Icons.shopping_cart,
-                  size: 35.0,
+    return SafeArea(
+      child: DefaultTabController(
+        length: 2,
+        child: Scaffold(
+          appBar: AppBar(
+            actions: [
+              InkWell(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        "Limpiar",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w500, fontSize: 18),
+                      ),
+                    ),
+                    Icon(
+                      Icons.restore_from_trash,
+                      size: 32.0,
+                      color: Colors.white,
+                      semanticLabel: "Limpiar",
+                    ),
+                  ],
                 ),
-                iconMargin: EdgeInsets.all(2.0),
+                onTap: () async {
+                  if (bloc.preSaleList.isNotEmpty || bloc.client.id != null) {
+                    showDialog(
+                      context: context,
+                      builder: (_) => AlertDialogPage(
+                        oldContext: _,
+                        content: Text(
+                          "Se limpiara el carrito de compras. ¿Desea continuar?",
+                          style: TextStyle(fontSize: 22.0),
+                          textAlign: TextAlign.center,
+                        ),
+                        actions: [
+                          FlatButton(
+                            onPressed: () {
+                              bloc.cleanSalesCart();
+                              Navigator.of(context).pop();
+                            },
+                            child: Text(
+                              "Continuar",
+                              style: TextStyle(fontSize: 18.0),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          FlatButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: Text(
+                              "Cancelar",
+                              style: TextStyle(fontSize: 18.0),
+                              textAlign: TextAlign.center,
+                            ),
+                          )
+                        ],
+                      ),
+                    );
+                  }
+                },
               ),
-              Tab(
-                text: "Finalizar Venta",
-                icon: Icon(
-                  Icons.payments,
-                  size: 35.0,
-                ),
-                iconMargin: EdgeInsets.all(2.0),
+              SizedBox(
+                width: 155,
               )
             ],
+            backgroundColor: Colors.blue[900],
+            toolbarHeight: 120,
+            elevation: 6.0,
+            bottom: TabBar(
+              indicatorWeight: 6.5,
+              indicatorColor: Colors.blue[200],
+              tabs: [
+                Tab(
+                  text: "Productos",
+                  icon: Icon(
+                    Icons.shopping_cart,
+                    size: 25.0,
+                  ),
+                  iconMargin: EdgeInsets.all(2.0),
+                ),
+                Tab(
+                  text: "Finalizar Venta",
+                  icon: Icon(
+                    Icons.payments,
+                    size: 25.0,
+                  ),
+                  iconMargin: EdgeInsets.all(2.0),
+                )
+              ],
+            ),
           ),
+          body: bloc.totalItems == 0
+              ? EmptyCart(
+                  onShopping: onShopping,
+                )
+              : TabBarView(
+                  physics: NeverScrollableScrollPhysics(),
+                  children: [
+                    _ProductCartScreen(),
+                    _CheckoutScreen(),
+                  ],
+                ),
         ),
-        body: bloc.totalItems == 0
-            ? EmptyCart(
-                onShopping: onShopping,
-              )
-            : TabBarView(
-                physics: NeverScrollableScrollPhysics(),
-                children: [
-                  _ProductCartScreen(),
-                  _CheckoutScreen(),
-                ],
-              ),
       ),
     );
   }
@@ -111,6 +175,7 @@ class _CheckoutScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bloc = context.watch<PreSaleBLoC>();
+    final homeBloc = context.watch<HomeBLoC>();
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         splashColor: Colors.green,
@@ -119,10 +184,81 @@ class _CheckoutScreen extends StatelessWidget {
         backgroundColor: Colors.blue[700],
         elevation: 15,
         onPressed: () async {
-          //Esperar respuesta
-          final response = await bloc.checkOut();
-          //Mostrar AlertDialog con respuesta
-          return buildResponseDialog(context, response);
+          if (bloc.client.id != null) {
+            return showDialog(
+              context: context,
+              builder: (_) => AlertDialogPage(
+                oldContext: _,
+                title: Center(
+                    child: Text(
+                  "Aviso",
+                  style: TextStyle(
+                    fontSize: 25.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                )),
+                content: Text(
+                  "Se creará la Pre-Venta.\n¿Desea continuar?...",
+                  style: TextStyle(fontSize: 18.0),
+                  textAlign: TextAlign.center,
+                ),
+                actions: [
+                  FlatButton(
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                      //Esperar respuesta
+                      final response = await bloc.checkOut();
+                      //Mostrar AlertDialog con respuesta
+                      return buildResponseDialog(context, response);
+                    },
+                    child: Text(
+                      "Aceptar",
+                      style: TextStyle(fontSize: 18.0),
+                    ),
+                  ),
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(
+                      "Cancelar",
+                      style: TextStyle(fontSize: 18.0),
+                    ),
+                  )
+                ],
+              ),
+            );
+          }
+          return showDialog(
+            context: context,
+            builder: (_) => AlertDialogPage(
+              oldContext: _,
+              title: Center(
+                  child: Text(
+                "Alerta",
+                style: TextStyle(
+                  fontSize: 25.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              )),
+              content: Text(
+                "Debe seleccionar un cliente",
+                style: TextStyle(fontSize: 18.0),
+                textAlign: TextAlign.center,
+              ),
+              actions: [
+                FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      homeBloc.updateIndexSelected(1);
+                    },
+                    child: Text(
+                      "Aceptar",
+                      style: TextStyle(fontSize: 18.0),
+                    ))
+              ],
+            ),
+          );
         },
       ),
       body: OrientationBuilder(

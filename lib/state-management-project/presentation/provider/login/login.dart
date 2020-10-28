@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'package:arturo_bruna_app/state-management-project/domain/repository/api_repository.dart';
@@ -18,6 +19,9 @@ class LoginPage extends StatelessWidget {
   final FocusNode _focusNodePassword = new FocusNode();
 
   static Widget init(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle(statusBarColor: Colors.blue));
+
     return ChangeNotifierProvider(
       create: (_) => LoginBLoC(
         apiRepositoryInterface: context.read<ApiRepositoryInterface>(),
@@ -65,17 +69,17 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     final bloc = context.watch<LoginBLoC>();
-    return Scaffold(
-      backgroundColor: Colors.blue,
-      key: _scaffoldKey,
-      body: Stack(
-        children: [
-          Container(
-              width: double.infinity,
-              height: size.height,
-              child: Background(
-                size: size,
-                child: SafeArea(
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.blue,
+        key: _scaffoldKey,
+        body: Stack(
+          children: [
+            Container(
+                width: double.infinity,
+                height: size.height,
+                child: Background(
+                  size: size,
                   child: SingleChildScrollView(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -143,16 +147,16 @@ class LoginPage extends StatelessWidget {
                       ],
                     ),
                   ),
+                )),
+            if (bloc.loginState == LoginState.loading)
+              Container(
+                color: Colors.black45,
+                child: Center(
+                  child: CircularProgressIndicator(),
                 ),
-              )),
-          if (bloc.loginState == LoginState.loading)
-            Container(
-              color: Colors.black45,
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            )
-        ],
+              )
+          ],
+        ),
       ),
     );
   }

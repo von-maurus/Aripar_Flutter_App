@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,7 +13,6 @@ class ClientCreate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final clientsBloc = context.watch<ClientesBLoC>();
-    print(clientsBloc.clientList.length);
     SizeConfig().init(context);
     Size size = MediaQuery.of(context).size;
     return Scaffold(
@@ -24,6 +25,25 @@ class ClientCreate extends StatelessWidget {
           style: TextStyle(letterSpacing: 1.0, fontSize: 25.0),
         ),
         backgroundColor: Colors.blue[900],
+        leading: IconButton(
+          icon: Platform.isAndroid
+              ? Icon(
+                  Icons.arrow_back,
+                  size: 30.0,
+                  color: Colors.white,
+                )
+              : Icon(
+                  Icons.arrow_back_ios,
+                  size: 30.0,
+                  color: Colors.white,
+                ),
+          onPressed: () async {
+            clientsBloc.clearFields();
+            FocusScope.of(context).unfocus();
+            await Future.delayed(Duration(milliseconds: 100));
+            Navigator.of(context).pop();
+          },
+        ),
       ),
       body: _CustomForm(
         clientsBLoC: clientsBloc,
@@ -80,6 +100,7 @@ class _CustomForm extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   TextFormField(
+                    textInputAction: TextInputAction.next,
                     onChanged: (String value) {
                       clientsBLoC.changeName(value);
                     },
@@ -96,6 +117,7 @@ class _CustomForm extends StatelessWidget {
                     height: 25,
                   ),
                   TextFormField(
+                    textInputAction: TextInputAction.next,
                     inputFormatters: [maskFormatter],
                     onChanged: (String value) {
                       clientsBLoC.changeRUN(value);
@@ -114,6 +136,7 @@ class _CustomForm extends StatelessWidget {
                     height: 25,
                   ),
                   TextFormField(
+                    textInputAction: TextInputAction.next,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.alternate_email),
@@ -131,6 +154,7 @@ class _CustomForm extends StatelessWidget {
                     height: 25,
                   ),
                   TextFormField(
+                    textInputAction: TextInputAction.next,
                     keyboardType: TextInputType.streetAddress,
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.location_on_rounded),
@@ -147,6 +171,7 @@ class _CustomForm extends StatelessWidget {
                     height: 25,
                   ),
                   TextFormField(
+                    textInputAction: TextInputAction.next,
                     keyboardType: TextInputType.phone,
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.phone),

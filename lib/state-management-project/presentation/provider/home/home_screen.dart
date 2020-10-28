@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'package:arturo_bruna_app/state-management-project/domain/repository/api_repository.dart';
@@ -15,6 +16,8 @@ class HomePage extends StatelessWidget {
   HomePage._();
 
   static Widget init(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle(statusBarColor: Colors.blue[900]));
     return ChangeNotifierProvider(
       create: (_) => HomeBLoC(
         apiRepositoryInterface: context.read<ApiRepositoryInterface>(),

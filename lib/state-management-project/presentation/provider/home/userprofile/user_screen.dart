@@ -84,85 +84,87 @@ class UserScreen extends StatelessWidget {
     final homeBloc = Provider.of<HomeBLoC>(context);
     // final profileBloc = Provider.of<ProfileBLoC>(context);
     final user = homeBloc.usuario;
-    return Scaffold(
-      backgroundColor: Colors.white,
-      floatingActionButton: FloatingActionButton(
-          heroTag: "btnLogout",
-          backgroundColor: Colors.red[600],
-          child: Icon(Icons.logout),
-          elevation: 10,
-          onPressed: () => _showMyDialog(context)),
-      appBar: AppBar(
-        centerTitle: true,
-        elevation: 6.0,
-        title: Text(
-          'Perfil',
-          style: TextStyle(letterSpacing: 1.0, fontSize: 25.0),
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        floatingActionButton: FloatingActionButton(
+            heroTag: "btnLogout",
+            backgroundColor: Colors.red[600],
+            child: Icon(Icons.logout),
+            elevation: 10,
+            onPressed: () => _showMyDialog(context)),
+        appBar: AppBar(
+          centerTitle: true,
+          elevation: 6.0,
+          title: Text(
+            'Perfil',
+            style: TextStyle(letterSpacing: 1.0, fontSize: 25.0),
+          ),
+          backgroundColor: Colors.blue[900],
         ),
-        backgroundColor: Colors.blue[900],
-      ),
-      body: user?.imagen != null
-          ? ListView(
-              children: [
-                Stack(
-                  children: [
-                    Column(
-                      children: [
-                        Center(
-                          child: Container(
-                            margin: EdgeInsets.only(top: 15),
-                            // decoration: BoxDecoration(
-                            //     shape: BoxShape.circle, color: Colors.orange[700]),
-                            child: Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: CircleAvatar(
-                                radius: 65.0,
-                                backgroundImage: NetworkImage(user.imagen),
+        body: user?.imagen != null
+            ? ListView(
+                children: [
+                  Stack(
+                    children: [
+                      Column(
+                        children: [
+                          Center(
+                            child: Container(
+                              margin: EdgeInsets.only(top: 15),
+                              // decoration: BoxDecoration(
+                              //     shape: BoxShape.circle, color: Colors.orange[700]),
+                              child: Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: CircleAvatar(
+                                  radius: 65.0,
+                                  backgroundImage: NetworkImage(user.imagen),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(4),
-                        ),
-                        Text(
-                          user.nombre,
-                          style: TextStyle(
-                              color: Colors.black87,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 20),
-                          textAlign: TextAlign.center,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(4),
-                        ),
-                        user.tipo == 1
-                            ? Text(
-                                'Administrador',
-                                style: TextStyle(
-                                    color: Colors.black87,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 18.0),
-                                textAlign: TextAlign.center,
-                              )
-                            : Text(
-                                'Vendedor',
-                                style: TextStyle(
-                                    color: Colors.black87,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 18.0),
-                                textAlign: TextAlign.center,
-                              ),
-                        _UserInfo(
-                          user: user,
-                        )
-                      ],
-                    )
-                  ],
-                )
-              ],
-            )
-          : const SizedBox.shrink(),
+                          Padding(
+                            padding: EdgeInsets.all(4),
+                          ),
+                          Text(
+                            user.nombre,
+                            style: TextStyle(
+                                color: Colors.black87,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 20),
+                            textAlign: TextAlign.center,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(4),
+                          ),
+                          user.tipo == 1
+                              ? Text(
+                                  'Administrador',
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 18.0),
+                                  textAlign: TextAlign.center,
+                                )
+                              : Text(
+                                  'Vendedor',
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 18.0),
+                                  textAlign: TextAlign.center,
+                                ),
+                          _UserInfo(
+                            user: user,
+                          )
+                        ],
+                      )
+                    ],
+                  )
+                ],
+              )
+            : const SizedBox.shrink(),
+      ),
     );
   }
 }

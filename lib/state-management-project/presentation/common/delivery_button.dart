@@ -5,11 +5,12 @@ class DeliveryButton extends StatelessWidget {
   final VoidCallback onTap;
   final String text;
   final EdgeInsets padding;
-
+  final double fontSize;
   const DeliveryButton({
     Key key,
     this.onTap,
     this.text,
+    this.fontSize,
     this.padding = const EdgeInsets.all(14.0),
   }) : super(key: key);
 
@@ -31,9 +32,10 @@ class DeliveryButton extends StatelessWidget {
           child: Text(
             text,
             style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 16.5),
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: fontSize,
+            ),
             textAlign: TextAlign.center,
           ),
         ),

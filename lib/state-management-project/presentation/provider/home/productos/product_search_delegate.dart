@@ -12,8 +12,10 @@ import 'package:arturo_bruna_app/state-management-project/presentation/common/al
 class ProductSearchDelegate extends SearchDelegate<Producto> {
   final ProductosBLoC productosBLoC;
   final PreSaleBLoC preSaleBLoC;
+
   @override
   final String searchFieldLabel;
+
   ProductSearchDelegate(this.searchFieldLabel,
       {this.productosBLoC, this.preSaleBLoC});
 
@@ -31,9 +33,14 @@ class ProductSearchDelegate extends SearchDelegate<Producto> {
   @override
   Widget buildLeading(BuildContext context) {
     return IconButton(
-        icon: Icon(Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
-        splashColor: Colors.transparent,
-        onPressed: () => this.close(context, null));
+      icon: Icon(Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back),
+      splashColor: Colors.transparent,
+      onPressed: () async {
+        FocusScope.of(context).unfocus();
+        await Future.delayed(Duration(milliseconds: 100));
+        this.close(context, null);
+      },
+    );
   }
 
   @override
@@ -87,57 +94,6 @@ class ProductSearchDelegate extends SearchDelegate<Producto> {
       itemBuilder: (context, index) {
         final product = productos[index];
         return ListTile(
-          onTap: () {
-            return showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (_) => AlertDialogPage(
-                oldContext: _,
-                title: Text('Cantidad'),
-                content: NumberPicker.integer(
-                  initialValue: 1,
-                  minValue: 1,
-                  highlightSelectedValue: true,
-                  haptics: true,
-                  maxValue: product.stock,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30.0),
-                    border: Border.all(
-                      color: Colors.blue,
-                      width: 2,
-                    ),
-                  ),
-                  onChanged: (newValue) {
-                    this.productosBLoC.cantidadProducto = newValue;
-                  },
-                ),
-                actions: [
-                  FlatButton(
-                    child: Text(
-                      "Agregar",
-                      style: TextStyle(fontSize: 17.0),
-                    ),
-                    shape: StadiumBorder(),
-                    onPressed: () async {
-                      preSaleBLoC.add(product, productosBLoC.cantidadProducto);
-                      productosBLoC.cantidadProducto = 1;
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                  FlatButton(
-                    shape: StadiumBorder(),
-                    child: Text(
-                      "Cancelar",
-                      style: TextStyle(fontSize: 17.0),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              ),
-            );
-          },
           leading: product.imagen != null
               ? Image(
                   width: 45,
@@ -158,8 +114,142 @@ class ProductSearchDelegate extends SearchDelegate<Producto> {
             '\$' + product.precioventa.toString(),
             style: TextStyle(fontSize: 18.5),
           ),
+          onTap: () async {
+            if (product.stock != 0) {
+              if (product.stock <= product.stockminimo) {
+                return showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (_) => AlertDialogPage(
+                    oldContext: _,
+                    title: Center(
+                        child: Text(
+                      'Advertencia',
+                      style: TextStyle(
+                          fontSize: 25.0, fontWeight: FontWeight.bold),
+                    )),
+                    content: Text(
+                      "El producto se encuentra con Stock Mínimo. Por favor, notifique a su administrador",
+                      textAlign: TextAlign.center,
+                    ),
+                    actions: [
+                      FlatButton(
+                        child: Text(
+                          "Seguir...",
+                          style: TextStyle(fontSize: 17.0),
+                        ),
+                        shape: StadiumBorder(),
+                        onPressed: () async {
+                          Navigator.of(context).pop();
+                          showSearchDialog(context, product);
+                        },
+                      ),
+                      FlatButton(
+                        shape: StadiumBorder(),
+                        child: Text(
+                          "Cancelar",
+                          style: TextStyle(fontSize: 17.0),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          this.close(context, product);
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              } else {
+                showSearchDialog(context, product);
+              }
+            } else {
+              return showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (_) => AlertDialogPage(
+                  oldContext: _,
+                  title: Center(
+                      child: Text(
+                    'Alerta',
+                    style:
+                        TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
+                  )),
+                  content: Text(
+                    "El producto se encuentra SIN STOCK. Por favor, notifique a su administrador",
+                    textAlign: TextAlign.center,
+                  ),
+                  actions: [
+                    FlatButton(
+                      child: Text(
+                        "Volver",
+                        style: TextStyle(fontSize: 17.0),
+                      ),
+                      shape: StadiumBorder(),
+                      onPressed: () async {
+                        Navigator.of(context).pop();
+                        this.close(context, product);
+                      },
+                    ),
+                  ],
+                ),
+              );
+            }
+          },
         );
       },
+    );
+  }
+
+  Future showSearchDialog(BuildContext context, Producto product) {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => AlertDialogPage(
+        oldContext: _,
+        title: Text('Cantidad'),
+        content: NumberPicker.integer(
+          initialValue: 1,
+          minValue: 1,
+          highlightSelectedValue: true,
+          haptics: true,
+          maxValue: product.stock,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30.0),
+            border: Border.all(
+              color: Colors.blue,
+              width: 2,
+            ),
+          ),
+          onChanged: (newValue) {
+            this.productosBLoC.cantidadProducto = newValue;
+          },
+        ),
+        actions: [
+          FlatButton(
+            child: Text(
+              "Agregar",
+              style: TextStyle(fontSize: 17.0),
+            ),
+            shape: StadiumBorder(),
+            onPressed: () async {
+              preSaleBLoC.add(product, productosBLoC.cantidadProducto);
+              productosBLoC.cantidadProducto = 1;
+              Navigator.of(context).pop();
+              this.close(context, product);
+            },
+          ),
+          FlatButton(
+            shape: StadiumBorder(),
+            child: Text(
+              "Cancelar",
+              style: TextStyle(fontSize: 17.0),
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+              this.close(context, product);
+            },
+          ),
+        ],
+      ),
     );
   }
 }
