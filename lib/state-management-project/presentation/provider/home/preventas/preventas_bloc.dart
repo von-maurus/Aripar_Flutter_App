@@ -6,6 +6,7 @@ import 'package:arturo_bruna_app/state-management-project/domain/repository/api_
 import 'package:arturo_bruna_app/state-management-project/domain/model/cliente.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/model/product.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/model/preventa_cart.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 enum PreSaleState {
   loading,
@@ -24,7 +25,20 @@ class PreSaleBLoC extends ChangeNotifier {
   int productsCount = 0;
   var preSaleState = PreSaleState.stable;
   int diasCuota;
+  MaskTextInputFormatter maskTextInputFormatter =
+      new MaskTextInputFormatter(mask: '##.###.###-#');
   PreSaleBLoC({this.apiRepositoryInterface, this.localRepositoryInterface});
+
+  void changePayType(int clientPayType, int dias) {
+    if (clientPayType != 1) {
+      payType = clientPayType;
+      diasCuota = dias;
+      notifyListeners();
+    } else {
+      payType = clientPayType;
+      notifyListeners();
+    }
+  }
 
   void add(Producto product, int quantity) {
     print(quantity);
@@ -58,7 +72,12 @@ class PreSaleBLoC extends ChangeNotifier {
     } else {
       client = newClient;
       payType = newClient.tipopago;
-      diasCuota = newClient.numerocuotas;
+      if (newClient.numerocuotas == null) {
+        diasCuota = 7;
+      } else {
+        diasCuota = newClient.numerocuotas;
+      }
+      client.rut = maskTextInputFormatter.maskText(client.rut);
       notifyListeners();
       return true;
     }
@@ -68,6 +87,7 @@ class PreSaleBLoC extends ChangeNotifier {
     client = newClient;
     payType = newClient.tipopago;
     diasCuota = newClient.numerocuotas;
+    client.rut = maskTextInputFormatter.maskText(client.rut);
     notifyListeners();
   }
 
@@ -113,17 +133,6 @@ class PreSaleBLoC extends ChangeNotifier {
     preSaleList.clear();
     calculateTotals(preSaleList);
   }
-
-  // void updatePayType(String tipoPago) {
-  //   if (tipoPago != "1") {
-  //     payType = int.parse(tipoPago);
-  //     diasCuota =
-  //   } else {
-  //     payType = int.parse(tipoPago);
-  //   }
-  //   diasCuota = int.parse(days);
-  //   notifyListeners();
-  // }
 
   Future<dynamic> checkOut() async {
     preSaleState = PreSaleState.loading;

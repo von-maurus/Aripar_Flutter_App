@@ -1,285 +1,571 @@
+import 'dart:ui';
+import 'package:arturo_bruna_app/state-management-project/presentation/common/alert_dialog.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:arturo_bruna_app/state-management-project/domain/model/preventa_cart.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/preventas/preventas_bloc.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/common/alert_dialog.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/common/delivery_button.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/common/theme.dart';
+import 'package:smart_select/smart_select.dart';
 
-//TODO: Bug 2: Arreglar vista horizontal del ListView
 class PreSalePage extends StatelessWidget {
   final VoidCallback onShopping;
 
   PreSalePage({Key key, this.onShopping});
-
   @override
   Widget build(BuildContext context) {
     final bloc = context.watch<PreSaleBLoC>();
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blue[900],
-        centerTitle: true,
-        elevation: 6.0,
-        title: Text(
-          'Carrito de Ventas',
-          style: TextStyle(fontSize: 25.0),
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.blue[900],
+          toolbarHeight: 80,
+          elevation: 6.0,
+          bottom: TabBar(
+            indicatorWeight: 6.5,
+            indicatorColor: Colors.blue[200],
+            tabs: [
+              Tab(
+                text: "Productos",
+                icon: Icon(
+                  Icons.shopping_cart,
+                  size: 35.0,
+                ),
+                iconMargin: EdgeInsets.all(2.0),
+              ),
+              Tab(
+                text: "Finalizar Venta",
+                icon: Icon(
+                  Icons.payments,
+                  size: 35.0,
+                ),
+                iconMargin: EdgeInsets.all(2.0),
+              )
+            ],
+          ),
         ),
+        body: bloc.totalItems == 0
+            ? EmptyCart(
+                onShopping: onShopping,
+              )
+            : TabBarView(
+                physics: NeverScrollableScrollPhysics(),
+                children: [
+                  _ProductCartScreen(),
+                  _CheckoutScreen(),
+                ],
+              ),
       ),
-      body: bloc.totalItems == 0
-          ? EmptyCart(
-              onShopping: onShopping,
-            )
-          : Stack(children: [
-              _FullCart(),
-              if (bloc.preSaleState == PreSaleState.loading)
-                Container(
-                  color: Colors.black45,
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      backgroundColor: Colors.orange,
-                      strokeWidth: 18.0,
-                    ),
-                  ),
-                )
-            ]),
     );
   }
 }
 
-class _FullCart extends StatelessWidget {
+class _ProductCartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bloc = context.watch<PreSaleBLoC>();
-    final total = bloc.totalPrice;
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Expanded(
-          flex: 3,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 18.0),
-            child: OrientationBuilder(
-              builder: (_, orientation) {
-                if (orientation == Orientation.portrait) {
-                  return ListView.builder(
-                    physics: BouncingScrollPhysics(),
-                    itemCount: bloc.preSaleList.length,
-                    scrollDirection: Axis.vertical,
-                    itemExtent: 250,
-                    itemBuilder: (context, index) {
-                      final preSaleCart = bloc.preSaleList[index];
-                      return _ShoppingCartProduct(
-                        preSaleCart: preSaleCart,
-                        onDelete: () {
-                          bloc.deleteProduct(preSaleCart);
-                        },
-                        onIncrement: () {
-                          bloc.increment(preSaleCart);
-                        },
-                        onDecrement: () {
-                          bloc.decrement(preSaleCart);
-                        },
-                      );
-                    },
-                  );
-                }
-                return ListView.builder(
-                  physics: BouncingScrollPhysics(),
-                  itemCount: bloc.preSaleList.length,
-                  scrollDirection: Axis.horizontal,
-                  itemExtent: 300,
-                  itemBuilder: (context, index) {
-                    final preSaleCart = bloc.preSaleList[index];
-                    return _ShoppingCartProduct(
-                      preSaleCart: preSaleCart,
-                      onDelete: () {
-                        bloc.deleteProduct(preSaleCart);
-                      },
-                      onIncrement: () {
-                        bloc.increment(preSaleCart);
-                      },
-                      onDecrement: () {
-                        bloc.decrement(preSaleCart);
-                      },
-                    );
-                  },
-                );
-              },
-            ),
-          ),
+    return Scaffold(
+      body: GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount:
+              MediaQuery.of(context).orientation == Orientation.landscape
+                  ? 4
+                  : 2,
+          childAspectRatio:
+              MediaQuery.of(context).orientation == Orientation.landscape
+                  ? 2 / 4
+                  : 2 / 3.5,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
         ),
-        Expanded(
-          flex: 2,
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Cliente',
-                              style:
-                                  Theme.of(context).textTheme.caption.copyWith(
-                                        color: Colors.blue[900],
-                                        fontSize: 16.5,
-                                      ),
-                            ),
-                            bloc.client.nombre == null
-                                ? Text("No seleccionado",
-                                    textAlign: TextAlign.right,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .caption
-                                        .copyWith(
-                                          color: Colors.blue,
-                                          fontSize: 16.5,
-                                        ))
-                                : Text(
-                                    '${bloc.client.nombre} \n ${bloc.client.rut}',
-                                    textAlign: TextAlign.right,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .caption
-                                        .copyWith(
-                                          color: Colors.blue,
-                                          fontSize: 16.5,
-                                        ),
-                                  ),
-                          ],
-                        ),
-                        const SizedBox(height: 10.0),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Método de pago',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .caption
-                                  .copyWith(
-                                      color: Colors.blue[900], fontSize: 16.5),
-                            ),
-                            bloc.payType == null
-                                ? Text(
-                                    "No seleccionado",
-                                    textAlign: TextAlign.right,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .caption
-                                        .copyWith(
-                                          color: Colors.blue,
-                                          fontSize: 16.5,
-                                        ),
-                                  )
-                                : bloc.payType == 1
-                                    ? Text(
-                                        'Efectivo',
-                                        textAlign: TextAlign.right,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .caption
-                                            .copyWith(
-                                              color: Colors.blue,
-                                              fontSize: 16.5,
-                                            ),
-                                      )
-                                    : Text(
-                                        'Crédito\n${bloc.diasCuota} días a pagar',
-                                        textAlign: TextAlign.right,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .caption
-                                            .copyWith(
-                                              color: Colors.blue,
-                                              fontSize: 16.5,
-                                            ),
-                                      ),
-                          ],
-                        ),
-                        const SizedBox(height: 45.0),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Total:',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                            ),
-                            Text(
-                              '\$$total CLP',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.blue,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+        physics: BouncingScrollPhysics(),
+        itemBuilder: (context, index) {
+          final preSaleCart = bloc.preSaleList[index];
+          return _ShoppingCartProduct(
+            preSaleCart: preSaleCart,
+            onDelete: () {
+              bloc.deleteProduct(preSaleCart);
+            },
+            onIncrement: () {
+              bloc.increment(preSaleCart);
+            },
+            onDecrement: () {
+              bloc.decrement(preSaleCart);
+            },
+          );
+        },
+        itemCount: bloc.preSaleList.length,
+      ),
+    );
+  }
+}
+
+class _CheckoutScreen extends StatelessWidget {
+  final formatter = new NumberFormat.currency(
+    locale: 'es',
+    decimalDigits: 0,
+    symbol: '',
+  );
+  @override
+  Widget build(BuildContext context) {
+    final bloc = context.watch<PreSaleBLoC>();
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        splashColor: Colors.green,
+        heroTag: "btnCrearVenta",
+        child: Icon(Icons.attach_money_sharp),
+        backgroundColor: Colors.blue[700],
+        elevation: 15,
+        onPressed: () async {
+          //Esperar respuesta
+          final response = await bloc.checkOut();
+          //Mostrar AlertDialog con respuesta
+          return buildResponseDialog(context, response);
+        },
+      ),
+      body: OrientationBuilder(
+        builder: (context, orientation) {
+          if (orientation == Orientation.landscape) {
+            return Row(
+              children: [
+                Card(
+                  color: Colors.blue[900],
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(25.0),
+                      bottomRight: Radius.circular(25.0),
                     ),
                   ),
-                  DeliveryButton(
-                    text: 'Realizar Pre-Venta',
-                    onTap: () async {
-                      //Esperar respuesta
-                      final response = await bloc.checkOut();
-                      //Mostrar AlertDialog con respuesta
-                      return showDialog(
-                        context: context,
-                        builder: (_) => AlertDialogPage(
-                          oldContext: _,
-                          title: Center(
-                            child: Text("Pre-Venta"),
-                          ),
-                          content: Text(
-                            '$response',
-                            style: TextStyle(fontSize: 17.5),
-                            textAlign: TextAlign.center,
-                          ),
-                          actions: [
-                            FlatButton(
-                              child: Text(
-                                "Aceptar",
-                                style: TextStyle(fontSize: 17.0),
+                  margin: EdgeInsets.zero,
+                  elevation: 30,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.45,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Cliente",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 18.0,
+                                  color: Colors.white,
+                                ),
                               ),
-                              shape: StadiumBorder(),
-                              onPressed: () async {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                            FlatButton(
-                              shape: StadiumBorder(),
-                              child: Text(
-                                "Cancelar",
-                                style: TextStyle(fontSize: 17.0),
+                              Text(
+                                bloc.client.nombre == null
+                                    ? 'No Seleccionado'
+                                    : bloc.client.nombre +
+                                        '\n' +
+                                        bloc.client.rut,
+                                textAlign: TextAlign.end,
+                                style: TextStyle(
+                                    fontSize: 18.0, color: Colors.white),
+                              )
+                            ],
+                          ),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Método de Pago",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 18.0,
+                                  color: Colors.white,
+                                ),
                               ),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
+                              Text(
+                                bloc.payType == null
+                                    ? 'No Seleccionado'
+                                    : bloc.payType == 1
+                                        ? 'Efectivo'
+                                        : 'Crédito\n${bloc.diasCuota} días a pagar',
+                                textAlign: TextAlign.end,
+                                style: TextStyle(
+                                  fontSize: 18.0,
+                                  color: Colors.white,
+                                ),
+                              )
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(18.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  '\$${formatter.format(bloc.totalPrice)}',
+                                  style: TextStyle(
+                                    fontSize: 35.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              ],
                             ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: ListView.separated(
+                    itemBuilder: (context, index) {
+                      final preSaleCart = bloc.preSaleList[index];
+                      return buildCheckoutDetail(preSaleCart);
+                    },
+                    separatorBuilder: (context, index) => Divider(
+                      indent: 20,
+                      endIndent: 20,
+                      color: Colors.blue,
+                      thickness: 1,
+                    ),
+                    itemCount: bloc.preSaleList.length,
+                  ),
+                )
+              ],
+            );
+          }
+          return Column(
+            children: [
+              Card(
+                color: Colors.blue[900],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(25.0),
+                    bottomRight: Radius.circular(25.0),
+                  ),
+                ),
+                margin: EdgeInsets.zero,
+                elevation: 18,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Cliente",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 18.0,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Text(
+                            bloc.client.nombre == null
+                                ? 'No Seleccionado'
+                                : bloc.client.nombre + '\n' + bloc.client.rut,
+                            textAlign: TextAlign.end,
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              color: Colors.white,
+                            ),
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: 15.0,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Método de Pago",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 18.0,
+                              color: Colors.white,
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              Icons.edit_outlined,
+                              color: Colors.white,
+                            ),
+                            splashColor: Colors.blue,
+                            iconSize: 30.0,
+                            onPressed: () async {
+                              if (bloc.client.id != null) {
+                                return buildEditDialog(context, bloc);
+                              }
+                            },
+                          ),
+                          Text(
+                            bloc.payType == null
+                                ? 'No Seleccionado'
+                                : bloc.payType == 1
+                                    ? 'Efectivo'
+                                    : 'Crédito\n${bloc.diasCuota == null ? '' : bloc.diasCuota} días a pagar',
+                            textAlign: TextAlign.end,
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              color: Colors.white,
+                            ),
+                          )
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              '\$${formatter.format(bloc.totalPrice)}',
+                              style: TextStyle(
+                                fontSize: 35.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            )
                           ],
                         ),
-                      );
-                    },
-                  )
-                ],
+                      )
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ),
+              Expanded(
+                child: ListView.separated(
+                  itemBuilder: (context, index) {
+                    final preSaleCart = bloc.preSaleList[index];
+                    return buildCheckoutDetail(preSaleCart);
+                  },
+                  separatorBuilder: (context, index) => Divider(
+                    indent: 20,
+                    endIndent: 20,
+                    color: Colors.blue,
+                    thickness: 1,
+                  ),
+                  itemCount: bloc.preSaleList.length,
+                ),
+              )
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Future<void> buildResponseDialog(BuildContext context, response) {
+    return showDialog(
+      context: context,
+      builder: (_) => AlertDialogPage(
+        oldContext: _,
+        title: Center(
+          child: Text("Pre-Venta"),
         ),
-      ],
+        content: Text(
+          '$response',
+          style: TextStyle(fontSize: 17.5),
+          textAlign: TextAlign.center,
+        ),
+        actions: [
+          FlatButton(
+            child: Text(
+              "Aceptar",
+              style: TextStyle(fontSize: 17.0),
+            ),
+            shape: StadiumBorder(),
+            onPressed: () async {
+              Navigator.of(context).pop();
+            },
+          ),
+          FlatButton(
+            shape: StadiumBorder(),
+            child: Text(
+              "Cancelar",
+              style: TextStyle(fontSize: 17.0),
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future buildEditDialog(BuildContext context, PreSaleBLoC bloc) {
+    return showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (_) => AlertDialogPage(
+        oldContext: _,
+        content: StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  title: Row(
+                    children: [
+                      Icon(
+                        Icons.money_outlined,
+                        size: 35.0,
+                        color: Colors.blue[900],
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        'Efectivo',
+                        style: TextStyle(
+                          fontSize: 16.0,
+                        ),
+                      ),
+                    ],
+                  ),
+                  leading: Radio(
+                    value: 1,
+                    groupValue: bloc.payType,
+                    onChanged: (value) {
+                      setState(() => bloc.changePayType(value, 7));
+                    },
+                  ),
+                ),
+                ListTile(
+                  title: Row(
+                    children: [
+                      Icon(
+                        Icons.credit_card_rounded,
+                        size: 35.0,
+                        color: Colors.blue[900],
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        'Crédito',
+                        style: TextStyle(
+                          fontSize: 16.0,
+                        ),
+                      ),
+                    ],
+                  ),
+                  leading: Radio(
+                    value: 2,
+                    groupValue: bloc.payType,
+                    onChanged: (value) {
+                      setState(() => bloc.changePayType(value, 7));
+                    },
+                  ),
+                ),
+                bloc.payType == 1
+                    ? SizedBox.shrink()
+                    : SizedBox(
+                        child: Container(
+                          color: Colors.white24,
+                          margin: EdgeInsets.symmetric(horizontal: 25.0),
+                          child: Column(
+                            children: [
+                              ListTile(
+                                title: Row(
+                                  children: [
+                                    Text(
+                                      '7 días',
+                                      style: TextStyle(
+                                        fontSize: 16.0,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                leading: Radio(
+                                  value: 7,
+                                  groupValue: bloc.diasCuota,
+                                  onChanged: (value) {
+                                    setState(() => bloc.changePayType(
+                                        bloc.payType, value));
+                                  },
+                                ),
+                              ),
+                              ListTile(
+                                title: Row(
+                                  children: [
+                                    Text(
+                                      '15 días',
+                                      style: TextStyle(
+                                        fontSize: 16.0,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                leading: Radio(
+                                  value: 15,
+                                  groupValue: bloc.diasCuota,
+                                  onChanged: (value) {
+                                    setState(() => bloc.changePayType(
+                                        bloc.payType, value));
+                                  },
+                                ),
+                              ),
+                              ListTile(
+                                title: Row(
+                                  children: [
+                                    Text(
+                                      '30 días',
+                                      style: TextStyle(
+                                        fontSize: 16.0,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                leading: Radio(
+                                  value: 30,
+                                  groupValue: bloc.diasCuota,
+                                  onChanged: (value) {
+                                    setState(() => bloc.changePayType(
+                                        bloc.payType, value));
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+              ],
+            );
+          },
+        ),
+        actions: [
+          FlatButton(
+            child: Text("Aceptar"),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  ListTile buildCheckoutDetail(PreSaleCart preSaleCart) {
+    return ListTile(
+      title: Text(
+        preSaleCart.product.nombre + ' x' + preSaleCart.quantity.toString(),
+        maxLines: 1,
+        style: TextStyle(fontSize: 16.5),
+      ),
+      trailing: Text(
+        '\$' + formatter.format(preSaleCart.precioLinea),
+        style: TextStyle(
+          fontSize: 18.5,
+        ),
+      ),
     );
   }
 }
@@ -299,15 +585,20 @@ class _ShoppingCartProduct extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final formatter = new NumberFormat.currency(
+      locale: 'es',
+      decimalDigits: 0,
+      symbol: 'CLP',
+    );
     final product = preSaleCart.product;
     return Padding(
-      padding: const EdgeInsets.all(15.0),
+      padding: const EdgeInsets.all(5.0),
       child: Stack(
         children: [
           Card(
             elevation: 12.0,
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16.0)),
+                borderRadius: BorderRadius.circular(18.0)),
             color: Colors.white,
             child: Padding(
               padding: const EdgeInsets.all(10.0),
@@ -315,7 +606,6 @@ class _ShoppingCartProduct extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Expanded(
-                    flex: 2,
                     child: CircleAvatar(
                       backgroundColor: Colors.transparent,
                       child: ClipOval(
@@ -329,79 +619,72 @@ class _ShoppingCartProduct extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 5),
+                  const SizedBox(height: 10),
                   Expanded(
-                    flex: 2,
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         Text(
                           product.nombre,
                           maxLines: 1,
                           style: TextStyle(
-                            fontSize: 16.0,
+                            fontSize: 18.0,
                             fontWeight: FontWeight.w500,
                           ),
+                          textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: 10),
                         Text(
-                          product.descripcion,
-                          style: Theme.of(context).textTheme.bodyText2.copyWith(
-                                color: DeliveryColors.dark,
-                                fontSize: 12,
-                              ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
+                          '\$${formatter.format(preSaleCart.precioLinea)} ',
+                          maxLines: 1,
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontSize: 25.0,
+                          ),
                         ),
-                        const SizedBox(height: 10),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              InkWell(
-                                onTap: onDecrement,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: DeliveryColors.white,
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                  child: Icon(
-                                    Icons.remove,
-                                    color: DeliveryColors.purple,
-                                  ),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            InkWell(
+                              onTap: onDecrement,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.blue[100],
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: Icon(
+                                  Icons.remove,
+                                  size: 36.0,
+                                  color: DeliveryColors.purple,
                                 ),
                               ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
-                                child: Text(
-                                  preSaleCart.quantity.toString(),
-                                  maxLines: 1,
-                                ),
-                              ),
-                              InkWell(
-                                onTap: onIncrement,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: DeliveryColors.purple,
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                  child: Icon(
-                                    Icons.add,
-                                    color: DeliveryColors.white,
-                                  ),
-                                ),
-                              ),
-                              Spacer(),
-                              Text(
-                                '\$${preSaleCart.precioLinea} ',
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text(
+                                preSaleCart.quantity.toString(),
                                 maxLines: 1,
                                 style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
-                                  fontSize: 17,
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.w500),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            InkWell(
+                              onTap: onIncrement,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: DeliveryColors.purple,
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: Icon(
+                                  Icons.add,
+                                  color: DeliveryColors.white,
+                                  size: 35.0,
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -418,7 +701,7 @@ class _ShoppingCartProduct extends StatelessWidget {
                 backgroundColor: DeliveryColors.pink,
                 child: Icon(
                   Icons.delete_outline,
-                  color: Colors.black,
+                  color: Colors.white70,
                   size: 25.5,
                 ),
               ),
@@ -438,40 +721,46 @@ class EmptyCart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset(
-            'assets/images/sad.png',
-            height: 100,
-            color: Colors.black,
-          ),
-          const SizedBox(height: 20),
-          Text(
-            'No hay productos',
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.black, fontSize: 16.0),
-          ),
-          const SizedBox(height: 20),
-          Center(
-            child: RaisedButton(
-              elevation: 10,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
+      body: Center(
+        child: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/images/sad.png',
+                height: 100,
+                color: Colors.black,
               ),
-              color: DeliveryColors.purple,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Text(
-                  'Ver Productos',
-                  style: TextStyle(color: DeliveryColors.white, fontSize: 16.5),
+              const SizedBox(height: 20),
+              Text(
+                'No hay productos',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.black, fontSize: 16.0),
+              ),
+              const SizedBox(height: 20),
+              Center(
+                child: RaisedButton(
+                  elevation: 10,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  color: DeliveryColors.purple,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Text(
+                      'Ver Productos',
+                      style: TextStyle(
+                          color: DeliveryColors.white, fontSize: 16.5),
+                    ),
+                  ),
+                  onPressed: onShopping,
                 ),
               ),
-              onPressed: onShopping,
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

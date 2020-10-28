@@ -99,7 +99,7 @@ class ProductosScreen extends StatelessWidget {
               final product = await showSearch(
                   context: context,
                   delegate: ProductSearchDelegate('Buscar producto',
-                      productosBLoC: productsBloc));
+                      productosBLoC: productsBloc, preSaleBLoC: preSaleBLoC));
               if (product != null) {
                 //TODO: Guardar historial de busqueda en SharedPreferences localmente
                 if (!productsBloc.historial
@@ -151,15 +151,38 @@ class ProductosScreen extends StatelessWidget {
                     product: product,
                     onTap: () async {
                       if (product.stock != 0) {
-                        _showMyDialog(
-                            context, product, productsBloc, preSaleBLoC);
+                        if (product.stock <= product.stockminimo) {
+                          return showDialog(
+                            context: context,
+                            builder: (_) => AlertDialogPage(
+                              oldContext: _,
+                              content: Text(
+                                "\n\nSe encuentra con stock mínimo. Por favor notifique a su administrador",
+                                style: TextStyle(fontSize: 18.5),
+                                textAlign: TextAlign.center,
+                              ),
+                              actions: [
+                                FlatButton(
+                                  child: Text("Aceptar"),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                    _showMyDialog(context, product,
+                                        productsBloc, preSaleBLoC);
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        } else
+                          _showMyDialog(
+                              context, product, productsBloc, preSaleBLoC);
                       } else {
                         return showDialog(
                           context: context,
                           builder: (_) => AlertDialogPage(
                             oldContext: _,
                             content: Text(
-                              "\n\nSin Stock!, avisar al administrador.",
+                              "\n\n¡Sin Stock!. Por favor, notifique a su administrador.",
                               style: TextStyle(fontSize: 18.5),
                               textAlign: TextAlign.center,
                             ),

@@ -18,7 +18,7 @@ class ClientesScreen extends StatelessWidget {
       builder: (_) => AlertDialogPage(
         oldContext: _,
         content: Text(
-          "¿Confirma agregar al cliente\n\"${client.nombre}\" en la Pre-Venta?",
+          "\n¿Confirma agregar al cliente\n\"${client.nombre}\" \nen la Pre-Venta?",
           style: TextStyle(fontSize: 17.5),
           textAlign: TextAlign.center,
         ),
@@ -142,6 +142,7 @@ class ClientesScreen extends StatelessWidget {
                 builder: (_, orientation) {
                   if (orientation == Orientation.landscape) {
                     return GridView.builder(
+                        physics: BouncingScrollPhysics(),
                         itemCount: clientsBloc.clientList.length,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 3,
@@ -152,11 +153,15 @@ class ClientesScreen extends StatelessWidget {
                         itemBuilder: (context, index) {
                           final client = clientsBloc.clientList[index];
                           return buildList(
-                              context, index, client, clientsBloc.cardHeight,
-                              () {
-                            _showMyDialog(
-                                context, client, clientsBloc, preSaleBloc);
-                          });
+                            context,
+                            index,
+                            client,
+                            clientsBloc.cardHeight,
+                            () async {
+                              _showMyDialog(
+                                  context, client, clientsBloc, preSaleBloc);
+                            },
+                          );
                         });
                   }
                   return ListView.builder(
@@ -219,15 +224,17 @@ class ClientesScreen extends StatelessWidget {
                         width: 5,
                       ),
                       Flexible(
-                        child: Text(client.direccion,
-                            overflow: TextOverflow.ellipsis,
-                            softWrap: true,
-                            maxLines: 1,
-                            style: TextStyle(
-                              fontSize: 14,
-                              letterSpacing: .3,
-                              fontWeight: FontWeight.w400,
-                            )),
+                        child: Text(
+                          client.direccion,
+                          overflow: TextOverflow.ellipsis,
+                          softWrap: true,
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 14,
+                            letterSpacing: .3,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
                       ),
                     ],
                   ),
