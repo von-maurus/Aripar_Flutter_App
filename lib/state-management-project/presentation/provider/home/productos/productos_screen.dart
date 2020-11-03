@@ -258,7 +258,7 @@ class _ItemProduct extends StatelessWidget {
   final formatter = new NumberFormat.currency(
     locale: 'es',
     decimalDigits: 0,
-    symbol: 'CLP',
+    symbol: '',
   );
   @override
   Widget build(BuildContext context) {
@@ -316,7 +316,7 @@ class _ItemProduct extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.subtitle1.copyWith(
-                              color: DeliveryColors.dark,
+                              color: DeliveryColors.darkGrey,
                               fontSize: MediaQuery.of(context).orientation ==
                                       Orientation.portrait
                                   ? MediaQuery.of(context).size.width * 0.04
@@ -328,7 +328,7 @@ class _ItemProduct extends StatelessWidget {
                         children: [
                           Flexible(
                             child: Text(
-                              '\$${formatter.format(product.precioventa)}',
+                              '\$${formatter.format(product.precioVentaFinal)}',
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Theme.of(context).primaryColor,

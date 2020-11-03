@@ -48,17 +48,17 @@ class PreSaleBLoC extends ChangeNotifier {
     totalPrice = 0;
     productsCount = 0;
     diasCuota = 7;
+    payType = null;
     notifyListeners();
   }
 
   void add(Producto product, int quantity) {
-    print(quantity);
     final tempList = List<PreSaleCart>.from(preSaleList);
     bool found = false;
     for (PreSaleCart p in tempList) {
       if (p.product.id == product.id) {
         p.quantity += quantity;
-        p.precioLinea += quantity * p.product.precioventa;
+        p.precioLinea += quantity * p.product.precioVentaFinal;
         found = true;
         break;
       }
@@ -69,7 +69,7 @@ class PreSaleBLoC extends ChangeNotifier {
       tempList.add(PreSaleCart(
         product: product,
         quantity: quantity,
-        precioLinea: product.precioventa * quantity,
+        precioLinea: product.precioVentaFinal * quantity,
       ));
     }
     preSaleList = List<PreSaleCart>.from(tempList);
@@ -105,7 +105,7 @@ class PreSaleBLoC extends ChangeNotifier {
   void increment(PreSaleCart productCart) {
     if (productCart.quantity < productCart.product.stock) {
       productCart.quantity += 1;
-      productCart.precioLinea += productCart.product.precioventa;
+      productCart.precioLinea += productCart.product.precioVentaFinal;
       notifyListeners();
       preSaleList = List<PreSaleCart>.from(preSaleList);
       calculateTotals(preSaleList);
@@ -115,7 +115,7 @@ class PreSaleBLoC extends ChangeNotifier {
   void decrement(PreSaleCart productCart) {
     if (productCart.quantity > 1) {
       productCart.quantity -= 1;
-      productCart.precioLinea -= productCart.product.precioventa;
+      productCart.precioLinea -= productCart.product.precioVentaFinal;
       preSaleList = List<PreSaleCart>.from(preSaleList);
       calculateTotals(preSaleList);
     }
@@ -128,13 +128,14 @@ class PreSaleBLoC extends ChangeNotifier {
     final totalCost = temp.fold(
         0,
         (previousValue, element) =>
-            (element.quantity * element.product.precioventa) + previousValue);
+            (element.quantity * element.product.precioVentaFinal) +
+            previousValue);
     totalPrice = totalCost;
     notifyListeners();
   }
 
   void deleteProduct(PreSaleCart productCart) {
-    productsCount = productsCount - 1;
+    productsCount -= 1;
     notifyListeners();
     preSaleList.remove(productCart);
     calculateTotals(preSaleList);
@@ -143,7 +144,6 @@ class PreSaleBLoC extends ChangeNotifier {
   Future<dynamic> checkOut() async {
     preSaleState = PreSaleState.loading;
     notifyListeners();
-    // await Future.delayed(Duration(seconds: 2));
     if (client.id == null) {
       preSaleState = PreSaleState.stable;
       notifyListeners();

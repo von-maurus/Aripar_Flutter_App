@@ -7,7 +7,6 @@ import 'package:arturo_bruna_app/state-management-project/presentation/common/al
 import 'package:arturo_bruna_app/state-management-project/presentation/common/delivery_button.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/common/theme.dart';
 
-//TODO: Bug 2: Arreglar vista horizontal del ListView
 class PreSalePage2 extends StatelessWidget {
   final VoidCallback onShopping;
 
@@ -540,7 +539,7 @@ class _ShoppingCartProduct extends StatelessWidget {
                         Text(
                           product.descripcion,
                           style: Theme.of(context).textTheme.bodyText2.copyWith(
-                                color: DeliveryColors.dark,
+                                color: DeliveryColors.darkGrey,
                                 fontSize: 12,
                               ),
                           maxLines: 2,

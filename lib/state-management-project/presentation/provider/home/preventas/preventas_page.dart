@@ -1,5 +1,4 @@
 import 'dart:ui';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/home_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -7,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/model/preventa_cart.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/common/alert_dialog.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/common/theme.dart';
+import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/home_bloc.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/preventas/preventas_bloc.dart';
 
 class PreSalePage extends StatelessWidget {
@@ -79,9 +79,13 @@ class PreSalePage extends StatelessWidget {
                   }
                 },
               ),
-              SizedBox(
-                width: 155,
-              )
+              MediaQuery.of(context).orientation == Orientation.portrait
+                  ? SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.39,
+                    )
+                  : SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.4,
+                    )
             ],
             backgroundColor: Colors.blue[900],
             toolbarHeight: 120,
@@ -177,90 +181,6 @@ class _CheckoutScreen extends StatelessWidget {
     final bloc = context.watch<PreSaleBLoC>();
     final homeBloc = context.watch<HomeBLoC>();
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        splashColor: Colors.green,
-        heroTag: "btnCrearVenta",
-        child: Icon(Icons.attach_money_sharp),
-        backgroundColor: Colors.blue[700],
-        elevation: 15,
-        onPressed: () async {
-          if (bloc.client.id != null) {
-            return showDialog(
-              context: context,
-              builder: (_) => AlertDialogPage(
-                oldContext: _,
-                title: Center(
-                    child: Text(
-                  "Aviso",
-                  style: TextStyle(
-                    fontSize: 25.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                )),
-                content: Text(
-                  "Se creará la Pre-Venta.\n¿Desea continuar?...",
-                  style: TextStyle(fontSize: 18.0),
-                  textAlign: TextAlign.center,
-                ),
-                actions: [
-                  FlatButton(
-                    onPressed: () async {
-                      Navigator.of(context).pop();
-                      //Esperar respuesta
-                      final response = await bloc.checkOut();
-                      //Mostrar AlertDialog con respuesta
-                      return buildResponseDialog(context, response);
-                    },
-                    child: Text(
-                      "Aceptar",
-                      style: TextStyle(fontSize: 18.0),
-                    ),
-                  ),
-                  FlatButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text(
-                      "Cancelar",
-                      style: TextStyle(fontSize: 18.0),
-                    ),
-                  )
-                ],
-              ),
-            );
-          }
-          return showDialog(
-            context: context,
-            builder: (_) => AlertDialogPage(
-              oldContext: _,
-              title: Center(
-                  child: Text(
-                "Alerta",
-                style: TextStyle(
-                  fontSize: 25.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              )),
-              content: Text(
-                "Debe seleccionar un cliente",
-                style: TextStyle(fontSize: 18.0),
-                textAlign: TextAlign.center,
-              ),
-              actions: [
-                FlatButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      homeBloc.updateIndexSelected(1);
-                    },
-                    child: Text(
-                      "Aceptar",
-                      style: TextStyle(fontSize: 18.0),
-                    ))
-              ],
-            ),
-          );
-        },
-      ),
       body: OrientationBuilder(
         builder: (context, orientation) {
           if (orientation == Orientation.landscape) {
@@ -336,19 +256,113 @@ class _CheckoutScreen extends StatelessWidget {
                             ],
                           ),
                           Padding(
-                            padding: const EdgeInsets.all(18.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  '\$${formatter.format(bloc.totalPrice)}',
-                                  style: TextStyle(
-                                    fontSize: 35.0,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 10.0),
+                            child: InkWell(
+                              radius: 120,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    '\$${formatter.format(bloc.totalPrice)}',
+                                    style: TextStyle(
+                                      fontSize: 30.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
                                   ),
-                                )
-                              ],
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                    'Pagar',
+                                    style: TextStyle(
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              splashColor: Colors.green,
+                              onTap: () async {
+                                if (bloc.client.id != null) {
+                                  return showDialog(
+                                    context: context,
+                                    builder: (_) => AlertDialogPage(
+                                      oldContext: _,
+                                      title: Center(
+                                          child: Text(
+                                        "Aviso",
+                                        style: TextStyle(
+                                          fontSize: 25.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      )),
+                                      content: Text(
+                                        "Se creará la Pre-Venta.\n¿Desea continuar?...",
+                                        style: TextStyle(fontSize: 18.0),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      actions: [
+                                        FlatButton(
+                                          onPressed: () async {
+                                            Navigator.of(context).pop();
+                                            //Esperar respuesta
+                                            final response =
+                                                await bloc.checkOut();
+                                            //Mostrar AlertDialog con respuesta
+                                            return buildResponseDialog(
+                                                context, response);
+                                          },
+                                          child: Text(
+                                            "Aceptar",
+                                            style: TextStyle(fontSize: 18.0),
+                                          ),
+                                        ),
+                                        FlatButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Text(
+                                            "Cancelar",
+                                            style: TextStyle(fontSize: 18.0),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                }
+                                return showDialog(
+                                  context: context,
+                                  builder: (_) => AlertDialogPage(
+                                    oldContext: _,
+                                    title: Center(
+                                        child: Text(
+                                      "Alerta",
+                                      style: TextStyle(
+                                        fontSize: 25.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    )),
+                                    content: Text(
+                                      "Debe seleccionar un cliente",
+                                      style: TextStyle(fontSize: 18.0),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    actions: [
+                                      FlatButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                            homeBloc.updateIndexSelected(1);
+                                          },
+                                          child: Text(
+                                            "Aceptar",
+                                            style: TextStyle(fontSize: 18.0),
+                                          ))
+                                    ],
+                                  ),
+                                );
+                              },
                             ),
                           )
                         ],
@@ -455,19 +469,112 @@ class _CheckoutScreen extends StatelessWidget {
                         ],
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              '\$${formatter.format(bloc.totalPrice)}',
-                              style: TextStyle(
-                                fontSize: 35.0,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                        padding: const EdgeInsets.only(top: 18.0),
+                        child: InkWell(
+                          splashColor: Colors.green,
+                          radius: 130,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                '\$${formatter.format(bloc.totalPrice)}',
+                                style: TextStyle(
+                                  fontSize: 32.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
                               ),
-                            )
-                          ],
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                'Pagar',
+                                style: TextStyle(
+                                  fontSize: 22.0,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                          onTap: () async {
+                            if (bloc.client.id != null) {
+                              return showDialog(
+                                context: context,
+                                builder: (_) => AlertDialogPage(
+                                  oldContext: _,
+                                  title: Center(
+                                      child: Text(
+                                    "Aviso",
+                                    style: TextStyle(
+                                      fontSize: 25.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  )),
+                                  content: Text(
+                                    "Se creará la Pre-Venta.\n¿Desea continuar?...",
+                                    style: TextStyle(fontSize: 18.0),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  actions: [
+                                    FlatButton(
+                                      onPressed: () async {
+                                        Navigator.of(context).pop();
+                                        //Esperar respuesta
+                                        final response = await bloc.checkOut();
+                                        //Mostrar AlertDialog con respuesta
+                                        return buildResponseDialog(
+                                            context, response);
+                                      },
+                                      child: Text(
+                                        "Aceptar",
+                                        style: TextStyle(fontSize: 18.0),
+                                      ),
+                                    ),
+                                    FlatButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text(
+                                        "Cancelar",
+                                        style: TextStyle(fontSize: 18.0),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              );
+                            }
+                            return showDialog(
+                              context: context,
+                              builder: (_) => AlertDialogPage(
+                                oldContext: _,
+                                title: Center(
+                                    child: Text(
+                                  "Alerta",
+                                  style: TextStyle(
+                                    fontSize: 25.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                )),
+                                content: Text(
+                                  "Debe seleccionar un cliente",
+                                  style: TextStyle(fontSize: 18.0),
+                                  textAlign: TextAlign.center,
+                                ),
+                                actions: [
+                                  FlatButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                        homeBloc.updateIndexSelected(1);
+                                      },
+                                      child: Text(
+                                        "Aceptar",
+                                        style: TextStyle(fontSize: 18.0),
+                                      ))
+                                ],
+                              ),
+                            );
+                          },
                         ),
                       )
                     ],

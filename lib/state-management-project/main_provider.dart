@@ -6,9 +6,9 @@ import 'package:arturo_bruna_app/state-management-project/data/datasource/api_re
 import 'package:arturo_bruna_app/state-management-project/data/datasource/local_repository_impl.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/repository/api_repository.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/repository/local_storage_repository.dart';
+import 'package:arturo_bruna_app/state-management-project/presentation/provider/splash/splash_screen.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/preventas/preventas_bloc.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/clientes/clientes_bloc.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/splash/splash_screen.dart';
 
 class MainProvider extends StatelessWidget {
   @override

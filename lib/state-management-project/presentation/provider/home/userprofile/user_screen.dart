@@ -49,14 +49,11 @@ class UserScreen extends StatelessWidget {
       builder: (_) => AlertDialogPage(
         oldContext: _,
         content: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text("¿Desea cerrar sesión?"),
-            ],
+          padding: const EdgeInsets.only(top: 30.0),
+          child: Text(
+            "¿Desea cerrar sesión?",
+            style: TextStyle(fontSize: 20.0),
+            textAlign: TextAlign.center,
           ),
         ),
         actions: [

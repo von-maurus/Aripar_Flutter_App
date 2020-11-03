@@ -66,6 +66,6 @@ class Cliente {
 
   @override
   String toString() {
-    return 'Instancia de Cliente: $nombre';
+    return 'Instancia de Cliente: $nombre - $rut';
   }
 }

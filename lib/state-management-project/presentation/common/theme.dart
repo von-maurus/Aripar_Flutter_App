@@ -3,15 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class DeliveryColors {
+  static final blue = Color(0xFF0D47A1);
   static final purple = Color(0xFF5117AC);
-  static final green = Color(0xFF20D0C4);
-  static final dark = Color(0xFF03091E);
-  static final grey = Color(0xFF212738);
-  static final lightGrey = Color(0xFFBBBBBB);
-  static final veryLightGrey = Color(0xFFF3F3F3);
-  static final white = Color(0XFFFFFFFF);
-  static final pink = Color(0XFFF5638B);
-  static final blue = Color(0xFF1565C0);
+  static final amber = Color(0xFFFF8F00);
+  static final white = Color(0xFFFFFFFF);
+  static final pink = Color(0xFFF5638B);
+  static final darkGrey = Color(0xFF212121);
 }
 
 final deliveryGradients = [
@@ -23,24 +20,24 @@ final deliveryGradients = [
 final _borderLight = OutlineInputBorder(
   borderRadius: BorderRadius.circular(10),
   borderSide: BorderSide(
-    color: DeliveryColors.veryLightGrey,
+    color: DeliveryColors.amber,
     width: 2,
     style: BorderStyle.solid,
   ),
 );
 
-final _borderDark = OutlineInputBorder(
-  borderRadius: BorderRadius.circular(10),
-  borderSide: BorderSide(
-    color: DeliveryColors.grey,
-    width: 2,
-    style: BorderStyle.solid,
-  ),
-);
+// final _borderDark = OutlineInputBorder(
+//   borderRadius: BorderRadius.circular(10),
+//   borderSide: BorderSide(
+//     color: DeliveryColors.purple,
+//     width: 2,
+//     style: BorderStyle.solid,
+//   ),
+// );
 
 final lightTheme = ThemeData(
   appBarTheme: AppBarTheme(
-    color: DeliveryColors.white,
+    color: DeliveryColors.blue,
     textTheme: GoogleFonts.poppinsTextTheme().copyWith(
       headline6: TextStyle(
         fontSize: 20,
@@ -51,10 +48,10 @@ final lightTheme = ThemeData(
   ),
   canvasColor: DeliveryColors.white,
   accentColor: DeliveryColors.purple,
-  bottomAppBarColor: DeliveryColors.veryLightGrey,
+  bottomAppBarColor: DeliveryColors.purple,
   textTheme: GoogleFonts.poppinsTextTheme().apply(
-    bodyColor: DeliveryColors.purple,
-    displayColor: DeliveryColors.purple,
+    bodyColor: DeliveryColors.white,
+    displayColor: DeliveryColors.white,
   ),
   inputDecorationTheme: InputDecorationTheme(
     border: _borderLight,
@@ -63,7 +60,7 @@ final lightTheme = ThemeData(
     focusedBorder: _borderLight,
     contentPadding: EdgeInsets.zero,
     hintStyle: GoogleFonts.poppins(
-      color: DeliveryColors.lightGrey,
+      color: DeliveryColors.purple,
       fontSize: 10,
     ),
   ),
@@ -72,39 +69,39 @@ final lightTheme = ThemeData(
   ),
 );
 
-final darkTheme = ThemeData(
-  appBarTheme: AppBarTheme(
-    color: DeliveryColors.purple,
-    textTheme: GoogleFonts.poppinsTextTheme().copyWith(
-      headline6: TextStyle(
-        fontSize: 20,
-        color: DeliveryColors.white,
-        fontWeight: FontWeight.bold,
-      ),
-    ),
-  ),
-  bottomAppBarColor: Colors.transparent,
-  canvasColor: DeliveryColors.grey,
-  scaffoldBackgroundColor: DeliveryColors.dark,
-  accentColor: DeliveryColors.white,
-  textTheme: GoogleFonts.poppinsTextTheme().apply(
-    bodyColor: DeliveryColors.green,
-    displayColor: DeliveryColors.green,
-  ),
-  inputDecorationTheme: InputDecorationTheme(
-    border: _borderDark,
-    enabledBorder: _borderDark,
-    contentPadding: EdgeInsets.zero,
-    focusedBorder: _borderDark,
-    labelStyle: TextStyle(color: DeliveryColors.white),
-    fillColor: DeliveryColors.grey,
-    filled: true,
-    hintStyle: GoogleFonts.poppins(
-      color: DeliveryColors.white,
-      fontSize: 10,
-    ),
-  ),
-  iconTheme: IconThemeData(
-    color: DeliveryColors.white,
-  ),
-);
+// final darkTheme = ThemeData(
+//   appBarTheme: AppBarTheme(
+//     color: DeliveryColors.purple,
+//     textTheme: GoogleFonts.poppinsTextTheme().copyWith(
+//       headline6: TextStyle(
+//         fontSize: 20,
+//         color: DeliveryColors.white,
+//         fontWeight: FontWeight.bold,
+//       ),
+//     ),
+//   ),
+//   bottomAppBarColor: Colors.transparent,
+//   canvasColor: DeliveryColors.grey,
+//   scaffoldBackgroundColor: DeliveryColors.dark,
+//   accentColor: DeliveryColors.white,
+//   textTheme: GoogleFonts.poppinsTextTheme().apply(
+//     bodyColor: DeliveryColors.green,
+//     displayColor: DeliveryColors.green,
+//   ),
+//   inputDecorationTheme: InputDecorationTheme(
+//     border: _borderDark,
+//     enabledBorder: _borderDark,
+//     contentPadding: EdgeInsets.zero,
+//     focusedBorder: _borderDark,
+//     labelStyle: TextStyle(color: DeliveryColors.white),
+//     fillColor: DeliveryColors.grey,
+//     filled: true,
+//     hintStyle: GoogleFonts.poppins(
+//       color: DeliveryColors.white,
+//       fontSize: 10,
+//     ),
+//   ),
+//   iconTheme: IconThemeData(
+//     color: DeliveryColors.white,
+//   ),
+// );
