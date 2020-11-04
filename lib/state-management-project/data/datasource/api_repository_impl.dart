@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:arturo_bruna_app/state-management-project/domain/model/preventa_cart.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:arturo_bruna_app/state-management-project/domain/model/user.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/model/cliente.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/model/product.dart';
+import 'package:arturo_bruna_app/state-management-project/domain/model/preventa_cart.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/request/login_request.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/response/login_response.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/exception/auth_exception.dart';
@@ -21,9 +21,6 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
   static const urlUserImage = urlBase + "assets/avatares/";
   static const urlProductImage = urlBase + "assets/productos/";
   Map<String, String> headers = {"Content-type": "application/json"};
-  Map<String, String> headers2 = {
-    "Content-type": "application/x-www-form-urlencoded",
-  };
 
   @override
   Future<Usuario> getUserFromToken(String token) async {
@@ -166,8 +163,9 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
   Future<dynamic> createPreSale(List<PreSaleCart> preSaleList, int clientId,
       int payType, int total, String token, int diasCuota) async {
     const controller = 'ventas/';
+    final jsonPreSaleList = preSaleList.map((e) => e.toJson()).toList();
     final data = {
-      "listaPreVenta": preSaleList,
+      "listaPreVenta": jsonPreSaleList,
       "idClient": clientId,
       "tipoPago": payType,
       "total": total,
@@ -176,7 +174,7 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
     };
     final response = await http.Client()
         .post(apiUrl + controller + 'create',
-            headers: headers, body: json.encode(data))
+            headers: headers, body: jsonEncode(data))
         .timeout(Duration(seconds: 7), onTimeout: () {
       throw TimeoutException('Tiempo de espera agotado.');
     });

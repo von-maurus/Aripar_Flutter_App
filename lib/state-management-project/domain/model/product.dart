@@ -60,6 +60,7 @@ class Producto {
         "stockminimo": stockminimo,
         "impuestoProductos":
             List<dynamic>.from(impuestoProductos.map((x) => x.toJson())),
+        "precioVentaFinal": precioVentaFinal
       };
 
   int get precioVentaFinal {

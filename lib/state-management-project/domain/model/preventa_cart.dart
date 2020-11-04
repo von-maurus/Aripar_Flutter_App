@@ -16,7 +16,7 @@ class PreSaleCart {
   }
 
   Map<String, dynamic> toJson() => {
-        "product": product,
+        "product": product.toJson(),
         "quantity": quantity,
         "precioLinea": precioLinea,
       };
