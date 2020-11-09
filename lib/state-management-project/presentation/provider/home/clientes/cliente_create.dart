@@ -120,6 +120,14 @@ class _CustomForm extends StatelessWidget {
                     textInputAction: TextInputAction.next,
                     inputFormatters: [maskFormatter],
                     onChanged: (String value) {
+                      if (clientsBLoC.maskFormatter.getUnmaskedText().length <
+                          8) {
+                        clientsBLoC.maskFormatter
+                            .updateMask(mask: '#.###.###-#');
+                      } else {
+                        clientsBLoC.maskFormatter
+                            .updateMask(mask: '##.###.###-#');
+                      }
                       clientsBLoC.changeRUN(value);
                     },
                     keyboardType: TextInputType.text,

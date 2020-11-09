@@ -13,8 +13,6 @@ import 'package:arturo_bruna_app/state-management-project/domain/repository/api_
 import 'package:arturo_bruna_app/state-management-project/domain/exception/client_exception.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/exception/product_exception.dart';
 
-//Implementacion de los servicios para el Backend
-//en ApiRepositoryInterface (..domain/repository/) van estas funciones
 class ApiRepositoryImpl extends ApiRepositoryInterface {
   static const urlBase = 'http://192.168.1.86/sab-backend/';
   static const apiUrl = urlBase + 'web/index.php?r=';
@@ -22,6 +20,7 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
   static const urlProductImage = urlBase + "assets/productos/";
   Map<String, String> headers = {"Content-type": "application/json"};
 
+  //Obtener user con token
   @override
   Future<Usuario> getUserFromToken(String token) async {
     const controller = 'usuarios/';
@@ -45,6 +44,7 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
     throw AuthException();
   }
 
+  //Login y Logout
   @override
   Future<LoginResponse> login(LoginRequest login) async {
     const controller = 'usuarios/';
@@ -53,7 +53,7 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
       final response = await http.Client()
           .post(apiUrl + controller + 'login-from-app',
               headers: headers, body: json.encode(data))
-          .timeout(Duration(seconds: 7), onTimeout: () {
+          .timeout(Duration(seconds: 10), onTimeout: () {
         throw TimeoutException('Tiempo de espera agotado.');
       });
       final responseData = json.decode(response.body);
@@ -85,6 +85,7 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
     return;
   }
 
+  //Productos y Clientes
   @override
   Future<List<Producto>> getProducts() async {
     const controller = 'productos/';
@@ -109,6 +110,7 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
     throw ClientException();
   }
 
+  //Busquedas
   @override
   Future<List<Producto>> getProductByName(String query) async {
     const controller = 'productos/';
@@ -141,6 +143,7 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
     throw ClientException();
   }
 
+  //Crear Cliente
   @override
   Future<Cliente> createCliente(Cliente cliente) async {
     const controller = 'clientes/';
@@ -159,6 +162,7 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
     throw ClientException();
   }
 
+  //Crear Pre-venta
   @override
   Future<dynamic> createPreSale(List<PreSaleCart> preSaleList, int clientId,
       int payType, int total, String token, int diasCuota) async {

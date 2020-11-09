@@ -55,6 +55,7 @@ class ClientesBLoC extends ChangeNotifier {
     _fono = ValidationItem(null, null);
     _tipoPago = ValidationItem("1", null);
     _numCuotas = ValidationItem(null, null);
+    maskFormatter.clear();
     notifyListeners();
   }
 
@@ -99,10 +100,60 @@ class ClientesBLoC extends ChangeNotifier {
     run = maskFormatter.getUnmaskedText();
     if (run == null || run == '') {
       _rut = ValidationItem(null, "Este campo es obligatorio.");
+    } else if (run.length < 8) {
+      _rut = ValidationItem(null, "El RUT es incorrecto.");
     } else {
-      _rut = ValidationItem(run, null);
+      if (validateRUT(run)) {
+        _rut = ValidationItem(run, null);
+      } else {
+        _rut = ValidationItem(null, "RUT incorrecto, vuelva a intentar.");
+      }
     }
     notifyListeners();
+  }
+
+  bool validateRUT(String run) {
+    // Aislar Cuerpo y Dígito Verificador
+    String body;
+    var dv;
+    if (run.length == 8) {
+      body = run.substring(0, 7);
+      dv = run.substring(7).toUpperCase();
+    } else {
+      body = run.substring(0, 8);
+      dv = run.substring(8).toUpperCase();
+    }
+
+    //Calcular DV
+    var suma = 0;
+    int multiple = 2;
+
+    // Para cada dígito del Cuerpo
+    for (var i = 1; i <= body.length; i++) {
+      // Obtener su Producto con el Múltiplo Correspondiente
+      var index = multiple * int.parse(run[body.length - i]);
+      // Sumar al Contador General
+      suma = suma + index;
+
+      // Consolidar Múltiplo dentro del rango [2,7]
+      if (multiple < 7) {
+        multiple = multiple + 1;
+      } else {
+        multiple = 2;
+      }
+    }
+    // Calcular Dígito Verificador en base al Módulo 11
+    var dvEsperado = 11 - (suma % 11);
+    // Casos Especiales (0 y K)
+    dv = (dv == 'K') ? 10 : dv;
+    dv = (dv == '0') ? 11 : dv;
+
+    // Validar que el Cuerpo coincide con su Dígito Verificador
+    if (dvEsperado.toString() != dv.toString()) {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   void changeEmail(String email) {
