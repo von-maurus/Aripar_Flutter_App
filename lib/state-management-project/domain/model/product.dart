@@ -38,7 +38,9 @@ class Producto {
         id: json["id"],
         codigo: json["codigo"],
         descripcion: json["descripcion"],
-        imagen: ApiRepositoryImpl.urlProductImage + json["imagen"],
+        imagen: json["imagen"] == null
+            ? null
+            : ApiRepositoryImpl.urlProductImage + json["imagen"],
         nombre: json["nombre"],
         preciocompra: json["preciocompra"],
         precioventa: json["precioventa"],

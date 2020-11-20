@@ -1,34 +1,64 @@
-import 'package:meta/meta.dart';
+// To parse this JSON data, do
+//
+//     final usuario = usuarioFromJson(jsonString);
+import 'dart:convert';
+
+import 'package:arturo_bruna_app/state-management-project/data/datasource/api_repository_impl.dart';
+
+Usuario usuarioFromJson(String str) => Usuario.fromJson(json.decode(str));
+
+String usuarioToJson(Usuario data) => json.encode(data.toJson());
 
 class Usuario {
-  const Usuario(
-      {@required this.id,
-      @required this.nombre,
-      @required this.username,
-      @required this.correo,
-      @required this.tipo,
-      this.fono,
-      this.comision,
-      this.imagen,
-      this.estado});
+  Usuario({
+    this.id,
+    this.nombre,
+    this.username,
+    this.correo,
+    this.tipo,
+    this.fono,
+    this.comision,
+    this.imagen,
+    this.estado,
+  });
 
-  final int id;
-  final String nombre;
-  final String username;
-  final String correo;
-  final int tipo;
-  final String fono;
-  final int comision;
-  final String imagen;
-  final int estado;
+  int id;
+  String nombre;
+  String username;
+  String correo;
+  int tipo;
+  String fono;
+  int comision;
+  String imagen;
+  int estado;
 
-  factory Usuario.empty() => Usuario(
-      id: null,
-      nombre: null,
-      username: null,
-      correo: null,
-      tipo: null,
-      fono: null,
-      comision: null,
-      imagen: null);
+  factory Usuario.fromJson(Map<String, dynamic> json) => Usuario(
+        id: json["id"] as int,
+        nombre: json["nombre"] as String,
+        username: json["username"] as String,
+        correo: json["correo"] as String,
+        tipo: json["tipo"] as int,
+        fono: json["fono"] as String,
+        comision: json["comision"] as int,
+        imagen: json["imagen"] == null
+            ? null
+            : ApiRepositoryImpl.urlUserImage + json["imagen"],
+        estado: json["estado"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "nombre": nombre,
+        "username": username,
+        "correo": correo,
+        "tipo": tipo,
+        "fono": fono,
+        "comision": comision,
+        "imagen": imagen,
+        "estado": estado,
+      };
+  @override
+  String toString() {
+    return 'Instancia de Usuario: $nombre - $username - $imagen';
+  }
 }

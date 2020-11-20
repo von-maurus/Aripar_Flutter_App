@@ -30,16 +30,7 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
     final responseData = json.decode(response.body);
 
     if (response.statusCode == 200) {
-      return Usuario(
-          id: responseData['model']['id'],
-          nombre: responseData['model']['nombre'],
-          username: responseData['model']['username'],
-          correo: responseData['model']['correo'],
-          tipo: responseData['model']['tipo'],
-          fono: responseData['model']['fono'],
-          comision: responseData['model']['comision'],
-          imagen: urlUserImage + responseData['model']['imagen'],
-          estado: responseData['model']['estado']);
+      return Usuario.fromJson(responseData['model']);
     }
     throw AuthException();
   }
@@ -60,17 +51,7 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
       print(response.statusCode);
       if (response.statusCode == 200) {
         return LoginResponse(
-            responseData['token'],
-            Usuario(
-                id: responseData['model']['id'],
-                nombre: responseData['model']['nombre'],
-                username: responseData['model']['username'],
-                correo: responseData['model']['correo'],
-                tipo: responseData['model']['tipo'],
-                fono: responseData['model']['fono'],
-                comision: responseData['model']['comision'],
-                imagen: urlUserImage + responseData['model']['imagen'],
-                estado: responseData['model']['estado']));
+            responseData['token'], Usuario.fromJson(responseData['model']));
       }
       throw AuthException();
     } on Exception catch (e) {

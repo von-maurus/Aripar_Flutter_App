@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:numberpicker/numberpicker.dart';
 
 import 'package:arturo_bruna_app/state-management-project/domain/model/product.dart';
@@ -99,7 +100,14 @@ class ProductSearchDelegate extends SearchDelegate<Producto> {
                   width: 45,
                   image: NetworkImage(product.imagen),
                 )
-              : '',
+              : ClipOval(
+                  child: SvgPicture.asset(
+                    "assets/icons/product-cart.svg",
+                    height: 45,
+                    width: 45,
+                    color: Colors.blue,
+                  ),
+                ),
           title: Text(
             product.nombre,
             maxLines: 1,

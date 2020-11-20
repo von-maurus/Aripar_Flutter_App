@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:numberpicker/numberpicker.dart';
@@ -282,16 +283,25 @@ class _ItemProduct extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Expanded(
-                  child: CircleAvatar(
-                    radius: 5,
-                    backgroundColor: Colors.transparent,
-                    child: ClipOval(
-                      child: Image.network(
-                        product.imagen,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
+                  child: product.imagen == null
+                      ? ClipOval(
+                          child: SvgPicture.asset(
+                            "assets/icons/product-cart.svg",
+                            height: 85,
+                            width: 85,
+                            color: Colors.blue,
+                          ),
+                        )
+                      : CircleAvatar(
+                          radius: 5,
+                          backgroundColor: Colors.transparent,
+                          child: ClipOval(
+                            child: Image.network(
+                              product.imagen,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
                 ),
                 Expanded(
                   flex: 1,

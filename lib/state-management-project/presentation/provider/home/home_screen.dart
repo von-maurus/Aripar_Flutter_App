@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 import 'package:arturo_bruna_app/state-management-project/domain/model/user.dart';
@@ -191,8 +192,15 @@ class _BottomNavBarSmall extends StatelessWidget {
               ),
               InkWell(
                 onTap: () => onIndexSelected(3),
-                child: user?.imagen == null
-                    ? const SizedBox()
+                child: user.imagen == null
+                    ? ClipOval(
+                        child: SvgPicture.asset(
+                          "assets/icons/profile-user.svg",
+                          height: 45,
+                          width: 45,
+                          color: Colors.orange,
+                        ),
+                      )
                     : CircleAvatar(
                         radius: 24.0,
                         backgroundImage: NetworkImage(
@@ -292,10 +300,17 @@ class _BottomNavBarLarge extends StatelessWidget {
             ),
             InkWell(
               onTap: () => onIndexSelected(3),
-              child: user?.imagen == null
-                  ? const SizedBox()
+              child: user.imagen == null
+                  ? ClipOval(
+                      child: SvgPicture.asset(
+                        "assets/icons/profile-user.svg",
+                        height: 45,
+                        width: 45,
+                        color: Colors.orange,
+                      ),
+                    )
                   : CircleAvatar(
-                      radius: 36.0,
+                      radius: 24.0,
                       backgroundImage: NetworkImage(
                         user.imagen,
                       ),

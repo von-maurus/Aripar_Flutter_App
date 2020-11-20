@@ -9,7 +9,7 @@ const _prefUsername = 'USERNAME';
 const _prefTipo = 'TIPO';
 const _prefFono = 'FONO';
 const _prefComision = 'COMISION';
-const _prefImage = 'IMAGEN';
+const _prefImage = 'IMAGE';
 const _prefEmail = 'CORREO';
 const _prefEstado = 'ESTADO';
 const _prefTheme = 'THEME';
@@ -43,19 +43,26 @@ class LocalRepositoryImpl extends LocalRepositoryInterface {
     final tipo = sharedPreferences.getInt(_prefTipo);
     final fono = sharedPreferences.getString(_prefFono);
     final comision = sharedPreferences.getInt(_prefComision);
-    final imagen = sharedPreferences.getString(_prefImage);
+    var imagen;
+    if (sharedPreferences.getString(_prefImage) != null) {
+      imagen = sharedPreferences.getString(_prefImage);
+    } else {
+      imagen = null;
+    }
     final correo = sharedPreferences.getString(_prefEmail);
     final estado = sharedPreferences.getInt(_prefEstado);
     final usuario = Usuario(
-        id: id,
-        nombre: nombre,
-        username: username,
-        tipo: tipo,
-        fono: fono,
-        comision: comision,
-        imagen: imagen,
-        correo: correo,
-        estado: estado);
+      id: id,
+      nombre: nombre,
+      username: username,
+      tipo: tipo,
+      fono: fono,
+      comision: comision,
+      imagen: imagen,
+      correo: correo,
+      estado: estado,
+    );
+    print('USER!!! $usuario');
     return usuario;
   }
 
