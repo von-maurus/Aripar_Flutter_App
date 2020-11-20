@@ -14,6 +14,12 @@ class CustomFormInput extends StatelessWidget {
   final Function function;
   final AutovalidateMode autoValidateMode;
   final Widget suffixWidget;
+  final TextStyle hintStyle;
+  final double top;
+  final double left;
+  final double bottom;
+  final double right;
+  final TextStyle textFormStyle;
   const CustomFormInput(
       {Key key,
       @required this.size,
@@ -28,25 +34,36 @@ class CustomFormInput extends StatelessWidget {
       this.textInputAction,
       this.function,
       this.autoValidateMode,
-      this.suffixWidget})
+      this.suffixWidget,
+      this.hintStyle,
+      this.right,
+      this.bottom,
+      this.left,
+      this.top,
+      this.textFormStyle})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: size.height * 0.022),
+      margin: EdgeInsets.only(
+          bottom: MediaQuery.of(context).orientation == Orientation.landscape
+              ? size.height * 0.045
+              : size.height * 0.022),
       padding: EdgeInsets.only(
-          top: size.height * 0.007,
-          left: size.width * 0.007,
-          bottom: size.height * 0.007,
-          right: size.width * 0.05),
+        top: top,
+        left: left,
+        bottom: bottom,
+        right: right,
+      ),
       decoration: BoxDecoration(boxShadow: [
         BoxShadow(
-            color: Colors.black.withOpacity(0.099),
+            color: Colors.black.withOpacity(0.25),
             offset: Offset(0, 5),
             blurRadius: 6.5)
       ], color: Colors.white, borderRadius: BorderRadius.circular(30.0)),
       child: TextFormField(
+        style: textFormStyle,
         autovalidateMode: autoValidateMode,
         textInputAction: textInputAction,
         onFieldSubmitted: function,
@@ -60,14 +77,16 @@ class CustomFormInput extends StatelessWidget {
         autocorrect: false,
         keyboardType: textInputType,
         decoration: InputDecoration(
+          prefixText: '\t\t',
           suffixIcon: suffixWidget,
           disabledBorder: InputBorder.none,
           errorText: errorText,
           hintText: hintText,
+          hintStyle: hintStyle,
           border: InputBorder.none,
           focusedBorder: InputBorder.none,
           prefixIcon: prefixIcon,
-          errorStyle: TextStyle(fontSize: 16.0),
+          errorStyle: TextStyle(fontSize: 20.0),
           contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 18),
         ),
       ),

@@ -1,6 +1,6 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
+
 import 'package:arturo_bruna_app/state-management-project/domain/exception/auth_exception.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/repository/api_repository.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/repository/local_storage_repository.dart';
@@ -47,7 +47,7 @@ class LoginBLoC extends ChangeNotifier {
         scaffoldKey.currentState.showSnackBar(
           SnackBar(
             backgroundColor: Colors.red,
-            duration: Duration(milliseconds: 900),
+            duration: Duration(milliseconds: 1200),
             content: Text('Email o Contraseña incorrectos.'),
           ),
         );
@@ -59,8 +59,8 @@ class LoginBLoC extends ChangeNotifier {
         scaffoldKey.currentState.showSnackBar(
           SnackBar(
             backgroundColor: Colors.red,
-            duration: Duration(milliseconds: 900),
-            content: Text('Error de conexión. $e'),
+            duration: Duration(milliseconds: 1200),
+            content: Text('Error de conexión, intentelo nuevamente. $e'),
           ),
         );
         return false;
@@ -69,7 +69,7 @@ class LoginBLoC extends ChangeNotifier {
       scaffoldKey.currentState.showSnackBar(
         SnackBar(
           backgroundColor: Colors.red,
-          duration: Duration(milliseconds: 900),
+          duration: Duration(milliseconds: 1200),
           content: Text('Las credenciales son incorrectas'),
         ),
       );

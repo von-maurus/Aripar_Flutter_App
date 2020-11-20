@@ -13,11 +13,15 @@ class Logo extends StatelessWidget {
           Image.asset(
             "assets/images/aripar_white_logo.png",
             fit: BoxFit.contain,
-            height: size.height * 0.15,
-            width: size.width * 0.58,
+            height: MediaQuery.of(context).orientation == Orientation.landscape
+                ? size.height * 0.3
+                : size.height * 0.2,
+            width: MediaQuery.of(context).orientation == Orientation.landscape
+                ? size.width * 0.7
+                : size.width * 0.68,
           ),
           SizedBox(
-            height: size.height * 0.045,
+            height: size.height * 0.04,
           ),
         ],
       ),

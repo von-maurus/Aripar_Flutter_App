@@ -55,6 +55,75 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+      if (constraints.maxWidth >= 600.0) {
+        print('constraints.maxWidth ${constraints.maxWidth}');
+        return _SplashLarge();
+      } else {
+        print('constraints.maxWidth ${constraints.maxWidth}');
+        return _SplashSmall();
+      }
+    });
+  }
+}
+
+class _SplashLarge extends StatelessWidget {
+  const _SplashLarge({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.blue[800],
+      body: Center(
+        child: Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircleAvatar(
+                radius: 200.0,
+                backgroundColor: Colors.blue[900],
+                child: Padding(
+                  padding: EdgeInsets.all(12.0),
+                  child: Image.asset(
+                    'assets/images/aripar_white_logo.png',
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 50.0,
+              ),
+              SizedBox(
+                width:
+                    MediaQuery.of(context).orientation == Orientation.landscape
+                        ? MediaQuery.of(context).size.width * 0.07
+                        : MediaQuery.of(context).size.width * 0.1,
+                height:
+                    MediaQuery.of(context).orientation == Orientation.landscape
+                        ? MediaQuery.of(context).size.width * 0.07
+                        : MediaQuery.of(context).size.width * 0.1,
+                child: CircularProgressIndicator(
+                  backgroundColor: Colors.blue[900],
+                  strokeWidth: 10,
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SplashSmall extends StatelessWidget {
+  const _SplashSmall({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.blue[800],
       body: Center(

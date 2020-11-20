@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import 'package:arturo_bruna_app/state-management-project/domain/model/user.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/repository/api_repository.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/repository/local_storage_repository.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/preventas/preventas_bloc.dart';
@@ -66,15 +67,54 @@ class _DeliveryNavigationBar extends StatelessWidget {
   final int index;
   final ValueChanged<int> onIndexSelected;
 
-  const _DeliveryNavigationBar({Key key, this.index, this.onIndexSelected})
-      : super(key: key);
+  const _DeliveryNavigationBar({
+    Key key,
+    this.index,
+    this.onIndexSelected,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final bloc = Provider.of<HomeBLoC>(context);
     final preSaleBLoC = Provider.of<PreSaleBLoC>(context);
     final user = bloc.usuario;
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        print('constratins.maxWidth ${constraints.maxWidth}');
+        if (constraints.maxWidth >= 600.0) {
+          return _BottomNavBarLarge(
+              index: index,
+              onIndexSelected: onIndexSelected,
+              preSaleBLoC: preSaleBLoC,
+              user: user);
+        } else {
+          return _BottomNavBarSmall(
+              index: index,
+              onIndexSelected: onIndexSelected,
+              preSaleBLoC: preSaleBLoC,
+              user: user);
+        }
+      },
+    );
+  }
+}
 
+class _BottomNavBarSmall extends StatelessWidget {
+  const _BottomNavBarSmall({
+    Key key,
+    @required this.index,
+    @required this.onIndexSelected,
+    @required this.preSaleBLoC,
+    @required this.user,
+  }) : super(key: key);
+
+  final int index;
+  final onIndexSelected;
+  final PreSaleBLoC preSaleBLoC;
+  final Usuario user;
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(5.0),
       child: DecoratedBox(
@@ -162,6 +202,106 @@ class _DeliveryNavigationBar extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _BottomNavBarLarge extends StatelessWidget {
+  const _BottomNavBarLarge({
+    Key key,
+    @required this.index,
+    @required this.onIndexSelected,
+    @required this.preSaleBLoC,
+    @required this.user,
+  }) : super(key: key);
+
+  final int index;
+  final onIndexSelected;
+  final PreSaleBLoC preSaleBLoC;
+  final Usuario user;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.centerRight,
+          end: Alignment.centerLeft,
+          colors: deliveryGradients,
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            IconButton(
+              color: Colors.transparent,
+              onPressed: () => onIndexSelected(0),
+              icon: Icon(
+                Icons.store_mall_directory,
+                color: index == 0 ? DeliveryColors.white : Colors.black87,
+              ),
+              iconSize: 50.0,
+            ),
+            IconButton(
+              icon: Icon(Icons.people,
+                  color: index == 1 ? DeliveryColors.white : Colors.black87),
+              onPressed: () => onIndexSelected(1),
+              iconSize: 45.0,
+            ),
+            Stack(
+              children: [
+                CircleAvatar(
+                  backgroundColor: Colors.orange[700],
+                  radius: 35.0,
+                  child: IconButton(
+                    splashColor: Colors.transparent,
+                    icon: Icon(
+                      Icons.shopping_basket,
+                      color: index == 2
+                          ? DeliveryColors.white
+                          : Colors.purple[500],
+                    ),
+                    onPressed: () => onIndexSelected(2),
+                    iconSize: 48.0,
+                  ),
+                ),
+                Positioned(
+                  right: 0,
+                  child: preSaleBLoC.productsCount == 0
+                      ? const SizedBox.shrink()
+                      : CircleAvatar(
+                          radius: 12.5,
+                          backgroundColor: Colors.pinkAccent,
+                          child: Text(
+                            preSaleBLoC.productsCount.toString(),
+                            style: TextStyle(
+                              fontSize: 18.0,
+                            ),
+                          ),
+                        ),
+                )
+              ],
+            ),
+            SizedBox(
+              width: 35,
+            ),
+            InkWell(
+              onTap: () => onIndexSelected(3),
+              child: user?.imagen == null
+                  ? const SizedBox()
+                  : CircleAvatar(
+                      radius: 36.0,
+                      backgroundImage: NetworkImage(
+                        user.imagen,
+                      ),
+                    ),
+            ),
+          ],
         ),
       ),
     );

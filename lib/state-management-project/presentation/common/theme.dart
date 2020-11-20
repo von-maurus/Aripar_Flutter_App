@@ -14,7 +14,7 @@ class DeliveryColors {
 final deliveryGradients = [
   // cambiar a azul oscuro
   DeliveryColors.purple,
-  DeliveryColors.blue,
+  DeliveryColors.blue
 ];
 
 final _borderLight = OutlineInputBorder(

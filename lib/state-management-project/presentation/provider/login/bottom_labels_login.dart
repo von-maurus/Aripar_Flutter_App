@@ -1,9 +1,23 @@
 import 'package:flutter/material.dart';
 
 class BottomLabels extends StatelessWidget {
-  const BottomLabels({Key key, @required this.size}) : super(key: key);
+  const BottomLabels({
+    Key key,
+    @required this.size,
+    this.endIndent,
+    this.indent,
+    this.sizeForgotPass,
+    this.fontSizeNotAccount = 15,
+    this.fontSizeContact = 17,
+    this.fontSizeTerms = 17,
+  }) : super(key: key);
   final Size size;
-
+  final double indent;
+  final double endIndent;
+  final double sizeForgotPass;
+  final double fontSizeNotAccount;
+  final double fontSizeContact;
+  final double fontSizeTerms;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -15,21 +29,21 @@ class BottomLabels extends StatelessWidget {
               'Olvidé la contraseña',
               style: TextStyle(
                   color: Colors.black,
-                  fontSize: 16,
+                  fontSize: sizeForgotPass,
                   fontWeight: FontWeight.w500),
             ),
           ),
           Divider(
-            thickness: 2.1,
+            thickness: 1.2,
             color: Colors.black54,
-            indent: size.width * 0.06,
-            endIndent: size.width * 0.06,
+            indent: indent,
+            endIndent: endIndent,
           ),
           Text(
             '¿No tienes cuenta?',
             style: TextStyle(
                 color: Colors.black54,
-                fontSize: 15,
+                fontSize: fontSizeNotAccount,
                 fontWeight: FontWeight.w500),
           ),
           SizedBox(
@@ -37,11 +51,11 @@ class BottomLabels extends StatelessWidget {
           ),
           Text(
             'Contáctate con el administrador al correo:\nadmin@example.com',
-            style: TextStyle(fontSize: 16.0),
+            style: TextStyle(fontSize: fontSizeContact),
             textAlign: TextAlign.center,
           ),
           Padding(
-            padding: EdgeInsets.only(top: size.height * 0.09),
+            padding: EdgeInsets.only(top: 80.0),
             child: Container(
               child: FlatButton(
                 onPressed: () {},
@@ -49,7 +63,7 @@ class BottomLabels extends StatelessWidget {
                   'Términos y condiciones de uso',
                   style: TextStyle(
                       color: Colors.black54,
-                      fontSize: 16,
+                      fontSize: fontSizeTerms,
                       fontWeight: FontWeight.w600),
                 ),
               ),

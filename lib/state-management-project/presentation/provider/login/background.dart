@@ -24,7 +24,9 @@ class Background extends StatelessWidget {
                 "assets/images/main_top.png",
                 fit: BoxFit.fill,
               ),
-              width: size.width * 0.3,
+              width: MediaQuery.of(context).orientation == Orientation.landscape
+                  ? size.width * 0.15
+                  : size.width * 0.28,
             ),
             child,
           ],

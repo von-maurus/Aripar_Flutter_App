@@ -177,7 +177,6 @@ class _UserInfo extends StatelessWidget {
         children: [
           Card(
             color: Colors.white54,
-            elevation: 20,
             shadowColor: Colors.black,
             margin: EdgeInsets.only(top: 20, left: 20, right: 20),
             child: Container(
