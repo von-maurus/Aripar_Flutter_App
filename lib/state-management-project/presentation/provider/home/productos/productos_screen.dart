@@ -276,7 +276,7 @@ class _ItemProduct extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
       color: Theme.of(context).canvasColor,
       child: Padding(
-        padding: const EdgeInsets.all(9.0),
+        padding: const EdgeInsets.all(8.0),
         child: Stack(
           children: [
             Column(

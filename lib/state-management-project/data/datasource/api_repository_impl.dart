@@ -15,6 +15,12 @@ import 'package:arturo_bruna_app/state-management-project/domain/exception/produ
 
 class ApiRepositoryImpl extends ApiRepositoryInterface {
   static const urlBase = 'http://192.168.1.86/sab-backend/';
+
+  //Seba IP
+  // static const urlBase = 'http://192.168.0.2/sab-backend/';
+
+  //Domain backend
+  // static const urlBase = 'http://aripar.kuvesoft.cl/backend';
   static const apiUrl = urlBase + 'web/index.php?r=';
   static const urlUserImage = urlBase + "assets/avatares/";
   static const urlProductImage = urlBase + "assets/productos/";
@@ -25,14 +31,22 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
   Future<Usuario> getUserFromToken(String token) async {
     const controller = 'usuarios/';
     final data = {'token': token};
-    final response = await http.post(apiUrl + controller + 'is-logged-from-app',
-        headers: headers, body: json.encode(data));
-    final responseData = json.decode(response.body);
-
-    if (response.statusCode == 200) {
-      return Usuario.fromJson(responseData['model']);
+    try {
+      final response = await http
+          .post(apiUrl + controller + 'is-logged-from-app',
+              headers: headers, body: json.encode(data))
+          .timeout(Duration(seconds: 10), onTimeout: () {
+        throw TimeoutException('Tiempo de espera agotado.');
+      });
+      final responseData = json.decode(response.body);
+      if (response.statusCode == 200) {
+        return Usuario.fromJson(responseData['model']);
+      }
+      throw AuthException();
+    } on Exception catch (e) {
+      print(e);
+      throw e;
     }
-    throw AuthException();
   }
 
   //Login y Logout
@@ -136,7 +150,7 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
         apiUrl + controller + 'create-from-app',
         headers: headers,
         body: dataEncode);
-    print('EL RESPONSE ${response.body}');
+    print('Respuesta: ${response.body}');
     if (response.statusCode == 201) {
       return parseClient(response.body);
     }

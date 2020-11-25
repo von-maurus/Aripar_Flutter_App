@@ -29,13 +29,27 @@ class PreSaleBLoC extends ChangeNotifier {
       new MaskTextInputFormatter(mask: '##.###.###-#');
   PreSaleBLoC({this.apiRepositoryInterface, this.localRepositoryInterface});
 
-  void changePayType(int clientPayType, int dias) {
+  int get numDias {
+    switch (diasCuota) {
+      case 1:
+        return 7;
+      case 2:
+        return 15;
+      case 3:
+        return 30;
+      default:
+        return 7;
+    }
+  }
+
+  void changePayType(int clientPayType, int dayOptions) {
     if (clientPayType != 1) {
       payType = clientPayType;
-      diasCuota = dias;
+      diasCuota = dayOptions;
       notifyListeners();
     } else {
       payType = clientPayType;
+      diasCuota = dayOptions;
       notifyListeners();
     }
   }
@@ -43,12 +57,12 @@ class PreSaleBLoC extends ChangeNotifier {
   void cleanSalesCart() {
     preSaleList.clear();
     calculateTotals(preSaleList);
-    client = new Cliente();
+    // client = new Cliente();
     totalItems = 0;
     totalPrice = 0;
     productsCount = 0;
-    diasCuota = 7;
-    payType = null;
+    // diasCuota = 0;
+    // payType = null;
     notifyListeners();
   }
 
@@ -84,7 +98,7 @@ class PreSaleBLoC extends ChangeNotifier {
       client = newClient;
       payType = newClient.tipopago;
       if (newClient.numerocuotas == null) {
-        diasCuota = 7;
+        diasCuota = 1;
       } else {
         diasCuota = newClient.numerocuotas;
       }
@@ -97,7 +111,11 @@ class PreSaleBLoC extends ChangeNotifier {
   void updateClient(Cliente newClient) {
     client = newClient;
     payType = newClient.tipopago;
-    diasCuota = newClient.numerocuotas;
+    if (newClient.numerocuotas == null) {
+      diasCuota = 1;
+    } else {
+      diasCuota = newClient.numerocuotas;
+    }
     client.rut = maskTextInputFormatter.maskText(client.rut);
     notifyListeners();
   }

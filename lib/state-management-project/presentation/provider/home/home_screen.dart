@@ -73,7 +73,6 @@ class _DeliveryNavigationBar extends StatelessWidget {
     this.index,
     this.onIndexSelected,
   }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     final bloc = Provider.of<HomeBLoC>(context);
@@ -81,13 +80,14 @@ class _DeliveryNavigationBar extends StatelessWidget {
     final user = bloc.usuario;
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
-        print('constratins.maxWidth ${constraints.maxWidth}');
+        print('constrains.maxWidth ${constraints.maxWidth}');
         if (constraints.maxWidth >= 600.0) {
           return _BottomNavBarLarge(
-              index: index,
-              onIndexSelected: onIndexSelected,
-              preSaleBLoC: preSaleBLoC,
-              user: user);
+            index: index,
+            onIndexSelected: onIndexSelected,
+            preSaleBLoC: preSaleBLoC,
+            user: user,
+          );
         } else {
           return _BottomNavBarSmall(
               index: index,
@@ -192,7 +192,7 @@ class _BottomNavBarSmall extends StatelessWidget {
               ),
               InkWell(
                 onTap: () => onIndexSelected(3),
-                child: user.imagen == null
+                child: user == null || user.imagen == null
                     ? ClipOval(
                         child: SvgPicture.asset(
                           "assets/icons/profile-user.svg",
@@ -241,7 +241,7 @@ class _BottomNavBarLarge extends StatelessWidget {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(4.0),
+        padding: const EdgeInsets.all(2.0),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -253,19 +253,28 @@ class _BottomNavBarLarge extends StatelessWidget {
                 Icons.store_mall_directory,
                 color: index == 0 ? DeliveryColors.white : Colors.black87,
               ),
-              iconSize: 50.0,
+              iconSize:
+                  MediaQuery.of(context).orientation == Orientation.landscape
+                      ? MediaQuery.of(context).size.width * 0.04
+                      : 50.0,
             ),
             IconButton(
               icon: Icon(Icons.people,
                   color: index == 1 ? DeliveryColors.white : Colors.black87),
               onPressed: () => onIndexSelected(1),
-              iconSize: 45.0,
+              iconSize:
+                  MediaQuery.of(context).orientation == Orientation.landscape
+                      ? MediaQuery.of(context).size.width * 0.04
+                      : 50.0,
             ),
             Stack(
               children: [
                 CircleAvatar(
                   backgroundColor: Colors.orange[700],
-                  radius: 35.0,
+                  radius: MediaQuery.of(context).orientation ==
+                          Orientation.landscape
+                      ? MediaQuery.of(context).size.width * 0.04
+                      : 50.0,
                   child: IconButton(
                     splashColor: Colors.transparent,
                     icon: Icon(
@@ -275,7 +284,10 @@ class _BottomNavBarLarge extends StatelessWidget {
                           : Colors.purple[500],
                     ),
                     onPressed: () => onIndexSelected(2),
-                    iconSize: 48.0,
+                    iconSize: MediaQuery.of(context).orientation ==
+                            Orientation.landscape
+                        ? MediaQuery.of(context).size.width * 0.045
+                        : 50.0,
                   ),
                 ),
                 Positioned(
@@ -283,12 +295,18 @@ class _BottomNavBarLarge extends StatelessWidget {
                   child: preSaleBLoC.productsCount == 0
                       ? const SizedBox.shrink()
                       : CircleAvatar(
-                          radius: 12.5,
+                          radius: MediaQuery.of(context).orientation ==
+                                  Orientation.landscape
+                              ? 12
+                              : 11,
                           backgroundColor: Colors.pinkAccent,
                           child: Text(
                             preSaleBLoC.productsCount.toString(),
                             style: TextStyle(
-                              fontSize: 18.0,
+                              fontSize: MediaQuery.of(context).orientation ==
+                                      Orientation.landscape
+                                  ? 12
+                                  : 11,
                             ),
                           ),
                         ),
@@ -300,7 +318,7 @@ class _BottomNavBarLarge extends StatelessWidget {
             ),
             InkWell(
               onTap: () => onIndexSelected(3),
-              child: user.imagen == null
+              child: user == null || user.imagen == null
                   ? ClipOval(
                       child: SvgPicture.asset(
                         "assets/icons/profile-user.svg",

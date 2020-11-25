@@ -63,6 +63,19 @@ class Cliente {
         "tipopago": tipopago,
         "numerocuotas": numerocuotas,
       };
+  int get numDias {
+    switch (numerocuotas) {
+      case 1:
+        return 7;
+      case 2:
+        return 15;
+      case 3:
+        return 30;
+
+      default:
+        return 0;
+    }
+  }
 
   @override
   String toString() {

@@ -21,95 +21,40 @@ class PreSalePage extends StatelessWidget {
         length: 2,
         child: Scaffold(
           appBar: AppBar(
-            actions: [
-              InkWell(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        "Limpiar",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500, fontSize: 18),
-                      ),
-                    ),
-                    Icon(
-                      Icons.restore_from_trash,
-                      size: 32.0,
-                      color: Colors.white,
-                      semanticLabel: "Limpiar",
-                    ),
-                  ],
-                ),
-                onTap: () async {
-                  if (bloc.preSaleList.isNotEmpty || bloc.client.id != null) {
-                    showDialog(
-                      context: context,
-                      builder: (_) => AlertDialogPage(
-                        oldContext: _,
-                        content: Text(
-                          "Se limpiara el carrito de compras. ¿Desea continuar?",
-                          style: TextStyle(fontSize: 22.0),
-                          textAlign: TextAlign.center,
-                        ),
-                        actions: [
-                          FlatButton(
-                            onPressed: () {
-                              bloc.cleanSalesCart();
-                              Navigator.of(context).pop();
-                            },
-                            child: Text(
-                              "Continuar",
-                              style: TextStyle(fontSize: 18.0),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          FlatButton(
-                            onPressed: () => Navigator.of(context).pop(),
-                            child: Text(
-                              "Cancelar",
-                              style: TextStyle(fontSize: 18.0),
-                              textAlign: TextAlign.center,
-                            ),
-                          )
-                        ],
-                      ),
-                    );
-                  }
-                },
-              ),
-              MediaQuery.of(context).orientation == Orientation.portrait
-                  ? SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.39,
-                    )
-                  : SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.4,
-                    )
-            ],
             backgroundColor: Colors.blue[900],
-            toolbarHeight: 120,
+            toolbarHeight:
+                MediaQuery.of(context).orientation == Orientation.portrait
+                    ? 80.0
+                    : 53,
             elevation: 6.0,
             bottom: TabBar(
               indicatorWeight: 6.5,
               indicatorColor: Colors.blue[200],
               tabs: [
-                Tab(
-                  text: "Productos",
-                  icon: Icon(
-                    Icons.shopping_cart,
-                    size: 25.0,
-                  ),
-                  iconMargin: EdgeInsets.all(2.0),
-                ),
-                Tab(
-                  text: "Finalizar Venta",
-                  icon: Icon(
-                    Icons.payments,
-                    size: 25.0,
-                  ),
-                  iconMargin: EdgeInsets.all(2.0),
-                )
+                MediaQuery.of(context).orientation == Orientation.landscape
+                    ? Tab(
+                        text: "Productos",
+                      )
+                    : Tab(
+                        text: "Productos",
+                        icon: Icon(
+                          Icons.shopping_cart,
+                          size: 25.0,
+                        ),
+                        iconMargin: EdgeInsets.all(2.0),
+                      ),
+                MediaQuery.of(context).orientation == Orientation.landscape
+                    ? Tab(
+                        text: "Finalizar Venta",
+                      )
+                    : Tab(
+                        text: "Finalizar Venta",
+                        icon: Icon(
+                          Icons.payments,
+                          size: 25.0,
+                        ),
+                        iconMargin: EdgeInsets.all(2.0),
+                      )
               ],
             ),
           ),
@@ -135,36 +80,109 @@ class _ProductCartScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final bloc = context.watch<PreSaleBLoC>();
     return Scaffold(
-      body: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount:
-              MediaQuery.of(context).orientation == Orientation.landscape
-                  ? 4
-                  : 2,
-          childAspectRatio:
-              MediaQuery.of(context).orientation == Orientation.landscape
-                  ? 2 / 4
-                  : 2 / 3.5,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-        ),
-        physics: BouncingScrollPhysics(),
-        itemBuilder: (context, index) {
-          final preSaleCart = bloc.preSaleList[index];
-          return _ShoppingCartProduct(
-            preSaleCart: preSaleCart,
-            onDelete: () {
-              bloc.deleteProduct(preSaleCart);
-            },
-            onIncrement: () {
-              bloc.increment(preSaleCart);
-            },
-            onDecrement: () {
-              bloc.decrement(preSaleCart);
-            },
-          );
-        },
-        itemCount: bloc.preSaleList.length,
+      body: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10.0),
+                child: RaisedButton(
+                  onPressed: () {
+                    if (bloc.preSaleList.isNotEmpty) {
+                      showDialog(
+                        context: context,
+                        builder: (_) => AlertDialogPage(
+                          oldContext: _,
+                          content: Text(
+                            "Se limpiará el carrito de ventas. ¿Desea continuar?",
+                            style: TextStyle(fontSize: 22.0),
+                            textAlign: TextAlign.center,
+                          ),
+                          actions: [
+                            FlatButton(
+                              onPressed: () {
+                                bloc.cleanSalesCart();
+                                Navigator.of(context).pop();
+                              },
+                              child: Text(
+                                "Continuar",
+                                style: TextStyle(fontSize: 18.0),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            FlatButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: Text(
+                                "Cancelar",
+                                style: TextStyle(fontSize: 18.0),
+                                textAlign: TextAlign.center,
+                              ),
+                            )
+                          ],
+                        ),
+                      );
+                    }
+                  },
+                  child: Row(
+                    children: [
+                      Text(
+                        "Vaciar carro",
+                        style: TextStyle(
+                            fontSize: MediaQuery.of(context).orientation ==
+                                    Orientation.landscape
+                                ? MediaQuery.of(context).size.width * 0.02
+                                : MediaQuery.of(context).size.width * 0.04),
+                      ),
+                      Icon(
+                        Icons.clear,
+                        size: MediaQuery.of(context).orientation ==
+                                Orientation.landscape
+                            ? MediaQuery.of(context).size.width * 0.03
+                            : MediaQuery.of(context).size.width * 0.055,
+                      )
+                    ],
+                  ),
+                  shape: StadiumBorder(),
+                ),
+              )
+            ],
+          ),
+          Expanded(
+            child: GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount:
+                    MediaQuery.of(context).orientation == Orientation.landscape
+                        ? 2
+                        : 2,
+                childAspectRatio:
+                    MediaQuery.of(context).orientation == Orientation.landscape
+                        ? 2
+                        : 2 / 3.5,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+              ),
+              physics: BouncingScrollPhysics(),
+              itemBuilder: (context, index) {
+                final preSaleCart = bloc.preSaleList[index];
+                return _ShoppingCartProduct(
+                  preSaleCart: preSaleCart,
+                  onDelete: () {
+                    bloc.deleteProduct(preSaleCart);
+                  },
+                  onIncrement: () {
+                    bloc.increment(preSaleCart);
+                  },
+                  onDecrement: () {
+                    bloc.decrement(preSaleCart);
+                  },
+                );
+              },
+              itemCount: bloc.preSaleList.length,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -186,203 +204,222 @@ class _CheckoutScreen extends StatelessWidget {
           if (orientation == Orientation.landscape) {
             return Row(
               children: [
-                Card(
-                  color: Colors.blue[900],
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(25.0),
-                      bottomRight: Radius.circular(25.0),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  child: Card(
+                    color: Colors.blue[900],
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(25.0),
+                        bottomRight: Radius.circular(25.0),
+                      ),
+                    ),
+                    margin: EdgeInsets.zero,
+                    elevation: 30,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.45,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Cliente",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 18.0,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Text(
+                                  bloc.client.nombre == null
+                                      ? 'No Seleccionado'
+                                      : bloc.client.nombre +
+                                          '\n' +
+                                          bloc.client.rut,
+                                  textAlign: TextAlign.end,
+                                  style: TextStyle(
+                                      fontSize: 18.0, color: Colors.white),
+                                )
+                              ],
+                            ),
+                            SizedBox(
+                              height: 20.0,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Método de Pago",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 18.0,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Text(
+                                  bloc.payType == null
+                                      ? 'No Seleccionado'
+                                      : bloc.payType == 1
+                                          ? 'Efectivo'
+                                          : 'Crédito\n${bloc.numDias} días a pagar',
+                                  textAlign: TextAlign.end,
+                                  style: TextStyle(
+                                    fontSize: 18.0,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              ],
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 15.0),
+                              child: InkWell(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      '\$${formatter.format(bloc.totalPrice)}',
+                                      style: TextStyle(
+                                        fontSize: 30.0,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
                     ),
                   ),
-                  margin: EdgeInsets.zero,
-                  elevation: 30,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.45,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Cliente",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 18.0,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              Text(
-                                bloc.client.nombre == null
-                                    ? 'No Seleccionado'
-                                    : bloc.client.nombre +
-                                        '\n' +
-                                        bloc.client.rut,
-                                textAlign: TextAlign.end,
-                                style: TextStyle(
-                                    fontSize: 18.0, color: Colors.white),
-                              )
-                            ],
+                ),
+                Expanded(
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: ListView.separated(
+                          itemBuilder: (context, index) {
+                            final preSaleCart = bloc.preSaleList[index];
+                            return buildCheckoutDetail(preSaleCart);
+                          },
+                          separatorBuilder: (context, index) => Divider(
+                            height: 0,
+                            indent: 10,
+                            endIndent: 10,
+                            color: Colors.grey,
+                            thickness: 1.5,
                           ),
-                          SizedBox(
-                            height: 20.0,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Método de Pago",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 18.0,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              Text(
-                                bloc.payType == null
-                                    ? 'No Seleccionado'
-                                    : bloc.payType == 1
-                                        ? 'Efectivo'
-                                        : 'Crédito\n${bloc.diasCuota} días a pagar',
-                                textAlign: TextAlign.end,
-                                style: TextStyle(
-                                  fontSize: 18.0,
-                                  color: Colors.white,
-                                ),
-                              )
-                            ],
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10.0),
-                            child: InkWell(
-                              radius: 120,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    '\$${formatter.format(bloc.totalPrice)}',
-                                    style: TextStyle(
-                                      fontSize: 30.0,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    'Pagar',
-                                    style: TextStyle(
-                                      fontSize: 20.0,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              splashColor: Colors.green,
-                              onTap: () async {
-                                if (bloc.client.id != null) {
-                                  return showDialog(
-                                    context: context,
-                                    builder: (_) => AlertDialogPage(
-                                      oldContext: _,
-                                      title: Center(
-                                          child: Text(
-                                        "Aviso",
-                                        style: TextStyle(
-                                          fontSize: 25.0,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      )),
-                                      content: Text(
-                                        "Se creará la Pre-Venta.\n¿Desea continuar?...",
-                                        style: TextStyle(fontSize: 18.0),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                      actions: [
-                                        FlatButton(
-                                          onPressed: () async {
-                                            Navigator.of(context).pop();
-                                            //Esperar respuesta
-                                            final response =
-                                                await bloc.checkOut();
-                                            //Mostrar AlertDialog con respuesta
-                                            return buildResponseDialog(
-                                                context, response);
-                                          },
-                                          child: Text(
-                                            "Aceptar",
-                                            style: TextStyle(fontSize: 18.0),
-                                          ),
-                                        ),
-                                        FlatButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: Text(
-                                            "Cancelar",
-                                            style: TextStyle(fontSize: 18.0),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  );
-                                }
+                          itemCount: bloc.preSaleList.length,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: RaisedButton(
+                            color: Colors.green,
+                            onPressed: () async {
+                              if (bloc.client.id != null) {
                                 return showDialog(
                                   context: context,
                                   builder: (_) => AlertDialogPage(
                                     oldContext: _,
                                     title: Center(
                                         child: Text(
-                                      "Alerta",
+                                      "Aviso",
                                       style: TextStyle(
                                         fontSize: 25.0,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     )),
                                     content: Text(
-                                      "Debe seleccionar un cliente",
+                                      "Se creará la Pre-Venta.\n¿Desea continuar?...",
                                       style: TextStyle(fontSize: 18.0),
                                       textAlign: TextAlign.center,
                                     ),
                                     actions: [
                                       FlatButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                            homeBloc.updateIndexSelected(1);
-                                          },
-                                          child: Text(
-                                            "Aceptar",
-                                            style: TextStyle(fontSize: 18.0),
-                                          ))
+                                        onPressed: () async {
+                                          Navigator.of(context).pop();
+                                          //Esperar respuesta
+                                          final response =
+                                              await bloc.checkOut();
+                                          //Mostrar AlertDialog con respuesta
+                                          return buildResponseDialog(
+                                              context, response);
+                                        },
+                                        child: Text(
+                                          "Aceptar",
+                                          style: TextStyle(fontSize: 18.0),
+                                        ),
+                                      ),
+                                      FlatButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text(
+                                          "Cancelar",
+                                          style: TextStyle(fontSize: 18.0),
+                                        ),
+                                      )
                                     ],
                                   ),
                                 );
-                              },
+                              }
+                              return showDialog(
+                                context: context,
+                                builder: (_) => AlertDialogPage(
+                                  oldContext: _,
+                                  title: Center(
+                                      child: Text(
+                                    "Alerta",
+                                    style: TextStyle(
+                                      fontSize: 25.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  )),
+                                  content: Text(
+                                    "Debe seleccionar un cliente",
+                                    style: TextStyle(fontSize: 18.0),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  actions: [
+                                    FlatButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                          homeBloc.updateIndexSelected(1);
+                                        },
+                                        child: Text(
+                                          "Aceptar",
+                                          style: TextStyle(fontSize: 18.0),
+                                        ))
+                                  ],
+                                ),
+                              );
+                            },
+                            shape: StadiumBorder(),
+                            child: Text(
+                              "Confirmar Pre-venta",
+                              style: TextStyle(
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.025,
+                                color: Colors.white,
+                              ),
                             ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: ListView.separated(
-                    itemBuilder: (context, index) {
-                      final preSaleCart = bloc.preSaleList[index];
-                      return buildCheckoutDetail(preSaleCart);
-                    },
-                    separatorBuilder: (context, index) => Divider(
-                      indent: 20,
-                      endIndent: 20,
-                      color: Colors.blue,
-                      thickness: 1,
-                    ),
-                    itemCount: bloc.preSaleList.length,
+                          ),
+                        ),
+                      )
+                    ],
                   ),
                 )
               ],
@@ -390,114 +427,132 @@ class _CheckoutScreen extends StatelessWidget {
           }
           return Column(
             children: [
-              Card(
-                color: Colors.blue[900],
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(25.0),
-                    bottomRight: Radius.circular(25.0),
+              Padding(
+                padding: EdgeInsets.all(11.5),
+                child: Card(
+                  color: Colors.blue[900],
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25.0),
+                  ),
+                  margin: EdgeInsets.zero,
+                  elevation: 18,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Cliente",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 18.0,
+                                color: Colors.white,
+                              ),
+                            ),
+                            Text(
+                              bloc.client.nombre == null
+                                  ? 'No Seleccionado'
+                                  : bloc.client.nombre + '\n' + bloc.client.rut,
+                              textAlign: TextAlign.end,
+                              style: TextStyle(
+                                fontSize: 18.0,
+                                color: Colors.white,
+                              ),
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          height: 15.0,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Método de Pago",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 18.0,
+                                color: Colors.white,
+                              ),
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                Icons.edit_outlined,
+                                color: Colors.white,
+                              ),
+                              splashColor: Colors.blue,
+                              iconSize: 30.0,
+                              onPressed: () async {
+                                if (bloc.client.id != null) {
+                                  return buildEditDialog(context, bloc);
+                                }
+                              },
+                            ),
+                            Text(
+                              bloc.payType == null
+                                  ? 'No Seleccionado'
+                                  : bloc.payType == 1
+                                      ? 'Efectivo'
+                                      : 'Crédito\n${bloc.diasCuota == null ? '' : bloc.numDias} días a pagar',
+                              textAlign: TextAlign.end,
+                              style: TextStyle(
+                                fontSize: 18.0,
+                                color: Colors.white,
+                              ),
+                            )
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 18.0),
+                          child: InkWell(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  '\$${formatter.format(bloc.totalPrice)}',
+                                  style: TextStyle(
+                                    fontSize: 32.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
-                margin: EdgeInsets.zero,
-                elevation: 18,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Cliente",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 18.0,
-                              color: Colors.white,
-                            ),
-                          ),
-                          Text(
-                            bloc.client.nombre == null
-                                ? 'No Seleccionado'
-                                : bloc.client.nombre + '\n' + bloc.client.rut,
-                            textAlign: TextAlign.end,
-                            style: TextStyle(
-                              fontSize: 18.0,
-                              color: Colors.white,
-                            ),
-                          )
-                        ],
+              ),
+              Expanded(
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: ListView.separated(
+                        itemBuilder: (context, index) {
+                          final preSaleCart = bloc.preSaleList[index];
+                          return buildCheckoutDetail(preSaleCart);
+                        },
+                        separatorBuilder: (context, index) => Divider(
+                          indent: 10,
+                          endIndent: 10,
+                          color: Colors.grey,
+                          thickness: 1.5,
+                          height: 0,
+                        ),
+                        itemCount: bloc.preSaleList.length,
                       ),
-                      SizedBox(
-                        height: 15.0,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Método de Pago",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 18.0,
-                              color: Colors.white,
-                            ),
-                          ),
-                          IconButton(
-                            icon: Icon(
-                              Icons.edit_outlined,
-                              color: Colors.white,
-                            ),
-                            splashColor: Colors.blue,
-                            iconSize: 30.0,
-                            onPressed: () async {
-                              if (bloc.client.id != null) {
-                                return buildEditDialog(context, bloc);
-                              }
-                            },
-                          ),
-                          Text(
-                            bloc.payType == null
-                                ? 'No Seleccionado'
-                                : bloc.payType == 1
-                                    ? 'Efectivo'
-                                    : 'Crédito\n${bloc.diasCuota == null ? '' : bloc.diasCuota} días a pagar',
-                            textAlign: TextAlign.end,
-                            style: TextStyle(
-                              fontSize: 18.0,
-                              color: Colors.white,
-                            ),
-                          )
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 18.0),
-                        child: InkWell(
-                          splashColor: Colors.green,
-                          radius: 130,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                '\$${formatter.format(bloc.totalPrice)}',
-                                style: TextStyle(
-                                  fontSize: 32.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                'Pagar',
-                                style: TextStyle(
-                                  fontSize: 22.0,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
-                          onTap: () async {
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: RaisedButton(
+                          color: Colors.green,
+                          onPressed: () async {
                             if (bloc.client.id != null) {
                               return showDialog(
                                 context: context,
@@ -575,25 +630,19 @@ class _CheckoutScreen extends StatelessWidget {
                               ),
                             );
                           },
+                          shape: StadiumBorder(),
+                          child: Text(
+                            "Confirmar Pre-venta",
+                            style: TextStyle(
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.06,
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              Expanded(
-                child: ListView.separated(
-                  itemBuilder: (context, index) {
-                    final preSaleCart = bloc.preSaleList[index];
-                    return buildCheckoutDetail(preSaleCart);
-                  },
-                  separatorBuilder: (context, index) => Divider(
-                    indent: 20,
-                    endIndent: 20,
-                    color: Colors.blue,
-                    thickness: 1,
-                  ),
-                  itemCount: bloc.preSaleList.length,
+                      ),
+                    )
+                  ],
                 ),
               )
             ],
@@ -677,7 +726,7 @@ class _CheckoutScreen extends StatelessWidget {
                     value: 1,
                     groupValue: bloc.payType,
                     onChanged: (value) {
-                      setState(() => bloc.changePayType(value, 7));
+                      setState(() => bloc.changePayType(value, 1));
                     },
                   ),
                 ),
@@ -704,7 +753,7 @@ class _CheckoutScreen extends StatelessWidget {
                     value: 2,
                     groupValue: bloc.payType,
                     onChanged: (value) {
-                      setState(() => bloc.changePayType(value, 7));
+                      setState(() => bloc.changePayType(value, 1));
                     },
                   ),
                 ),
@@ -728,7 +777,7 @@ class _CheckoutScreen extends StatelessWidget {
                                   ],
                                 ),
                                 leading: Radio(
-                                  value: 7,
+                                  value: 1,
                                   groupValue: bloc.diasCuota,
                                   onChanged: (value) {
                                     setState(() => bloc.changePayType(
@@ -748,7 +797,7 @@ class _CheckoutScreen extends StatelessWidget {
                                   ],
                                 ),
                                 leading: Radio(
-                                  value: 15,
+                                  value: 2,
                                   groupValue: bloc.diasCuota,
                                   onChanged: (value) {
                                     setState(() => bloc.changePayType(
@@ -768,7 +817,7 @@ class _CheckoutScreen extends StatelessWidget {
                                   ],
                                 ),
                                 leading: Radio(
-                                  value: 30,
+                                  value: 3,
                                   groupValue: bloc.diasCuota,
                                   onChanged: (value) {
                                     setState(() => bloc.changePayType(
@@ -811,6 +860,67 @@ class _CheckoutScreen extends StatelessWidget {
       ),
     );
   }
+  // Widget _emptyCart(){
+  //   return InkWell(
+  //     child: Row(
+  //       mainAxisAlignment: MainAxisAlignment.center,
+  //       children: [
+  //         MediaQuery.of(context).orientation == Orientation.landscape
+  //             ? Container()
+  //             : Padding(
+  //           padding: const EdgeInsets.all(5.0),
+  //           child: Text(
+  //             "Limpiar",
+  //             style: TextStyle(
+  //                 fontWeight: FontWeight.w500, fontSize: 18),
+  //           ),
+  //         ),
+  //         Icon(
+  //           Icons.restore_from_trash,
+  //           size: MediaQuery.of(context).orientation==Orientation.landscape?,
+  //           color: Colors.white,
+  //           semanticLabel: "Limpiar",
+  //         ),
+  //       ],
+  //     ),
+  //     onTap: () async {
+  //       if (bloc.preSaleList.isNotEmpty || bloc.client.id != null) {
+  //         showDialog(
+  //           context: context,
+  //           builder: (_) => AlertDialogPage(
+  //             oldContext: _,
+  //             content: Text(
+  //               "Se limpiara el carrito de compras. ¿Desea continuar?",
+  //               style: TextStyle(fontSize: 22.0),
+  //               textAlign: TextAlign.center,
+  //             ),
+  //             actions: [
+  //               FlatButton(
+  //                 onPressed: () {
+  //                   bloc.cleanSalesCart();
+  //                   Navigator.of(context).pop();
+  //                 },
+  //                 child: Text(
+  //                   "Continuar",
+  //                   style: TextStyle(fontSize: 18.0),
+  //                   textAlign: TextAlign.center,
+  //                 ),
+  //               ),
+  //               FlatButton(
+  //                 onPressed: () => Navigator.of(context).pop(),
+  //                 child: Text(
+  //                   "Cancelar",
+  //                   style: TextStyle(fontSize: 18.0),
+  //                   textAlign: TextAlign.center,
+  //                 ),
+  //               )
+  //             ],
+  //           ),
+  //         );
+  //       }
+  //     },
+  //   );
+  // }
 }
 
 class _ShoppingCartProduct extends StatelessWidget {
@@ -834,12 +944,134 @@ class _ShoppingCartProduct extends StatelessWidget {
       symbol: 'CLP',
     );
     final product = preSaleCart.product;
+    if (MediaQuery.of(context).orientation == Orientation.landscape) {
+      return Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: Stack(
+          children: [
+            Card(
+              elevation: 15.0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18.0)),
+              color: Colors.white,
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      child: CircleAvatar(
+                        backgroundColor: Colors.transparent,
+                        child: ClipOval(
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Image.network(
+                              product.imagen,
+                              fit: BoxFit.cover,
+                              height: MediaQuery.of(context).size.height * 0.4,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            product.nombre,
+                            maxLines: 1,
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            textAlign: TextAlign.start,
+                          ),
+                          Text(
+                            '\$${formatter.format(preSaleCart.precioLinea)} ',
+                            maxLines: 1,
+                            style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 25.0,
+                            ),
+                          ),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              InkWell(
+                                onTap: onDecrement,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.blue[100],
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  child: Icon(
+                                    Icons.remove,
+                                    size: 36.0,
+                                    color: DeliveryColors.purple,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Text(
+                                  preSaleCart.quantity.toString(),
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.w500),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              InkWell(
+                                onTap: onIncrement,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: DeliveryColors.purple,
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  child: Icon(
+                                    Icons.add,
+                                    color: DeliveryColors.white,
+                                    size: 35.0,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              right: 0,
+              child: InkWell(
+                onTap: onDelete,
+                child: CircleAvatar(
+                  backgroundColor: DeliveryColors.pink,
+                  child: Icon(
+                    Icons.delete_outline,
+                    color: Colors.white70,
+                    size: 25.5,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
     return Padding(
       padding: const EdgeInsets.all(5.0),
       child: Stack(
         children: [
           Card(
-            elevation: 12.0,
+            elevation: 15.0,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(18.0)),
             color: Colors.white,

@@ -24,10 +24,12 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   void _init() async {
     final bloc = context.read<SplashBLoC>();
-    final result = await bloc.validateSession();
-    await Future.delayed(Duration(milliseconds: 1000));
+    final result = await bloc.validateSession(_scaffoldKey);
+    await Future.delayed(Duration(milliseconds: 1100));
     if (result) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
@@ -59,23 +61,27 @@ class _SplashScreenState extends State<SplashScreen> {
         builder: (BuildContext context, BoxConstraints constraints) {
       if (constraints.maxWidth >= 600.0) {
         print('constraints.maxWidth ${constraints.maxWidth}');
-        return _SplashLarge();
+        return _SplashLarge(
+          scaffoldKey: _scaffoldKey,
+        );
       } else {
         print('constraints.maxWidth ${constraints.maxWidth}');
-        return _SplashSmall();
+        return _SplashSmall(
+          scaffoldKey: _scaffoldKey,
+        );
       }
     });
   }
 }
 
 class _SplashLarge extends StatelessWidget {
-  const _SplashLarge({
-    Key key,
-  }) : super(key: key);
+  final GlobalKey<ScaffoldState> scaffoldKey;
+  const _SplashLarge({Key key, this.scaffoldKey}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: Colors.blue[800],
       body: Center(
         child: Container(
@@ -83,7 +89,7 @@ class _SplashLarge extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CircleAvatar(
-                radius: 200.0,
+                radius: MediaQuery.of(context).size.height * 0.3,
                 backgroundColor: Colors.blue[900],
                 child: Padding(
                   padding: EdgeInsets.all(12.0),
@@ -118,13 +124,13 @@ class _SplashLarge extends StatelessWidget {
 }
 
 class _SplashSmall extends StatelessWidget {
-  const _SplashSmall({
-    Key key,
-  }) : super(key: key);
+  final GlobalKey<ScaffoldState> scaffoldKey;
+  const _SplashSmall({Key key, this.scaffoldKey}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: Colors.blue[800],
       body: Center(
         child: Container(

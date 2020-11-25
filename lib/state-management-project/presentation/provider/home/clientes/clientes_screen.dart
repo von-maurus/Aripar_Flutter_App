@@ -318,7 +318,7 @@ class ClientesScreen extends StatelessWidget {
                                 SizedBox(
                                   width: 5,
                                 ),
-                                Text('${client.numerocuotas} Días a pagar',
+                                Text('${client.numDias} Días a pagar',
                                     maxLines: 1,
                                     style: TextStyle(
                                         fontSize: 14,

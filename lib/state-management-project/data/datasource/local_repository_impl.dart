@@ -43,15 +43,16 @@ class LocalRepositoryImpl extends LocalRepositoryInterface {
     final tipo = sharedPreferences.getInt(_prefTipo);
     final fono = sharedPreferences.getString(_prefFono);
     final comision = sharedPreferences.getInt(_prefComision);
-    var imagen;
-    if (sharedPreferences.getString(_prefImage) != null) {
+    String imagen = sharedPreferences.getString(_prefImage);
+    if (imagen != null) {
       imagen = sharedPreferences.getString(_prefImage);
     } else {
       imagen = null;
     }
+    print('Imagen: $imagen');
     final correo = sharedPreferences.getString(_prefEmail);
     final estado = sharedPreferences.getInt(_prefEstado);
-    final usuario = Usuario(
+    final usuario = new Usuario(
       id: id,
       nombre: nombre,
       username: username,
@@ -69,15 +70,15 @@ class LocalRepositoryImpl extends LocalRepositoryInterface {
   @override
   Future<Usuario> saveUser(Usuario usuario) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    sharedPreferences.setInt(_prefId, usuario.id);
-    sharedPreferences.setString(_prefNombre, usuario.nombre);
-    sharedPreferences.setString(_prefUsername, usuario.username);
-    sharedPreferences.setInt(_prefTipo, usuario.tipo);
-    sharedPreferences.setString(_prefFono, usuario.fono);
-    sharedPreferences.setInt(_prefComision, usuario.comision);
-    sharedPreferences.setString(_prefImage, usuario.imagen);
-    sharedPreferences.setString(_prefEmail, usuario.correo);
-    sharedPreferences.setInt(_prefEstado, usuario.estado);
+    await sharedPreferences.setInt(_prefId, usuario.id);
+    await sharedPreferences.setString(_prefNombre, usuario.nombre);
+    await sharedPreferences.setString(_prefUsername, usuario.username);
+    await sharedPreferences.setInt(_prefTipo, usuario.tipo);
+    await sharedPreferences.setString(_prefFono, usuario.fono);
+    await sharedPreferences.setInt(_prefComision, usuario.comision);
+    await sharedPreferences.setString(_prefImage, usuario.imagen);
+    await sharedPreferences.setString(_prefEmail, usuario.correo);
+    await sharedPreferences.setInt(_prefEstado, usuario.estado);
     return usuario;
   }
 
