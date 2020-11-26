@@ -86,7 +86,10 @@ class CustomFormInput extends StatelessWidget {
           border: InputBorder.none,
           focusedBorder: InputBorder.none,
           prefixIcon: prefixIcon,
-          errorStyle: TextStyle(fontSize: 20.0),
+          errorStyle: TextStyle(
+            fontSize: 16.5,
+            height: 0.4,
+          ),
           contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 18),
         ),
       ),

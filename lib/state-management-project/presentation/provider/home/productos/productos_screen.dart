@@ -146,91 +146,131 @@ class ProductosScreen extends StatelessWidget {
                     crossAxisSpacing: 9,
                     mainAxisSpacing: 9,
                   ),
-                  physics: BouncingScrollPhysics(),
+                  physics: BouncingScrollPhysics(
+                    parent: AlwaysScrollableScrollPhysics(),
+                  ),
                   itemBuilder: (context, index) {
                     final product = productsBloc.productList[index];
                     return _ItemProduct(
                       product: product,
                       onTap: () async {
-                        if (product.stock != 0) {
-                          if (product.stock <= product.stockminimo) {
+                        if (product.stockminimo != null) {
+                          if (product.stock != 0) {
+                            if (product.stock <= product.stockminimo) {
+                              return showDialog(
+                                context: context,
+                                builder: (_) => AlertDialogPage(
+                                  oldContext: _,
+                                  title: Center(
+                                    child: Text(
+                                      "Advertencia",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 25.0),
+                                    ),
+                                  ),
+                                  content: Text(
+                                    "El producto se encuentra con Stock Mínimo. Por favor, notifique a su administrador",
+                                    style: TextStyle(fontSize: 18.5),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  actions: [
+                                    FlatButton(
+                                      child: Text(
+                                        "Seguir...",
+                                        style: TextStyle(fontSize: 17.0),
+                                      ),
+                                      shape: StadiumBorder(),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                        _showMyDialog(context, product,
+                                            productsBloc, preSaleBLoC);
+                                      },
+                                    ),
+                                    FlatButton(
+                                      child: Text(
+                                        "Volver",
+                                        style: TextStyle(fontSize: 17.0),
+                                      ),
+                                      shape: StadiumBorder(),
+                                      onPressed: () async {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              );
+                            } else
+                              _showMyDialog(
+                                  context, product, productsBloc, preSaleBLoC);
+                          } else {
                             return showDialog(
                               context: context,
                               builder: (_) => AlertDialogPage(
                                 oldContext: _,
                                 title: Center(
                                   child: Text(
-                                    "Advertencia",
+                                    "Alerta",
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 25.0),
                                   ),
                                 ),
                                 content: Text(
-                                  "El producto se encuentra con Stock Mínimo. Por favor, notifique a su administrador",
+                                  "El producto se encuentra SIN STOCK. Por favor, notifique a su administrador.",
                                   style: TextStyle(fontSize: 18.5),
                                   textAlign: TextAlign.center,
                                 ),
                                 actions: [
                                   FlatButton(
                                     child: Text(
-                                      "Seguir...",
+                                      "Aceptar",
                                       style: TextStyle(fontSize: 17.0),
                                     ),
-                                    shape: StadiumBorder(),
                                     onPressed: () {
-                                      Navigator.of(context).pop();
-                                      _showMyDialog(context, product,
-                                          productsBloc, preSaleBLoC);
-                                    },
-                                  ),
-                                  FlatButton(
-                                    child: Text(
-                                      "Volver",
-                                      style: TextStyle(fontSize: 17.0),
-                                    ),
-                                    shape: StadiumBorder(),
-                                    onPressed: () async {
                                       Navigator.of(context).pop();
                                     },
                                   ),
                                 ],
                               ),
                             );
-                          } else
+                          }
+                        } else {
+                          if (product.stock != 0) {
                             _showMyDialog(
                                 context, product, productsBloc, preSaleBLoC);
-                        } else {
-                          return showDialog(
-                            context: context,
-                            builder: (_) => AlertDialogPage(
-                              oldContext: _,
-                              title: Center(
-                                child: Text(
-                                  "Alerta",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 25.0),
-                                ),
-                              ),
-                              content: Text(
-                                "El producto se encuentra SIN STOCK. Por favor, notifique a su administrador.",
-                                style: TextStyle(fontSize: 18.5),
-                                textAlign: TextAlign.center,
-                              ),
-                              actions: [
-                                FlatButton(
+                          } else {
+                            return showDialog(
+                              context: context,
+                              builder: (_) => AlertDialogPage(
+                                oldContext: _,
+                                title: Center(
                                   child: Text(
-                                    "Aceptar",
-                                    style: TextStyle(fontSize: 17.0),
+                                    "Alerta",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 25.0),
                                   ),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
                                 ),
-                              ],
-                            ),
-                          );
+                                content: Text(
+                                  "El producto se encuentra SIN STOCK. Por favor, notifique a su administrador.",
+                                  style: TextStyle(fontSize: 18.5),
+                                  textAlign: TextAlign.center,
+                                ),
+                                actions: [
+                                  FlatButton(
+                                    child: Text(
+                                      "Aceptar",
+                                      style: TextStyle(fontSize: 17.0),
+                                    ),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
                         }
                       },
                     );
@@ -278,134 +318,135 @@ class _ItemProduct extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Stack(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  child: product.imagen == null
-                      ? ClipOval(
-                          child: SvgPicture.asset(
-                            "assets/icons/product-cart.svg",
-                            height: 85,
-                            width: 85,
-                            color: Colors.blue,
-                          ),
-                        )
-                      : CircleAvatar(
-                          radius: 5,
-                          backgroundColor: Colors.transparent,
-                          child: ClipOval(
-                            child: Image.network(
-                              product.imagen,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Text(
-                        product.nombre,
-                        style: TextStyle(
-                          fontSize: MediaQuery.of(context).orientation ==
-                                  Orientation.portrait
-                              ? MediaQuery.of(context).size.width * 0.045
-                              : MediaQuery.of(context).size.width * 0.023,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                        maxLines: 1,
-                      ),
-                      Text(
-                        product.descripcion,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.subtitle1.copyWith(
-                              color: DeliveryColors.darkGrey,
-                              fontSize: MediaQuery.of(context).orientation ==
-                                      Orientation.portrait
-                                  ? MediaQuery.of(context).size.width * 0.04
-                                  : MediaQuery.of(context).size.width * 0.02,
-                            ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Flexible(
-                            child: Text(
-                              '\$${formatter.format(product.precioVentaFinal)}',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Theme.of(context).primaryColor,
-                                  fontSize: MediaQuery.of(context)
-                                              .orientation ==
-                                          Orientation.portrait
-                                      ? MediaQuery.of(context).size.width * 0.05
-                                      : MediaQuery.of(context).size.width *
-                                          0.035),
-                              maxLines: 1,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+          children: [buildProductInfo(context), buildStockViewer(context)],
+        ),
+      ),
+    );
+  }
+
+  Widget buildProductInfo(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Expanded(
+          child: product.imagen == null
+              ? ClipOval(
+                  child: SvgPicture.asset(
+                    "assets/icons/product-cart.svg",
+                    height: 85,
+                    width: 85,
+                    color: Colors.blue,
+                  ),
+                )
+              : CircleAvatar(
+                  radius: 5,
+                  backgroundColor: Colors.transparent,
+                  child: ClipOval(
+                    child: Image.network(
+                      product.imagen,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
-                DeliveryButton(
-                  onTap: onTap,
-                  padding: const EdgeInsets.symmetric(vertical: 9.5),
-                  text: "Añadir",
+        ),
+        Expanded(
+          flex: 1,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text(
+                product.nombre,
+                style: TextStyle(
                   fontSize:
                       MediaQuery.of(context).orientation == Orientation.portrait
-                          ? MediaQuery.of(context).size.width * 0.04
-                          : MediaQuery.of(context).size.width * 0.025,
-                )
-              ],
-            ),
-            Positioned(
-              child: Container(
-                padding: EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  color: product.stock < product.stockminimo
-                      ? Colors.red
-                      : Colors.green,
-                  borderRadius: BorderRadius.circular(60),
+                          ? MediaQuery.of(context).size.width * 0.045
+                          : MediaQuery.of(context).size.width * 0.023,
+                  fontWeight: FontWeight.bold,
                 ),
-                constraints: BoxConstraints(
-                  minWidth:
-                      MediaQuery.of(context).orientation == Orientation.portrait
-                          ? MediaQuery.of(context).size.width * 0.088
-                          : MediaQuery.of(context).size.width * 0.045,
-                  minHeight:
-                      MediaQuery.of(context).orientation == Orientation.portrait
-                          ? MediaQuery.of(context).size.width * 0.088
-                          : MediaQuery.of(context).size.width * 0.045,
-                ),
-                child: Center(
-                  child: Text(
-                    product.stock.toString(),
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+              ),
+              Text(
+                product.descripcion,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.subtitle1.copyWith(
+                      color: DeliveryColors.darkGrey,
                       fontSize: MediaQuery.of(context).orientation ==
                               Orientation.portrait
                           ? MediaQuery.of(context).size.width * 0.04
-                          : MediaQuery.of(context).size.width * 0.024,
+                          : MediaQuery.of(context).size.width * 0.02,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
               ),
-              right: 0,
-            )
-          ],
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Flexible(
+                    child: Text(
+                      '\$${formatter.format(product.precioVentaFinal)}',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).primaryColor,
+                          fontSize: MediaQuery.of(context).orientation ==
+                                  Orientation.portrait
+                              ? MediaQuery.of(context).size.width * 0.05
+                              : MediaQuery.of(context).size.width * 0.035),
+                      maxLines: 1,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        DeliveryButton(
+          onTap: onTap,
+          padding: const EdgeInsets.symmetric(vertical: 9.5),
+          text: "Añadir",
+          fontSize: MediaQuery.of(context).orientation == Orientation.portrait
+              ? MediaQuery.of(context).size.width * 0.04
+              : MediaQuery.of(context).size.width * 0.025,
+        )
+      ],
+    );
+  }
+
+  Widget buildStockViewer(BuildContext context) {
+    return Positioned(
+      child: Container(
+        padding: EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          color:
+              product.stockminimo != null && product.stock < product.stockminimo
+                  ? Colors.red
+                  : Colors.green,
+          borderRadius: BorderRadius.circular(60),
+        ),
+        constraints: BoxConstraints(
+          minWidth: MediaQuery.of(context).orientation == Orientation.portrait
+              ? MediaQuery.of(context).size.width * 0.088
+              : MediaQuery.of(context).size.width * 0.045,
+          minHeight: MediaQuery.of(context).orientation == Orientation.portrait
+              ? MediaQuery.of(context).size.width * 0.088
+              : MediaQuery.of(context).size.width * 0.045,
+        ),
+        child: Center(
+          child: Text(
+            product.stock.toString(),
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize:
+                  MediaQuery.of(context).orientation == Orientation.portrait
+                      ? MediaQuery.of(context).size.width * 0.04
+                      : MediaQuery.of(context).size.width * 0.024,
+            ),
+            textAlign: TextAlign.center,
+          ),
         ),
       ),
+      right: 0,
     );
   }
 }

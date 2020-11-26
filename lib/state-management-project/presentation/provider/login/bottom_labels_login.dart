@@ -23,15 +23,18 @@ class BottomLabels extends StatelessWidget {
     return Container(
       child: Column(
         children: <Widget>[
-          FlatButton(
-            onPressed: () {},
-            child: Text(
-              'Olvidé la contraseña',
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: sizeForgotPass,
-                  fontWeight: FontWeight.w500),
-            ),
+          // FlatButton(
+          //   onPressed: () {},
+          //   child: Text(
+          //     'Olvidé la contraseña',
+          //     style: TextStyle(
+          //         color: Colors.black,
+          //         fontSize: sizeForgotPass,
+          //         fontWeight: FontWeight.w500),
+          //   ),
+          // ),
+          SizedBox(
+            height: size.height * 0.025,
           ),
           Divider(
             thickness: 1.2,
@@ -54,21 +57,9 @@ class BottomLabels extends StatelessWidget {
             style: TextStyle(fontSize: fontSizeContact),
             textAlign: TextAlign.center,
           ),
-          Padding(
-            padding: EdgeInsets.only(top: 80.0),
-            child: Container(
-              child: FlatButton(
-                onPressed: () {},
-                child: Text(
-                  'Términos y condiciones de uso',
-                  style: TextStyle(
-                      color: Colors.black54,
-                      fontSize: fontSizeTerms,
-                      fontWeight: FontWeight.w600),
-                ),
-              ),
-            ),
-          )
+          SizedBox(
+            height: size.height * 0.09,
+          ),
         ],
       ),
     );

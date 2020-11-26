@@ -60,7 +60,7 @@ class LoginBLoC extends ChangeNotifier {
           SnackBar(
             backgroundColor: Colors.red,
             duration: Duration(milliseconds: 1200),
-            content: Text('Error de conexión, intentelo nuevamente. $e'),
+            content: Text('Error de conexión, intentelo nuevamente.'),
           ),
         );
         return false;

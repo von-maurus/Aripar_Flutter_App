@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -100,129 +101,16 @@ class ClientesScreen extends StatelessWidget {
             ));
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final clientsBloc = context.watch<ClientesBLoC>();
-    final preSaleBloc = context.watch<PreSaleBLoC>();
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white70,
-        floatingActionButton: FloatingActionButton(
-          heroTag: "btnCreateClient",
-          elevation: 25,
-          backgroundColor: Colors.blue[700],
-          child: Icon(
-            Icons.add,
-            size: 38,
-          ),
-          onPressed: () async {
-            final response = await Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => ClientCreate()));
-            print('Respuesta del create $response');
-          },
-        ),
-        appBar: AppBar(
-          actions: [
-            IconButton(
-              icon: Icon(
-                Icons.search,
-                size: 30,
-              ),
-              color: Colors.white,
-              onPressed: () async {
-                final client = await showSearch(
-                    context: context,
-                    delegate: ClientSearchDelegate('Buscar cliente',
-                        clientesBLoC: clientsBloc, preSaleBLoC: preSaleBloc));
-                if (client != null) {
-                  //TODO: Guardar historial de busqueda en SharedPreferences localmente
-                  if (!clientsBloc.historial
-                      .any((element) => element.id == client.id)) {
-                    if (clientsBloc.historial.length >= 10) {
-                      clientsBloc.historial.removeLast();
-                      clientsBloc.historial.insert(0, client);
-                    } else {
-                      clientsBloc.historial.insert(0, client);
-                    }
-                  }
-                }
-              },
-              splashColor: Colors.transparent,
-            )
-          ],
-          centerTitle: true,
-          elevation: 6.0,
-          title: Text(
-            'Clientes',
-            style: TextStyle(fontSize: 25.0),
-          ),
-          backgroundColor: Colors.blue[900],
-        ),
-        body: clientsBloc.clientList.isNotEmpty
-            ? RefreshIndicator(
-                onRefresh: () async {
-                  clientsBloc.loadClients();
-                },
-                color: Colors.white,
-                backgroundColor: Colors.blue[900],
-                child: OrientationBuilder(
-                  builder: (_, orientation) {
-                    if (orientation == Orientation.landscape) {
-                      return GridView.builder(
-                          physics: BouncingScrollPhysics(),
-                          itemCount: clientsBloc.clientList.length,
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3,
-                            childAspectRatio: 1,
-                            crossAxisSpacing: 1,
-                            mainAxisSpacing: 1,
-                          ),
-                          itemBuilder: (context, index) {
-                            final client = clientsBloc.clientList[index];
-                            return buildList(
-                              context,
-                              index,
-                              client,
-                              clientsBloc.cardHeight,
-                              () async {
-                                _showMyDialog(
-                                    context, client, clientsBloc, preSaleBloc);
-                              },
-                            );
-                          });
-                    }
-                    return ListView.builder(
-                        itemCount: clientsBloc.clientList.length,
-                        physics: BouncingScrollPhysics(),
-                        itemBuilder: (BuildContext context, int index) {
-                          final client = clientsBloc.clientList[index];
-                          return buildList(
-                              context, index, client, clientsBloc.cardHeight,
-                              () {
-                            _showMyDialog(
-                                context, client, clientsBloc, preSaleBloc);
-                          });
-                        });
-                  },
-                ),
-              )
-            : const Center(
-                child: CircularProgressIndicator(
-                  backgroundColor: Colors.black45,
-                ),
-              ),
-      ),
-    );
-  }
-
   Widget buildList(BuildContext context, int index, Cliente client,
       double cardHeight, VoidCallback onTap) {
     if (client.numerocuotas == null) {
-      cardHeight = 152;
+      cardHeight = 150;
     }
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 25, horizontal: 18),
+      margin: EdgeInsets.symmetric(
+        vertical: 25,
+        horizontal: 18,
+      ),
       elevation: 20,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
       color: Colors.white70,
@@ -235,10 +123,24 @@ class ClientesScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(
-                    client.nombre,
-                    maxLines: 1,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  Center(
+                    child: Text(
+                      client.nombre,
+                      maxLines: 1,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 20.0),
+                    ),
+                  ),
+                  Center(
+                    child: Text(
+                      client.tipoChanged,
+                      maxLines: 1,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 16.0,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
                   ),
                   SizedBox(
                     height: 6,
@@ -255,12 +157,14 @@ class ClientesScreen extends StatelessWidget {
                       ),
                       Flexible(
                         child: Text(
-                          client.direccion,
+                          client.direccion != null
+                              ? client.direccion
+                              : 'Sin Direccion',
                           overflow: TextOverflow.ellipsis,
                           softWrap: true,
                           maxLines: 1,
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: 14.5,
                             letterSpacing: .3,
                             fontWeight: FontWeight.w400,
                           ),
@@ -291,12 +195,12 @@ class ClientesScreen extends StatelessWidget {
                           ? Text('Efectivo',
                               style: TextStyle(
                                   fontWeight: FontWeight.w400,
-                                  fontSize: 14,
+                                  fontSize: 14.5,
                                   letterSpacing: .3))
                           : Text('Crédito',
                               style: TextStyle(
                                   fontWeight: FontWeight.w400,
-                                  fontSize: 14,
+                                  fontSize: 14.5,
                                   letterSpacing: .3)),
                     ],
                   ),
@@ -321,7 +225,7 @@ class ClientesScreen extends StatelessWidget {
                                 Text('${client.numDias} Días a pagar',
                                     maxLines: 1,
                                     style: TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 14.5,
                                         letterSpacing: .3,
                                         fontWeight: FontWeight.w400))
                               ],
@@ -337,13 +241,147 @@ class ClientesScreen extends StatelessWidget {
                     child: DeliveryButton(
                       text: "Añadir",
                       onTap: onTap,
+                      padding: EdgeInsets.symmetric(
+                        vertical: 12.0,
+                      ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
           )
         ],
+      ),
+    );
+  }
+
+  Future toSearch(BuildContext context, ClientesBLoC clientsBloc,
+      PreSaleBLoC preSaleBloc) async {
+    final client = await showSearch(
+        context: context,
+        delegate: ClientSearchDelegate('Buscar cliente',
+            clientesBLoC: clientsBloc, preSaleBLoC: preSaleBloc));
+    if (client != null) {
+      //TODO: Guardar historial de busqueda en SharedPreferences localmente
+      if (!clientsBloc.historial.any((element) => element.id == client.id)) {
+        if (clientsBloc.historial.length >= 10) {
+          clientsBloc.historial.removeLast();
+          clientsBloc.historial.insert(0, client);
+        } else {
+          clientsBloc.historial.insert(0, client);
+        }
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final clientsBloc = context.watch<ClientesBLoC>();
+    final preSaleBloc = context.watch<PreSaleBLoC>();
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white70,
+        floatingActionButton: FloatingActionButton(
+          heroTag: "btnCreateClient",
+          elevation: 25,
+          backgroundColor: Colors.blue[700],
+          child: Icon(
+            Icons.add,
+            size: 38,
+          ),
+          onPressed: () async {
+            final client = await Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => ClientCreate()));
+            if (client != null) {
+              print('Cliente Creado $client');
+            }
+          },
+        ),
+        appBar: AppBar(
+          centerTitle: true,
+          elevation: 6.0,
+          title: Text(
+            'Clientes',
+            style: TextStyle(fontSize: 25.0),
+          ),
+          backgroundColor: Colors.blue[900],
+          toolbarHeight: 42.0,
+          actions: [
+            IconButton(
+              icon: Icon(
+                Icons.search,
+                size: 30,
+              ),
+              color: Colors.white,
+              onPressed: () async {
+                await toSearch(context, clientsBloc, preSaleBloc);
+              },
+              splashColor: Colors.transparent,
+            )
+          ],
+        ),
+        body: clientsBloc.clientList.isNotEmpty
+            ? RefreshIndicator(
+                onRefresh: () async {
+                  clientsBloc.loadClients();
+                },
+                color: Colors.white,
+                backgroundColor: Colors.blue[900],
+                child: OrientationBuilder(
+                  builder: (_, orientation) {
+                    if (orientation == Orientation.landscape) {
+                      return GridView.builder(
+                          itemCount: clientsBloc.clientList.length,
+                          physics: BouncingScrollPhysics(
+                            parent: AlwaysScrollableScrollPhysics(),
+                          ),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            childAspectRatio: 1,
+                            crossAxisSpacing: 1,
+                            mainAxisSpacing: 1,
+                          ),
+                          itemBuilder: (context, index) {
+                            final client = clientsBloc.clientList[index];
+                            return buildList(
+                              context,
+                              index,
+                              client,
+                              clientsBloc.cardHeight,
+                              () async {
+                                _showMyDialog(
+                                    context, client, clientsBloc, preSaleBloc);
+                              },
+                            );
+                          });
+                    }
+                    return ListView.builder(
+                        itemCount: clientsBloc.clientList.length,
+                        physics: BouncingScrollPhysics(
+                          parent: AlwaysScrollableScrollPhysics(),
+                        ),
+                        itemBuilder: (BuildContext context, int index) {
+                          final client = clientsBloc.clientList[index];
+                          return buildList(
+                            context,
+                            index,
+                            client,
+                            clientsBloc.cardHeight,
+                            () {
+                              _showMyDialog(
+                                  context, client, clientsBloc, preSaleBloc);
+                            },
+                          );
+                        });
+                  },
+                ),
+              )
+            : Center(
+                child: CircularProgressIndicator(
+                  backgroundColor: Colors.black45,
+                ),
+              ),
       ),
     );
   }

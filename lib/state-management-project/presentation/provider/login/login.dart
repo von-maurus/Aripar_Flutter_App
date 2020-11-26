@@ -51,124 +51,110 @@ class LoginPage extends StatelessWidget {
         r"{0,253}[a-zA-Z0-9])?)*$";
     RegExp regex = new RegExp(pattern);
     if (!regex.hasMatch(value) || value == null)
-      return 'Ingrese un correo válido';
+      return 'Ingrese un correo válido\n';
     else
       return null;
   }
 
   String validatePassword(String value) {
     if (value == '') {
-      return 'Este campo es obligatorio';
+      return 'Este campo es obligatorio\n';
     } else
       return null;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    final bloc = context.watch<LoginBLoC>();
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      print('constraints.maxWidth ${constraints.maxWidth}');
-      if (constraints.maxWidth >= 600.0) {
-        return buildLoginLarge(size, bloc, context);
-      } else {
-        return buildLoginSmall(size, bloc, context);
-      }
-    });
   }
 
   Widget buildLoginSmall(Size size, LoginBLoC bloc, BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.blue[700],
         key: _scaffoldKey,
         body: Stack(
           children: [
             Container(
-                width: double.infinity,
-                height: size.height,
-                child: Background(
-                  size: size,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        Logo(
-                          size: size,
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(top: size.height * 0.02),
-                          padding: EdgeInsets.symmetric(
-                              horizontal: size.width * 0.051),
-                          child: Column(
-                            children: <Widget>[
-                              CustomFormInput(
-                                right: 0,
-                                bottom: 0,
-                                left: 0,
-                                top: 0,
-                                autoValidateMode:
-                                    AutovalidateMode.onUserInteraction,
-                                validator: validateEmail,
-                                textInputAction: TextInputAction.next,
-                                focusNode: _focusNodeEmail,
-                                size: size,
-                                prefixIcon: Icon(Icons.email),
-                                hintText: 'Email',
-                                controller: bloc.emailTextController,
-                                textInputType: TextInputType.emailAddress,
-                                function: (value) {
-                                  _focusNodePassword.requestFocus();
+              width: double.infinity,
+              height: size.height,
+              child: Background(
+                size: size,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Logo(
+                        size: size,
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: size.height * 0.02),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: size.width * 0.051),
+                        child: Column(
+                          children: <Widget>[
+                            CustomFormInput(
+                              right: 0,
+                              bottom: 0,
+                              left: 0,
+                              top: 0,
+                              autoValidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              validator: validateEmail,
+                              textInputAction: TextInputAction.next,
+                              focusNode: _focusNodeEmail,
+                              size: size,
+                              prefixIcon: Icon(Icons.email),
+                              hintText: 'Email',
+                              controller: bloc.emailTextController,
+                              textInputType: TextInputType.emailAddress,
+                              function: (value) {
+                                _focusNodePassword.requestFocus();
+                              },
+                            ),
+                            CustomFormInput(
+                              right: 0,
+                              bottom: 0,
+                              left: 0,
+                              top: 0,
+                              suffixWidget: IconButton(
+                                icon: Icon(bloc.isObscure
+                                    ? Icons.visibility_off
+                                    : Icons.visibility),
+                                onPressed: () {
+                                  bloc.showHidePassword();
                                 },
                               ),
-                              CustomFormInput(
-                                right: 0,
-                                bottom: 0,
-                                left: 0,
-                                top: 0,
-                                suffixWidget: IconButton(
-                                  icon: Icon(bloc.isObscure
-                                      ? Icons.visibility_off
-                                      : Icons.visibility),
-                                  onPressed: () {
-                                    bloc.showHidePassword();
-                                  },
-                                ),
-                                autoValidateMode:
-                                    AutovalidateMode.onUserInteraction,
-                                validator: validatePassword,
-                                textInputAction: TextInputAction.done,
-                                focusNode: _focusNodePassword,
-                                isObscure: bloc.isObscure,
-                                size: size,
-                                prefixIcon: Icon(Icons.vpn_key),
-                                hintText: 'Contraseña',
-                                controller: bloc.passwordTextController,
-                                function: (value) {
-                                  FocusScope.of(context).unfocus();
-                                },
-                              ),
-                              RoundedButton(
-                                size: size,
-                                buttonText: "Iniciar sesión",
-                                onPressed: () => login(context),
-                                buttonColor: Colors.orange[500],
-                                buttonTextColor: Colors.black,
-                              ),
-                            ],
-                          ),
+                              autoValidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              validator: validatePassword,
+                              textInputAction: TextInputAction.done,
+                              focusNode: _focusNodePassword,
+                              isObscure: bloc.isObscure,
+                              size: size,
+                              prefixIcon: Icon(Icons.vpn_key),
+                              hintText: 'Contraseña',
+                              controller: bloc.passwordTextController,
+                              function: (value) {
+                                FocusScope.of(context).unfocus();
+                              },
+                            ),
+                            RoundedButton(
+                              size: size,
+                              buttonText: "Iniciar sesión",
+                              onPressed: () => login(context),
+                              buttonColor: Colors.orange[500],
+                              buttonTextColor: Colors.black,
+                            ),
+                          ],
                         ),
-                        BottomLabels(
-                          fontSizeTerms: 15.5,
-                          indent: 10,
-                          endIndent: 10,
-                          size: size,
-                        ),
-                      ],
-                    ),
+                      ),
+                      BottomLabels(
+                        fontSizeTerms: 15.5,
+                        indent: 10,
+                        endIndent: 10,
+                        size: size,
+                      ),
+                    ],
                   ),
-                )),
+                ),
+              ),
+            ),
             if (bloc.loginState == LoginState.loading)
               Container(
                 color: Colors.black45,
@@ -185,7 +171,7 @@ class LoginPage extends StatelessWidget {
   Widget buildLoginLarge(Size size, LoginBLoC bloc, BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.blue[900],
         key: _scaffoldKey,
         body: Stack(
           children: [
@@ -356,5 +342,24 @@ class LoginPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp,
+    ]);
+    Size size = MediaQuery.of(context).size;
+    final bloc = context.watch<LoginBLoC>();
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+      print('constraints.maxWidth ${constraints.maxWidth}');
+      if (constraints.maxWidth >= 600.0) {
+        return buildLoginLarge(size, bloc, context);
+      } else {
+        return buildLoginSmall(size, bloc, context);
+      }
+    });
   }
 }

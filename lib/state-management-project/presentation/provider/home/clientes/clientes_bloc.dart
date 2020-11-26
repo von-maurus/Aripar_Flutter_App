@@ -28,6 +28,8 @@ class ClientesBLoC extends ChangeNotifier {
       mask: '##.###.###-#', filter: {"#": RegExp(r'[0-9]|k')});
   var response;
   double cardHeight = 180;
+  int numDiasCuota = 1;
+  int clientType = 1;
 
   //Form Variables
   ValidationItem _nombre = ValidationItem(null, null);
@@ -37,6 +39,7 @@ class ClientesBLoC extends ChangeNotifier {
   ValidationItem _fono = ValidationItem(null, null);
   ValidationItem _tipoPago = ValidationItem("1", null);
   ValidationItem _numCuotas = ValidationItem(null, null);
+  ValidationItem _tipo = ValidationItem(null, null);
 
   //Getters
   ValidationItem get nombre => _nombre;
@@ -46,6 +49,7 @@ class ClientesBLoC extends ChangeNotifier {
   ValidationItem get fono => _fono;
   ValidationItem get tipoPago => _tipoPago;
   ValidationItem get numCuotas => _numCuotas;
+  ValidationItem get tipo => _tipo;
 
   void clearFields() {
     _nombre = ValidationItem(null, null);
@@ -55,7 +59,10 @@ class ClientesBLoC extends ChangeNotifier {
     _fono = ValidationItem(null, null);
     _tipoPago = ValidationItem("1", null);
     _numCuotas = ValidationItem(null, null);
+    _tipo = ValidationItem(null, null);
     maskFormatter.clear();
+    numDiasCuota = 1;
+    clientType = 1;
     notifyListeners();
   }
 
@@ -85,6 +92,16 @@ class ClientesBLoC extends ChangeNotifier {
   }
 
   //Setters
+  void changeType(String type) {
+    if (type == '' || type == null) {
+      _nombre = ValidationItem(null, "Este campo es obligatorio.");
+    } else {
+      _tipo = ValidationItem(type, null);
+      clientType = int.parse(type);
+    }
+    notifyListeners();
+  }
+
   void changeName(String name) {
     if (name == '' || name == null) {
       _nombre = ValidationItem(null, "Este campo es obligatorio.");
@@ -187,6 +204,7 @@ class ClientesBLoC extends ChangeNotifier {
     if (numCuotas == null || numCuotas == '') {
       _numCuotas = ValidationItem(null, "Este campo es obligatorio.");
     } else {
+      numDiasCuota = int.parse(numCuotas);
       _numCuotas = ValidationItem(numCuotas, null);
     }
     notifyListeners();
@@ -194,6 +212,11 @@ class ClientesBLoC extends ChangeNotifier {
 
   void changePayType(String clientPayType) {
     _tipoPago = ValidationItem(clientPayType, null);
+    if (clientPayType == "2") {
+      _numCuotas = ValidationItem("1", null);
+    } else {
+      _numCuotas = ValidationItem(null, null);
+    }
     notifyListeners();
   }
 
@@ -210,15 +233,14 @@ class ClientesBLoC extends ChangeNotifier {
         client.numerocuotas =
             _tipoPago.value == "1" ? null : int.parse(_numCuotas.value);
         client.tipopago = int.parse(_tipoPago.value);
+        client.tipo = int.parse(_tipo.value);
         clientsState = ClientsState.loading;
         notifyListeners();
         final result = await apiRepositoryInterface.createCliente(client);
         print('resultado de create $result');
-        print('LISTA ANTES ${clientList.length}');
         if (result != null) {
           clientList.insert(0, result);
         }
-        print('LISTA DESPUES ${clientList.length}');
         clientsState = ClientsState.initial;
         notifyListeners();
         return true;

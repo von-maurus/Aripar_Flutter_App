@@ -79,10 +79,46 @@ class _CustomForm extends StatelessWidget {
         SnackBar(
           backgroundColor: Colors.red,
           duration: Duration(milliseconds: 900),
-          content: Text('No se logró crear al cliente.'),
+          content: Text('Ocurrio un error, inténtelo denuevo.'),
         ),
       );
     }
+  }
+
+  Widget buildCreditOptions() {
+    return Container(
+      margin: EdgeInsets.only(bottom: 10.0),
+      padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20.0),
+        color: Colors.white,
+        border: Border.all(),
+      ),
+      child: DropdownButton(
+        icon: Icon(Icons.credit_card_rounded),
+        value: clientsBLoC.numDiasCuota,
+        elevation: 5,
+        isExpanded: true,
+        items: [
+          DropdownMenuItem(
+            child: Text("7 Días"),
+            value: 1,
+          ),
+          DropdownMenuItem(
+            child: Text("15 Días"),
+            value: 2,
+          ),
+          DropdownMenuItem(
+            child: Text("30 Días"),
+            value: 3,
+          ),
+        ],
+        onChanged: (value) {
+          print(value);
+          clientsBLoC.changeNumCuotas(value.toString());
+        },
+      ),
+    );
   }
 
   @override
@@ -195,12 +231,54 @@ class _CustomForm extends StatelessWidget {
                   SizedBox(
                     height: 25,
                   ),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 8.0),
+                    padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                    height: 58.0,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(17.0),
+                      color: Colors.white,
+                      border: Border.all(
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 2.5,
+                        ),
+                        DropdownButton(
+                          value: clientsBLoC.clientType,
+                          elevation: 5,
+                          isExpanded: true,
+                          items: [
+                            DropdownMenuItem(
+                              child: Text("Minorista"),
+                              value: 1,
+                            ),
+                            DropdownMenuItem(
+                              child: Text("Mayorista"),
+                              value: 2,
+                            ),
+                          ],
+                          onChanged: (value) {
+                            print(value);
+                            clientsBLoC.changeType(value.toString());
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
                   Row(
                     children: [
                       Flexible(
                         child: ListTile(
-                          title: Text('Efectivo',
-                              style: TextStyle(fontSize: 18.0)),
+                          title: Text(
+                            'Efectivo',
+                            maxLines: 1,
+                            style: TextStyle(fontSize: 18.5),
+                            textAlign: TextAlign.left,
+                          ),
                           leading: Radio(
                             value: "1",
                             groupValue: clientsBLoC.tipoPago.value,
@@ -212,11 +290,12 @@ class _CustomForm extends StatelessWidget {
                             clientsBLoC.changePayType("1");
                           },
                         ),
+                        flex: 1,
                       ),
                       Flexible(
                         child: ListTile(
                           title:
-                              Text('Crédito', style: TextStyle(fontSize: 18.0)),
+                              Text('Crédito', style: TextStyle(fontSize: 18.5)),
                           leading: Radio(
                             value: "2",
                             groupValue: clientsBLoC.tipoPago.value,
@@ -228,6 +307,7 @@ class _CustomForm extends StatelessWidget {
                             clientsBLoC.changePayType("2");
                           },
                         ),
+                        flex: 1,
                       ),
                     ],
                   ),
@@ -235,22 +315,12 @@ class _CustomForm extends StatelessWidget {
                     height: 28,
                   ),
                   clientsBLoC.tipoPago.value == "1"
-                      ? Container()
-                      : TextFormField(
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.timelapse),
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20)),
-                            labelText: "Días a pagar",
-                            errorText: clientsBLoC.numCuotas.error,
-                          ),
-                          onChanged: (String value) {
-                            clientsBLoC.changeNumCuotas(value);
-                          },
-                        ),
+                      ? Container(
+                          height: 0,
+                        )
+                      : buildCreditOptions(),
                   SizedBox(
-                    height: 28,
+                    height: 20.0,
                   ),
                   RoundedButton(
                     size: size,

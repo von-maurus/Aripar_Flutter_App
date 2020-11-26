@@ -19,6 +19,7 @@ class Cliente {
     this.tipopago,
     this.numerocuotas,
     this.estado,
+    this.tipo,
   });
 
   int id;
@@ -30,6 +31,7 @@ class Cliente {
   int tipopago;
   int numerocuotas;
   int estado;
+  int tipo;
 
   factory Cliente.fromJson(Map<String, dynamic> json) => Cliente(
         id: json["id"] as int,
@@ -41,6 +43,7 @@ class Cliente {
         tipopago: json["tipopago"] as int,
         numerocuotas: json["numerocuotas"] as int,
         estado: json["estado"] as int,
+        tipo: json["tipo"] as int,
       );
 
   Map<String, dynamic> toJson() => {
@@ -53,6 +56,7 @@ class Cliente {
         "tipopago": tipopago,
         "numerocuotas": numerocuotas,
         "estado": estado != null ? estado : 1,
+        "tipo": tipo != null ? tipo : 1,
       };
   Map<String, dynamic> createToJson() => {
         "nombre": nombre,
@@ -62,6 +66,7 @@ class Cliente {
         "fono": fono,
         "tipopago": tipopago,
         "numerocuotas": numerocuotas,
+        "tipo": tipo,
       };
   int get numDias {
     switch (numerocuotas) {
@@ -71,14 +76,24 @@ class Cliente {
         return 15;
       case 3:
         return 30;
-
       default:
-        return 0;
+        return 7;
+    }
+  }
+
+  String get tipoChanged {
+    switch (tipo) {
+      case 1:
+        return 'Minorista';
+      case 2:
+        return 'Mayorista';
+      default:
+        return 'No especificado';
     }
   }
 
   @override
   String toString() {
-    return 'Instancia de Cliente: $nombre - $rut';
+    return 'Instancia de Cliente: $nombre - $rut - ${tipo == 1 ? 'Mayorista' : 'Minorista'}';
   }
 }

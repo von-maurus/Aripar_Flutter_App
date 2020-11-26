@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+
 import 'package:arturo_bruna_app/state-management-project/domain/model/user.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/model/cliente.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/model/product.dart';
@@ -16,11 +17,8 @@ import 'package:arturo_bruna_app/state-management-project/domain/exception/produ
 class ApiRepositoryImpl extends ApiRepositoryInterface {
   static const urlBase = 'http://192.168.1.86/sab-backend/';
 
-  //Seba IP
-  // static const urlBase = 'http://192.168.0.2/sab-backend/';
-
   //Domain backend
-  // static const urlBase = 'http://aripar.kuvesoft.cl/backend';
+  // static const urlBase = 'http://aripar.kuvesoft.cl/backend/';
   static const apiUrl = urlBase + 'web/index.php?r=';
   static const urlUserImage = urlBase + "assets/avatares/";
   static const urlProductImage = urlBase + "assets/productos/";
@@ -144,7 +142,7 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
     const controller = 'clientes/';
     print(' Cliente en la api $cliente');
     final data = cliente.createToJson();
-    print(data);
+    print('Cliente: $data');
     final dataEncode = json.encode(data);
     final response = await http.Client().post(
         apiUrl + controller + 'create-from-app',

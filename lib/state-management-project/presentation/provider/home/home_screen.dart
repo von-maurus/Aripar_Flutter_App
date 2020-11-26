@@ -18,8 +18,16 @@ class HomePage extends StatelessWidget {
   HomePage._();
 
   static Widget init(BuildContext context) {
+    WidgetsFlutterBinding.ensureInitialized();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+    ]).then((_) {});
     SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle(statusBarColor: Colors.blue[900]));
+      SystemUiOverlayStyle(statusBarColor: Colors.blue[900]),
+    );
     return ChangeNotifierProvider(
       create: (_) => HomeBLoC(
         apiRepositoryInterface: context.read<ApiRepositoryInterface>(),
@@ -90,10 +98,11 @@ class _DeliveryNavigationBar extends StatelessWidget {
           );
         } else {
           return _BottomNavBarSmall(
-              index: index,
-              onIndexSelected: onIndexSelected,
-              preSaleBLoC: preSaleBLoC,
-              user: user);
+            index: index,
+            onIndexSelected: onIndexSelected,
+            preSaleBLoC: preSaleBLoC,
+            user: user,
+          );
         }
       },
     );
@@ -159,7 +168,7 @@ class _BottomNavBarSmall extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       backgroundColor: Colors.orange[700],
-                      radius: 27,
+                      radius: 27.0,
                       child: IconButton(
                         splashColor: Colors.transparent,
                         icon: Icon(
@@ -273,10 +282,11 @@ class _BottomNavBarLarge extends StatelessWidget {
                   backgroundColor: Colors.orange[700],
                   radius: MediaQuery.of(context).orientation ==
                           Orientation.landscape
-                      ? MediaQuery.of(context).size.width * 0.04
+                      ? MediaQuery.of(context).size.width * 0.038
                       : 50.0,
                   child: IconButton(
                     splashColor: Colors.transparent,
+                    alignment: AlignmentDirectional.center,
                     icon: Icon(
                       Icons.shopping_basket,
                       color: index == 2
@@ -286,7 +296,7 @@ class _BottomNavBarLarge extends StatelessWidget {
                     onPressed: () => onIndexSelected(2),
                     iconSize: MediaQuery.of(context).orientation ==
                             Orientation.landscape
-                        ? MediaQuery.of(context).size.width * 0.045
+                        ? MediaQuery.of(context).size.width * 0.056
                         : 50.0,
                   ),
                 ),
@@ -328,7 +338,7 @@ class _BottomNavBarLarge extends StatelessWidget {
                       ),
                     )
                   : CircleAvatar(
-                      radius: 24.0,
+                      radius: 28.0,
                       backgroundImage: NetworkImage(
                         user.imagen,
                       ),
