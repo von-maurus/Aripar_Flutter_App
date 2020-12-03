@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
@@ -27,6 +29,8 @@ class PreSaleBLoC extends ChangeNotifier {
   int diasCuota;
   MaskTextInputFormatter maskTextInputFormatter =
       new MaskTextInputFormatter(mask: '##.###.###-#');
+  bool isStockError = false;
+  bool isAnyError = false;
   PreSaleBLoC({this.apiRepositoryInterface, this.localRepositoryInterface});
 
   int get numDias {
@@ -160,6 +164,8 @@ class PreSaleBLoC extends ChangeNotifier {
   }
 
   Future<dynamic> checkOut() async {
+    isAnyError = false;
+    isStockError = false;
     preSaleState = PreSaleState.loading;
     notifyListeners();
     if (client.id == null) {
@@ -176,15 +182,23 @@ class PreSaleBLoC extends ChangeNotifier {
       notifyListeners();
       return response;
     } on PreSaleException catch (e) {
+      isStockError = true;
+      print(e.getMessage());
+      preSaleState = PreSaleState.stable;
+      notifyListeners();
+      return 'Ocurrio un error: \n${e.getMessage()}';
+    } on TimeoutException catch (e) {
+      isAnyError = true;
       print(e);
       preSaleState = PreSaleState.stable;
       notifyListeners();
-      return 'Ocurrio un error: $e';
+      return 'Conexión perdida, por favor vuelva a intentarlo.';
     } on Exception catch (e) {
+      isAnyError = true;
       print(e);
       preSaleState = PreSaleState.stable;
       notifyListeners();
-      return 'Ocurrio un error: $e';
+      return 'Ocurrio un error inesperado: $e';
     }
   }
 }

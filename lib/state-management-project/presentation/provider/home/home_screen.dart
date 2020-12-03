@@ -16,15 +16,14 @@ import 'package:arturo_bruna_app/state-management-project/presentation/provider/
 
 class HomePage extends StatelessWidget {
   HomePage._();
-
   static Widget init(BuildContext context) {
     WidgetsFlutterBinding.ensureInitialized();
     SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitDown,
-      DeviceOrientation.portraitUp,
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft,
-    ]).then((_) {});
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp,
+    ]);
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(statusBarColor: Colors.blue[900]),
     );
@@ -40,33 +39,36 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bloc = Provider.of<HomeBLoC>(context);
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(
-            child: IndexedStack(
-              index: bloc.indexSelected,
-              children: [
-                ProductosScreen.init(context),
-                ClientesScreen(),
-                PreSalePage(
-                  onShopping: () {
-                    bloc.updateIndexSelected(0);
-                  },
-                ),
-                UserScreen.init(context)
-              ],
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: IndexedStack(
+                index: bloc.indexSelected,
+                children: [
+                  ProductosScreen.init(context),
+                  ClientesScreen(),
+                  PreSalePage(
+                    onShopping: () {
+                      bloc.updateIndexSelected(0);
+                    },
+                  ),
+                  UserScreen.init(context)
+                ],
+              ),
             ),
-          ),
-          _DeliveryNavigationBar(
-            index: bloc.indexSelected,
-            onIndexSelected: (index) {
-              bloc.updateIndexSelected(index);
-            },
-          ),
-        ],
+            _DeliveryNavigationBar(
+              index: bloc.indexSelected,
+              onIndexSelected: (index) {
+                bloc.updateIndexSelected(index);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

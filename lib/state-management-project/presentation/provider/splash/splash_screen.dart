@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'package:arturo_bruna_app/state-management-project/domain/repository/api_repository.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/repository/local_storage_repository.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/splash/splash_bloc.dart';
@@ -37,11 +38,14 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       );
     } else {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (_) => LoginPage.init(context),
-        ),
-      );
+      if (!bloc.isTimeoutException) {
+        await Future.delayed(Duration(milliseconds: 2300));
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (_) => LoginPage.init(context),
+          ),
+        );
+      }
     }
   }
 
@@ -57,17 +61,20 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bloc = context.watch<SplashBLoC>();
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
       if (constraints.maxWidth >= 600.0) {
         print('constraints.maxWidth ${constraints.maxWidth}');
         return _SplashLarge(
           scaffoldKey: _scaffoldKey,
+          bloc: bloc,
         );
       } else {
         print('constraints.maxWidth ${constraints.maxWidth}');
         return _SplashSmall(
           scaffoldKey: _scaffoldKey,
+          bloc: bloc,
         );
       }
     });
@@ -76,7 +83,30 @@ class _SplashScreenState extends State<SplashScreen> {
 
 class _SplashLarge extends StatelessWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
-  const _SplashLarge({Key key, this.scaffoldKey}) : super(key: key);
+  final SplashBLoC bloc;
+  const _SplashLarge({Key key, this.scaffoldKey, this.bloc}) : super(key: key);
+
+  Future<void> retry(
+      BuildContext context, GlobalKey<ScaffoldState> _scaffoldKey) async {
+    final result = await bloc.validateSession(_scaffoldKey);
+    await Future.delayed(Duration(milliseconds: 1200));
+    if (result) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (_) => HomePage.init(context),
+        ),
+      );
+    } else {
+      if (!bloc.isTimeoutException) {
+        await Future.delayed(Duration(milliseconds: 2300));
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (_) => LoginPage.init(context),
+          ),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -101,20 +131,37 @@ class _SplashLarge extends StatelessWidget {
               SizedBox(
                 height: 50.0,
               ),
-              SizedBox(
-                width:
-                    MediaQuery.of(context).orientation == Orientation.landscape
-                        ? MediaQuery.of(context).size.width * 0.07
-                        : MediaQuery.of(context).size.width * 0.1,
-                height:
-                    MediaQuery.of(context).orientation == Orientation.landscape
-                        ? MediaQuery.of(context).size.width * 0.07
-                        : MediaQuery.of(context).size.width * 0.1,
-                child: CircularProgressIndicator(
-                  backgroundColor: Colors.blue[900],
-                  strokeWidth: 10,
-                ),
-              )
+              !bloc.isTimeoutException
+                  ? SizedBox(
+                      width: MediaQuery.of(context).orientation ==
+                              Orientation.landscape
+                          ? MediaQuery.of(context).size.width * 0.07
+                          : MediaQuery.of(context).size.width * 0.1,
+                      height: MediaQuery.of(context).orientation ==
+                              Orientation.landscape
+                          ? MediaQuery.of(context).size.width * 0.07
+                          : MediaQuery.of(context).size.width * 0.1,
+                      child: CircularProgressIndicator(
+                        backgroundColor: Colors.blue[900],
+                        strokeWidth: 10,
+                      ),
+                    )
+                  : RaisedButton(
+                      color: Colors.blue,
+                      shape: StadiumBorder(),
+                      child: Text(
+                        "Reintentar",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                      splashColor: Colors.green,
+                      elevation: 5.0,
+                      onPressed: () {
+                        retry(context, scaffoldKey);
+                      },
+                    )
             ],
           ),
         ),
@@ -125,7 +172,30 @@ class _SplashLarge extends StatelessWidget {
 
 class _SplashSmall extends StatelessWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
-  const _SplashSmall({Key key, this.scaffoldKey}) : super(key: key);
+  final SplashBLoC bloc;
+  const _SplashSmall({Key key, this.scaffoldKey, this.bloc}) : super(key: key);
+
+  Future<void> retry(
+      BuildContext context, GlobalKey<ScaffoldState> _scaffoldKey) async {
+    final result = await bloc.validateSession(_scaffoldKey);
+    await Future.delayed(Duration(milliseconds: 1200));
+    if (result) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (_) => HomePage.init(context),
+        ),
+      );
+    } else {
+      if (!bloc.isTimeoutException) {
+        await Future.delayed(Duration(milliseconds: 2300));
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (_) => LoginPage.init(context),
+          ),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -150,7 +220,24 @@ class _SplashSmall extends StatelessWidget {
               SizedBox(
                 height: 20,
               ),
-              CircularProgressIndicator()
+              !bloc.isTimeoutException
+                  ? CircularProgressIndicator(strokeWidth: 4)
+                  : RaisedButton(
+                      color: Colors.blue,
+                      shape: StadiumBorder(),
+                      child: Text(
+                        "Reintentar",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                      splashColor: Colors.green,
+                      elevation: 5.0,
+                      onPressed: () {
+                        retry(context, scaffoldKey);
+                      },
+                    )
             ],
           ),
         ),

@@ -28,13 +28,15 @@ class ProductosBLoC extends ChangeNotifier {
       notifyListeners();
       final result = await apiRepositoryInterface.getProducts();
       productList = result;
+      print('LISTA PRODUCTOS $productList');
       productsState = ProductsState.initial;
       notifyListeners();
     } on ProductException catch (_) {
+      print(_);
       productsState = ProductsState.initial;
       notifyListeners();
     }
-    notifyListeners();
+    // notifyListeners();
   }
 
   Future<void> getProductsByNameCode(String name) async {

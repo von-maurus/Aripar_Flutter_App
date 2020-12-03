@@ -19,9 +19,12 @@ class LoginPage extends StatelessWidget {
   final FocusNode _focusNodePassword = new FocusNode();
 
   static Widget init(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp,
+    ]);
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(statusBarColor: Colors.blue));
-
     return ChangeNotifierProvider(
       create: (_) => LoginBLoC(
         apiRepositoryInterface: context.read<ApiRepositoryInterface>(),
@@ -44,23 +47,29 @@ class LoginPage extends StatelessWidget {
     }
   }
 
-  String validateEmail(String value) {
+  String validateEmail(String value, LoginBLoC loginBLoC) {
     Pattern pattern =
         r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
         r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
         r"{0,253}[a-zA-Z0-9])?)*$";
     RegExp regex = new RegExp(pattern);
-    if (!regex.hasMatch(value) || value == null)
+    if (!regex.hasMatch(value) || value == null) {
+      loginBLoC.isValidEmail = false;
       return 'Ingrese un correo válido\n';
-    else
+    } else {
+      loginBLoC.isValidEmail = true;
       return null;
+    }
   }
 
-  String validatePassword(String value) {
+  String validatePassword(String value, LoginBLoC loginBLoC) {
     if (value == '') {
+      loginBLoC.isValidPassword = false;
       return 'Este campo es obligatorio\n';
-    } else
+    } else {
+      loginBLoC.isValidPassword = true;
       return null;
+    }
   }
 
   Widget buildLoginSmall(Size size, LoginBLoC bloc, BuildContext context) {
@@ -95,7 +104,10 @@ class LoginPage extends StatelessWidget {
                               top: 0,
                               autoValidateMode:
                                   AutovalidateMode.onUserInteraction,
-                              validator: validateEmail,
+                              validator: (value) {
+                                final response = validateEmail(value, bloc);
+                                return response;
+                              },
                               textInputAction: TextInputAction.next,
                               focusNode: _focusNodeEmail,
                               size: size,
@@ -122,7 +134,10 @@ class LoginPage extends StatelessWidget {
                               ),
                               autoValidateMode:
                                   AutovalidateMode.onUserInteraction,
-                              validator: validatePassword,
+                              validator: (value) {
+                                final response = validatePassword(value, bloc);
+                                return response;
+                              },
                               textInputAction: TextInputAction.done,
                               focusNode: _focusNodePassword,
                               isObscure: bloc.isObscure,
@@ -209,7 +224,10 @@ class LoginPage extends StatelessWidget {
                                             : 27.0),
                                 autoValidateMode:
                                     AutovalidateMode.onUserInteraction,
-                                validator: validateEmail,
+                                validator: (value) {
+                                  final response = validateEmail(value, bloc);
+                                  return response;
+                                },
                                 textInputAction: TextInputAction.next,
                                 focusNode: _focusNodeEmail,
                                 size: size,
@@ -278,7 +296,11 @@ class LoginPage extends StatelessWidget {
                                 ),
                                 autoValidateMode:
                                     AutovalidateMode.onUserInteraction,
-                                validator: validatePassword,
+                                validator: (value) {
+                                  final response =
+                                      validatePassword(value, bloc);
+                                  return response;
+                                },
                                 textInputAction: TextInputAction.done,
                                 focusNode: _focusNodePassword,
                                 isObscure: bloc.isObscure,
@@ -346,20 +368,17 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitDown,
-      DeviceOrientation.portraitUp,
-    ]);
     Size size = MediaQuery.of(context).size;
     final bloc = context.watch<LoginBLoC>();
     return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      print('constraints.maxWidth ${constraints.maxWidth}');
-      if (constraints.maxWidth >= 600.0) {
-        return buildLoginLarge(size, bloc, context);
-      } else {
-        return buildLoginSmall(size, bloc, context);
-      }
-    });
+      builder: (BuildContext context, BoxConstraints constraints) {
+        print('constraints.maxWidth ${constraints.maxWidth}');
+        if (constraints.maxWidth >= 600.0) {
+          return buildLoginLarge(size, bloc, context);
+        } else {
+          return buildLoginSmall(size, bloc, context);
+        }
+      },
+    );
   }
 }

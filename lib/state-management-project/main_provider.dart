@@ -1,3 +1,4 @@
+import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/productos/productos_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -39,6 +40,12 @@ class MainProvider extends StatelessWidget {
             localRepositoryInterface: context.read<LocalRepositoryInterface>(),
           ),
         ),
+        ChangeNotifierProvider(
+          create: (context) => ProductosBLoC(
+            apiRepositoryInterface: context.read<ApiRepositoryInterface>(),
+            localRepositoryInterface: context.read<LocalRepositoryInterface>(),
+          ),
+        )
       ],
       child: Builder(builder: (newContext) {
         return Consumer<MainBLoC>(

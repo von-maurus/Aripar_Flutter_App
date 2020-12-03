@@ -15,6 +15,8 @@ class LoginBLoC extends ChangeNotifier {
   final LocalRepositoryInterface localRepositoryInterface;
   final ApiRepositoryInterface apiRepositoryInterface;
   bool isObscure = true;
+  bool isValidEmail = false;
+  bool isValidPassword = false;
 
   LoginBLoC({
     this.localRepositoryInterface,
@@ -29,48 +31,59 @@ class LoginBLoC extends ChangeNotifier {
     final email = emailTextController.text;
     final password = passwordTextController.text;
     if (email.isNotEmpty && password.isNotEmpty) {
-      try {
-        loginState = LoginState.loading;
-        notifyListeners();
-        final loginResponse = await apiRepositoryInterface.login(
-          LoginRequest(email, password),
-        );
-        await localRepositoryInterface.saveToken(loginResponse.token);
-        await localRepositoryInterface.saveUser(loginResponse.usuario);
-        loginState = LoginState.initial;
-        notifyListeners();
-        return true;
-      } on AuthException catch (_) {
-        print(_);
-        loginState = LoginState.initial;
-        notifyListeners();
+      if (!isValidEmail || !isValidPassword) {
         scaffoldKey.currentState.showSnackBar(
           SnackBar(
             backgroundColor: Colors.red,
-            duration: Duration(milliseconds: 1200),
-            content: Text('Email o Contraseña incorrectos.'),
+            duration: Duration(milliseconds: 1400),
+            content: Text('Formulario Incorrecto'),
           ),
         );
         return false;
-      } on Exception catch (e) {
-        print(e);
-        loginState = LoginState.initial;
-        notifyListeners();
-        scaffoldKey.currentState.showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.red,
-            duration: Duration(milliseconds: 1200),
-            content: Text('Error de conexión, intentelo nuevamente.'),
-          ),
-        );
-        return false;
+      } else {
+        try {
+          loginState = LoginState.loading;
+          notifyListeners();
+          final loginResponse = await apiRepositoryInterface.login(
+            LoginRequest(email, password),
+          );
+          await localRepositoryInterface.saveToken(loginResponse.token);
+          await localRepositoryInterface.saveUser(loginResponse.usuario);
+          loginState = LoginState.initial;
+          notifyListeners();
+          return true;
+        } on AuthException catch (_) {
+          print(_);
+          loginState = LoginState.initial;
+          notifyListeners();
+          scaffoldKey.currentState.showSnackBar(
+            SnackBar(
+              backgroundColor: Colors.red,
+              duration: Duration(milliseconds: 1200),
+              content: Text('E-mail o contraseña incorrectos.'),
+            ),
+          );
+          return false;
+        } on Exception catch (e) {
+          print(e);
+          loginState = LoginState.initial;
+          notifyListeners();
+          scaffoldKey.currentState.showSnackBar(
+            SnackBar(
+              backgroundColor: Colors.red,
+              duration: Duration(milliseconds: 1200),
+              content: Text('Error de conexión, intentelo nuevamente.'),
+            ),
+          );
+          return false;
+        }
       }
     } else {
       scaffoldKey.currentState.showSnackBar(
         SnackBar(
           backgroundColor: Colors.red,
           duration: Duration(milliseconds: 1200),
-          content: Text('Las credenciales son incorrectas'),
+          content: Text('Ingrese su e-mail y contraseña'),
         ),
       );
       return false;

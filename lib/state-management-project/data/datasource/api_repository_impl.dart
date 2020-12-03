@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:arturo_bruna_app/state-management-project/domain/exception/preventa_exception.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
@@ -15,16 +16,17 @@ import 'package:arturo_bruna_app/state-management-project/domain/exception/clien
 import 'package:arturo_bruna_app/state-management-project/domain/exception/product_exception.dart';
 
 class ApiRepositoryImpl extends ApiRepositoryInterface {
-  static const urlBase = 'http://192.168.1.86/sab-backend/';
+  // Localhost URL
+  // static const urlBase = 'http://192.168.1.86/sab-backend/';
 
-  //Domain backend
-  // static const urlBase = 'http://aripar.kuvesoft.cl/backend/';
+  //Domain URL
+  static const urlBase = 'http://aripar.kuvesoft.cl/backend/';
   static const apiUrl = urlBase + 'web/index.php?r=';
   static const urlUserImage = urlBase + "assets/avatares/";
   static const urlProductImage = urlBase + "assets/productos/";
   Map<String, String> headers = {"Content-type": "application/json"};
 
-  //Obtener user con token
+  //Get user from token
   @override
   Future<Usuario> getUserFromToken(String token) async {
     const controller = 'usuarios/';
@@ -33,7 +35,7 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
       final response = await http
           .post(apiUrl + controller + 'is-logged-from-app',
               headers: headers, body: json.encode(data))
-          .timeout(Duration(seconds: 10), onTimeout: () {
+          .timeout(Duration(milliseconds: 10200), onTimeout: () {
         throw TimeoutException('Tiempo de espera agotado.');
       });
       final responseData = json.decode(response.body);
@@ -47,7 +49,7 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
     }
   }
 
-  //Login y Logout
+  //Login with email
   @override
   Future<LoginResponse> login(LoginRequest login) async {
     const controller = 'usuarios/';
@@ -72,13 +74,14 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
     }
   }
 
+  //Logout (erase local data)
   @override
   Future<void> logout(String token) async {
     print("Remover token del servidor");
     return;
   }
 
-  //Productos y Clientes
+  //Get list of products
   @override
   Future<List<Producto>> getProducts() async {
     const controller = 'productos/';
@@ -92,6 +95,7 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
     throw ProductException();
   }
 
+  //Get  list of clients
   @override
   Future<List<Cliente>> getClientes() async {
     const controller = 'clientes/';
@@ -100,10 +104,10 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
     if (response.statusCode == 200) {
       return compute(parseClientes, response.body);
     }
-    throw ClientException();
+    throw ClientException(json.decode(response.body));
   }
 
-  //Busquedas
+  //Get products by name or code
   @override
   Future<List<Producto>> getProductByName(String query) async {
     const controller = 'productos/';
@@ -120,6 +124,7 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
     throw ProductException();
   }
 
+  //Get clients by name, run or email
   @override
   Future<List<Cliente>> getClientByNameRunEmail(String query) async {
     const controller = 'clientes/';
@@ -133,29 +138,31 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
     if (response.statusCode == 200) {
       return compute(parseClientes, response.body);
     }
-    throw ClientException();
+    throw ClientException(json.decode(response.body));
   }
 
-  //Crear Cliente
+  //Create a client
   @override
-  Future<Cliente> createCliente(Cliente cliente) async {
+  Future<Cliente> createCliente(Cliente client) async {
     const controller = 'clientes/';
-    print(' Cliente en la api $cliente');
-    final data = cliente.createToJson();
-    print('Cliente: $data');
+    final data = client.createToJson();
     final dataEncode = json.encode(data);
-    final response = await http.Client().post(
-        apiUrl + controller + 'create-from-app',
-        headers: headers,
-        body: dataEncode);
-    print('Respuesta: ${response.body}');
+    final response = await http.Client()
+        .post(apiUrl + controller + 'create-from-app',
+            headers: headers, body: dataEncode)
+        .timeout(Duration(seconds: 10), onTimeout: () {
+      throw TimeoutException(
+          'Tiempo de espera agotado, su conexión es deficiente.');
+    });
+    print('Respuesta sin decode: ${response.body}');
     if (response.statusCode == 201) {
       return parseClient(response.body);
     }
-    throw ClientException();
+    throw ClientException(json.decode(response.body));
   }
 
-  //Crear Pre-venta
+  //Create a pre-sale with a list of products, a total price (with taxes)
+  //client data like ID, pay type and credit days and the user token
   @override
   Future<dynamic> createPreSale(List<PreSaleCart> preSaleList, int clientId,
       int payType, int total, String token, int diasCuota) async {
@@ -172,12 +179,22 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
     final response = await http.Client()
         .post(apiUrl + controller + 'create',
             headers: headers, body: jsonEncode(data))
-        .timeout(Duration(seconds: 7), onTimeout: () {
-      throw TimeoutException('Tiempo de espera agotado.');
+        .timeout(Duration(seconds: 10), onTimeout: () {
+      throw TimeoutException('Tiempo de espera agotado, inténtelo nuevamente.');
     });
-    print(response.body);
-    final decodeResponse = jsonDecode(response.body);
-    return decodeResponse['response'];
+    if (response.statusCode == 200) {
+      final decodeResponse = jsonDecode(response.body);
+      print('Respuesta Status 200: $decodeResponse');
+      return decodeResponse['response'];
+    } else if (response.statusCode == 500) {
+      final decodeResponse = jsonDecode(response.body);
+      print('Respuesta Status 500: $decodeResponse');
+      throw PreSaleException(decodeResponse['response']);
+    } else {
+      final decodeResponse = jsonDecode(response.body);
+      print('Respuesta Status 401: $decodeResponse');
+      throw Exception();
+    }
   }
 }
 

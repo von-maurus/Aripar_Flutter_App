@@ -26,7 +26,7 @@ class ProductosScreen extends StatelessWidget {
     );
   }
 
-  Future _showMyDialog(BuildContext context, Producto product,
+  Future _showNumberPicker(BuildContext context, Producto product,
       ProductosBLoC productsBLoC, PreSaleBLoC preSaleBLoC) async {
     return showDialog(
       context: context,
@@ -61,7 +61,7 @@ class ProductosScreen extends StatelessWidget {
             ),
             shape: StadiumBorder(),
             onPressed: () async {
-              print('Cantidad que le paso  ${productsBLoC.cantidadProducto}');
+              print('Cantidad:  ${productsBLoC.cantidadProducto}');
               preSaleBLoC.add(product, productsBLoC.cantidadProducto);
               productsBLoC.cantidadProducto = 1;
               Navigator.of(context).pop();
@@ -90,6 +90,16 @@ class ProductosScreen extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.white70,
         appBar: AppBar(
+          centerTitle: true,
+          elevation: 6.0,
+          backgroundColor: Colors.blue[900],
+          toolbarHeight: 42.0,
+          title: Text(
+            'Productos',
+            style: TextStyle(
+              fontSize: 25.0,
+            ),
+          ),
           actions: [
             IconButton(
               icon: Icon(
@@ -118,19 +128,12 @@ class ProductosScreen extends StatelessWidget {
               splashColor: Colors.transparent,
             )
           ],
-          centerTitle: true,
-          elevation: 6.0,
-          title: Text(
-            'Productos',
-            style: TextStyle(fontSize: 25.0),
-          ),
-          backgroundColor: Colors.blue[900],
         ),
         body: productsBloc.productList.isNotEmpty
             ? RefreshIndicator(
                 color: Colors.white,
                 onRefresh: () async {
-                  productsBloc.loadProducts();
+                  await productsBloc.loadProducts();
                 },
                 backgroundColor: Colors.blue[800],
                 child: GridView.builder(
@@ -155,7 +158,7 @@ class ProductosScreen extends StatelessWidget {
                       product: product,
                       onTap: () async {
                         if (product.stockminimo != null) {
-                          if (product.stock != 0) {
+                          if (product.stock > 1) {
                             if (product.stock <= product.stockminimo) {
                               return showDialog(
                                 context: context,
@@ -183,7 +186,7 @@ class ProductosScreen extends StatelessWidget {
                                       shape: StadiumBorder(),
                                       onPressed: () {
                                         Navigator.of(context).pop();
-                                        _showMyDialog(context, product,
+                                        _showNumberPicker(context, product,
                                             productsBloc, preSaleBLoC);
                                       },
                                     ),
@@ -201,8 +204,49 @@ class ProductosScreen extends StatelessWidget {
                                 ),
                               );
                             } else
-                              _showMyDialog(
+                              _showNumberPicker(
                                   context, product, productsBloc, preSaleBLoC);
+                          } else if (product.stock == 1) {
+                            return showDialog(
+                              context: context,
+                              builder: (_) => AlertDialogPage(
+                                oldContext: _,
+                                content: Padding(
+                                  padding: const EdgeInsets.only(top: 40.0),
+                                  child: Text(
+                                    "Si confirma la pre-venta, este producto quedará sin stock.",
+                                    style: TextStyle(fontSize: 18.5),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                actions: [
+                                  FlatButton(
+                                    child: Text(
+                                      "Seguir...",
+                                      style: TextStyle(fontSize: 17.0),
+                                    ),
+                                    shape: StadiumBorder(),
+                                    onPressed: () {
+                                      print(
+                                          'Cantidad:  ${productsBloc.cantidadProducto}');
+                                      preSaleBLoC.add(product, 1);
+                                      productsBloc.cantidadProducto = 1;
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                  FlatButton(
+                                    child: Text(
+                                      "Volver",
+                                      style: TextStyle(fontSize: 17.0),
+                                    ),
+                                    shape: StadiumBorder(),
+                                    onPressed: () async {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              ),
+                            );
                           } else {
                             return showDialog(
                               context: context,
@@ -237,7 +281,7 @@ class ProductosScreen extends StatelessWidget {
                           }
                         } else {
                           if (product.stock != 0) {
-                            _showMyDialog(
+                            _showNumberPicker(
                                 context, product, productsBloc, preSaleBLoC);
                           } else {
                             return showDialog(
@@ -301,28 +345,6 @@ class _ItemProduct extends StatelessWidget {
     decimalDigits: 0,
     symbol: '',
   );
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.only(
-          right: MediaQuery.of(context).orientation == Orientation.portrait
-              ? MediaQuery.of(context).size.width * 0.01
-              : MediaQuery.of(context).size.width * 0.0001,
-          left: MediaQuery.of(context).orientation == Orientation.portrait
-              ? MediaQuery.of(context).size.width * 0.01
-              : MediaQuery.of(context).size.width * 0.0001,
-          top: 25),
-      elevation: 20,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
-      color: Theme.of(context).canvasColor,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Stack(
-          children: [buildProductInfo(context), buildStockViewer(context)],
-        ),
-      ),
-    );
-  }
 
   Widget buildProductInfo(BuildContext context) {
     return Column(
@@ -447,6 +469,32 @@ class _ItemProduct extends StatelessWidget {
         ),
       ),
       right: 0,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: EdgeInsets.only(
+          right: MediaQuery.of(context).orientation == Orientation.portrait
+              ? MediaQuery.of(context).size.width * 0.01
+              : MediaQuery.of(context).size.width * 0.0001,
+          left: MediaQuery.of(context).orientation == Orientation.portrait
+              ? MediaQuery.of(context).size.width * 0.01
+              : MediaQuery.of(context).size.width * 0.0001,
+          top: 25),
+      elevation: 20,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
+      color: Theme.of(context).canvasColor,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Stack(
+          children: [
+            buildProductInfo(context),
+            buildStockViewer(context),
+          ],
+        ),
+      ),
     );
   }
 }

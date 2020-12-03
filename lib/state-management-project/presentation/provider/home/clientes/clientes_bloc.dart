@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/clientes/validation_item.dart';
+import 'file:///C:/Development/fernando-herrera/flutter-advance/arturo_bruna_app/lib/state-management-project/domain/model/validation_item.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/model/cliente.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/repository/api_repository.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/exception/client_exception.dart';
@@ -28,8 +28,12 @@ class ClientesBLoC extends ChangeNotifier {
       mask: '##.###.###-#', filter: {"#": RegExp(r'[0-9]|k')});
   var response;
   double cardHeight = 180;
-  int numDiasCuota = 1;
-  int clientType = 1;
+  int numDiasCuota = 4;
+  int clientType = 3;
+  bool isSelectedType = true;
+  bool isSelectedPayDays = true;
+  Map<String, dynamic> complexErrorMsg;
+  String simpleErrorMsg;
 
   //Form Variables
   ValidationItem _nombre = ValidationItem(null, null);
@@ -51,28 +55,14 @@ class ClientesBLoC extends ChangeNotifier {
   ValidationItem get numCuotas => _numCuotas;
   ValidationItem get tipo => _tipo;
 
-  void clearFields() {
-    _nombre = ValidationItem(null, null);
-    _rut = ValidationItem(null, null);
-    _correo = ValidationItem(null, null);
-    _direccion = ValidationItem(null, null);
-    _fono = ValidationItem(null, null);
-    _tipoPago = ValidationItem("1", null);
-    _numCuotas = ValidationItem(null, null);
-    _tipo = ValidationItem(null, null);
-    maskFormatter.clear();
-    numDiasCuota = 1;
-    clientType = 1;
-    notifyListeners();
-  }
-
   bool get isValid {
     if (_tipoPago.value == "1") {
       if (_nombre.value != null &&
           _rut.value != null &&
           _correo.value != null &&
           _direccion.value != null &&
-          _fono.value != null) {
+          _fono.value != null &&
+          _tipo.value != null) {
         return true;
       } else {
         return false;
@@ -83,7 +73,8 @@ class ClientesBLoC extends ChangeNotifier {
           _correo.value != null &&
           _direccion.value != null &&
           _fono.value != null &&
-          _numCuotas.value != null) {
+          _numCuotas.value != null &&
+          _tipo.value != null) {
         return true;
       } else {
         return false;
@@ -91,11 +82,30 @@ class ClientesBLoC extends ChangeNotifier {
     }
   }
 
-  //Setters
+  void clearFields() {
+    _nombre = ValidationItem(null, null);
+    _rut = ValidationItem(null, null);
+    _correo = ValidationItem(null, null);
+    _direccion = ValidationItem(null, null);
+    _fono = ValidationItem(null, null);
+    _tipoPago = ValidationItem("1", null);
+    _numCuotas = ValidationItem(null, null);
+    _tipo = ValidationItem(null, null);
+    maskFormatter.clear();
+    numDiasCuota = 4;
+    clientType = 3;
+    isSelectedType = true;
+    isSelectedPayDays = true;
+    notifyListeners();
+  }
+
   void changeType(String type) {
-    if (type == '' || type == null) {
-      _nombre = ValidationItem(null, "Este campo es obligatorio.");
+    if (type == "3") {
+      clientType = 3;
+      isSelectedType = false;
+      _tipo = ValidationItem(null, "Error que no se mostrará");
     } else {
+      isSelectedType = true;
       _tipo = ValidationItem(type, null);
       clientType = int.parse(type);
     }
@@ -103,7 +113,7 @@ class ClientesBLoC extends ChangeNotifier {
   }
 
   void changeName(String name) {
-    if (name == '' || name == null) {
+    if (name == null || name.trim().isEmpty) {
       _nombre = ValidationItem(null, "Este campo es obligatorio.");
     } else if (name.length < 3) {
       _nombre = ValidationItem(null, "Debe contener al menos 3 caractéres.");
@@ -174,8 +184,15 @@ class ClientesBLoC extends ChangeNotifier {
   }
 
   void changeEmail(String email) {
-    if (email == null || email == '') {
+    Pattern pattern =
+        r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+        r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+        r"{0,253}[a-zA-Z0-9])?)*$";
+    RegExp regex = new RegExp(pattern);
+    if (email == null || email == '' || email.isEmpty) {
       _correo = ValidationItem(null, "Este campo es obligatorio.");
+    } else if (!regex.hasMatch(email)) {
+      _correo = ValidationItem(null, "E-mail no válido.");
     } else {
       _correo = ValidationItem(email, null);
     }
@@ -183,7 +200,7 @@ class ClientesBLoC extends ChangeNotifier {
   }
 
   void changeAddress(String address) {
-    if (address == null || address == '') {
+    if (address == null || address.isEmpty || address.trim().isEmpty) {
       _direccion = ValidationItem(null, "Este campo es obligatorio.");
     } else {
       _direccion = ValidationItem(address, null);
@@ -192,8 +209,14 @@ class ClientesBLoC extends ChangeNotifier {
   }
 
   void changePhone(String phone) {
-    if (phone == null || phone == '') {
+    Pattern pattern = r"[0-9]$";
+    RegExp regex = new RegExp(pattern);
+    if (phone == null || phone.trim().isEmpty) {
       _fono = ValidationItem(null, "Este campo es obligatorio.");
+    } else if (!regex.hasMatch(phone) ||
+        phone.length < 9 ||
+        phone.length > 11) {
+      _fono = ValidationItem(null, "Ingrese un telefono válido.");
     } else {
       _fono = ValidationItem(phone, null);
     }
@@ -201,12 +224,19 @@ class ClientesBLoC extends ChangeNotifier {
   }
 
   void changeNumCuotas(String numCuotas) {
-    if (numCuotas == null || numCuotas == '') {
-      _numCuotas = ValidationItem(null, "Este campo es obligatorio.");
-    } else {
-      numDiasCuota = int.parse(numCuotas);
-      _numCuotas = ValidationItem(numCuotas, null);
+    print(numCuotas);
+    if (numCuotas != null) {
+      if (numCuotas == "4" || numCuotas == null) {
+        isSelectedPayDays = false;
+        numDiasCuota = 4;
+        _numCuotas = ValidationItem(null, "Error que no aparecerá.");
+      } else {
+        isSelectedPayDays = true;
+        numDiasCuota = int.parse(numCuotas);
+        _numCuotas = ValidationItem(numCuotas, null);
+      }
     }
+
     notifyListeners();
   }
 
@@ -215,15 +245,28 @@ class ClientesBLoC extends ChangeNotifier {
     if (clientPayType == "2") {
       _numCuotas = ValidationItem("1", null);
     } else {
+      numDiasCuota = 4;
+      isSelectedPayDays = true;
       _numCuotas = ValidationItem(null, null);
     }
     notifyListeners();
   }
 
   Future<bool> submitData() async {
-    //  Crear un objeto Cliente
+    if (_tipo.value == null) {
+      isSelectedType = false;
+      notifyListeners();
+      return false;
+    }
+    if (_tipoPago.value == "2" && _numCuotas.value == null) {
+      isSelectedPayDays = false;
+      notifyListeners();
+    }
     if (isValid) {
+      isSelectedType = true;
+      notifyListeners();
       try {
+        //  Crear un objeto Cliente
         Cliente client = new Cliente();
         client.nombre = _nombre.value;
         client.rut = _rut.value;
@@ -244,7 +287,17 @@ class ClientesBLoC extends ChangeNotifier {
         clientsState = ClientsState.initial;
         notifyListeners();
         return true;
-      } on ClientException catch (_) {
+      } on ClientException catch (e) {
+        print('ClientException: ${e.getMessage()}');
+        complexErrorMsg = e.getMessage();
+        simpleErrorMsg = null;
+        clientsState = ClientsState.initial;
+        notifyListeners();
+        return false;
+      } on Exception catch (e) {
+        print('Exception TIMEOUT $e');
+        simpleErrorMsg = e.toString().replaceAll('TimeoutException: ', '');
+        complexErrorMsg = null;
         clientsState = ClientsState.initial;
         notifyListeners();
         return false;
@@ -254,7 +307,7 @@ class ClientesBLoC extends ChangeNotifier {
     }
   }
 
-  void loadClients() async {
+  Future<void> loadClients() async {
     try {
       clientsState = ClientsState.loading;
       notifyListeners();
@@ -272,17 +325,11 @@ class ClientesBLoC extends ChangeNotifier {
 
   Future<void> getClientByNameRunEmail(String query) async {
     try {
-      // productsState = ProductsState.loading;
-      // notifyListeners();
       final result =
           await apiRepositoryInterface.getClientByNameRunEmail(query);
       clientsByName = result;
-      // productsState = ProductsState.initial;
-      // notifyListeners();
     } on ClientException catch (e) {
       print(e);
-      // productsState = ProductsState.initial;
-      // notifyListeners();
     }
   }
 

@@ -157,9 +157,10 @@ class ClientesScreen extends StatelessWidget {
                       ),
                       Flexible(
                         child: Text(
-                          client.direccion != null
+                          client.direccion.trim().isNotEmpty &&
+                                  client.direccion != null
                               ? client.direccion
-                              : 'Sin Direccion',
+                              : 'Sin información',
                           overflow: TextOverflow.ellipsis,
                           softWrap: true,
                           maxLines: 1,
@@ -302,7 +303,9 @@ class ClientesScreen extends StatelessWidget {
           elevation: 6.0,
           title: Text(
             'Clientes',
-            style: TextStyle(fontSize: 25.0),
+            style: TextStyle(
+              fontSize: 25.0,
+            ),
           ),
           backgroundColor: Colors.blue[900],
           toolbarHeight: 42.0,
@@ -323,7 +326,7 @@ class ClientesScreen extends StatelessWidget {
         body: clientsBloc.clientList.isNotEmpty
             ? RefreshIndicator(
                 onRefresh: () async {
-                  clientsBloc.loadClients();
+                  await clientsBloc.loadClients();
                 },
                 color: Colors.white,
                 backgroundColor: Colors.blue[900],
