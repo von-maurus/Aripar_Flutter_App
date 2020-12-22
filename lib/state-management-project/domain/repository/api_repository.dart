@@ -19,10 +19,9 @@ abstract class ApiRepositoryInterface {
   Future<List<Cliente>> getClientes();
 
   Future<List<Cliente>> getClientByNameRunEmail(String query);
-//  Crear Clientes
+
   Future<Cliente> createCliente(Cliente cliente);
 
-//  Create PreSale: 1-Inserta la Venta 2-Crear lineasVenta 3-Opcional:crear cuota
   Future<dynamic> createPreSale(List<PreSaleCart> preSaleList, int clientId,
       int payType, int total, String token, int diasCuota);
 }

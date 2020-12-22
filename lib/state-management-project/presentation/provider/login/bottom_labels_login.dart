@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 
 class BottomLabels extends StatelessWidget {
-  const BottomLabels({
-    Key key,
-    @required this.size,
-    this.endIndent,
-    this.indent,
-    this.sizeForgotPass,
-    this.fontSizeNotAccount = 15,
-    this.fontSizeContact = 17,
-    this.fontSizeTerms = 17,
-  }) : super(key: key);
+  const BottomLabels(
+      {Key key,
+      @required this.size,
+      this.endIndent,
+      this.indent,
+      this.sizeForgotPass,
+      this.fontSizeNotAccount = 15,
+      this.fontSizeContact = 17,
+      this.fontSizeTerms = 17,
+      this.adminEmail = "dist.aripar@gmail.com"})
+      : super(key: key);
   final Size size;
   final double indent;
   final double endIndent;
@@ -18,6 +19,8 @@ class BottomLabels extends StatelessWidget {
   final double fontSizeNotAccount;
   final double fontSizeContact;
   final double fontSizeTerms;
+  final String adminEmail;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -53,7 +56,7 @@ class BottomLabels extends StatelessWidget {
             height: size.height * 0.015,
           ),
           Text(
-            'Contáctate con el administrador al correo:\nadmin@example.com',
+            'Contáctate con el administrador al correo:\n$adminEmail',
             style: TextStyle(fontSize: fontSizeContact),
             textAlign: TextAlign.center,
           ),

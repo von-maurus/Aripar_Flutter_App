@@ -1,4 +1,3 @@
-import 'package:arturo_bruna_app/state-management-project/presentation/common/alert_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -6,8 +5,9 @@ import 'package:provider/provider.dart';
 
 import 'package:arturo_bruna_app/state-management-project/domain/model/user.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/repository/api_repository.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/home_bloc.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/repository/local_storage_repository.dart';
+import 'package:arturo_bruna_app/state-management-project/presentation/common/alert_dialog.dart';
+import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/home_bloc.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/splash/splash_screen.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/userprofile/user_bloc.dart';
 

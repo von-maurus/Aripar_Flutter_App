@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'file:///C:/Development/fernando-herrera/flutter-advance/arturo_bruna_app/lib/state-management-project/domain/model/validation_item.dart';
+import 'package:arturo_bruna_app/state-management-project/domain/model/validation_item.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/model/cliente.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/repository/api_repository.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/exception/client_exception.dart';

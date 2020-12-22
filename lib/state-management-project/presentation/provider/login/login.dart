@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -72,7 +73,7 @@ class LoginPage extends StatelessWidget {
     }
   }
 
-  Widget buildLoginSmall(Size size, LoginBLoC bloc, BuildContext context) {
+  Widget buildSmallLogin(Size size, LoginBLoC bloc, BuildContext context) {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.blue[700],
@@ -183,10 +184,10 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Widget buildLoginLarge(Size size, LoginBLoC bloc, BuildContext context) {
+  Widget buildLargeLogin(Size size, LoginBLoC bloc, BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.blue[900],
+        backgroundColor: Colors.blue[700],
         key: _scaffoldKey,
         body: Stack(
           children: [
@@ -215,122 +216,81 @@ class LoginPage extends StatelessWidget {
                           child: Column(
                             children: <Widget>[
                               CustomFormInput(
-                                textFormStyle: TextStyle(fontSize: 28.0),
-                                hintStyle: TextStyle(
-                                    fontSize:
-                                        MediaQuery.of(context).orientation ==
-                                                Orientation.landscape
-                                            ? 30.0
-                                            : 27.0),
+                                textFormStyle: TextStyle(fontSize: 25.5),
                                 autoValidateMode:
                                     AutovalidateMode.onUserInteraction,
-                                validator: (value) {
-                                  final response = validateEmail(value, bloc);
-                                  return response;
-                                },
                                 textInputAction: TextInputAction.next,
                                 focusNode: _focusNodeEmail,
                                 size: size,
-                                prefixIcon: Icon(
-                                  Icons.email,
-                                  size: 50,
-                                ),
                                 hintText: '\t\tEmail',
                                 controller: bloc.emailTextController,
                                 textInputType: TextInputType.emailAddress,
                                 function: (value) {
                                   _focusNodePassword.requestFocus();
                                 },
-                                top: MediaQuery.of(context).orientation ==
-                                        Orientation.landscape
-                                    ? size.height * 0.02
-                                    : size.height * 0.015,
-                                left: MediaQuery.of(context).orientation ==
-                                        Orientation.landscape
-                                    ? size.height * 0.025
-                                    : size.height * 0.02,
-                                bottom: MediaQuery.of(context).orientation ==
-                                        Orientation.landscape
-                                    ? size.height * 0.03
-                                    : size.height * 0.018,
-                                right: MediaQuery.of(context).orientation ==
-                                        Orientation.landscape
-                                    ? size.height * 0.03
-                                    : size.height * 0.009,
+                                prefixIcon: Icon(
+                                  Icons.email,
+                                  size: 50,
+                                ),
+                                validator: (value) {
+                                  final response = validateEmail(value, bloc);
+                                  return response;
+                                },
+                                hintStyle: TextStyle(fontSize: 25.0),
+                                top: size.height * 0.01,
+                                left: size.height * 0.02,
+                                bottom: size.height * 0.010,
+                                right: size.height * 0.009,
                               ),
                               CustomFormInput(
-                                textFormStyle: TextStyle(fontSize: 28.0),
-                                left: MediaQuery.of(context).orientation ==
-                                        Orientation.landscape
-                                    ? size.height * 0.025
-                                    : size.height * 0.02,
-                                top: MediaQuery.of(context).orientation ==
-                                        Orientation.landscape
-                                    ? size.height * 0.02
-                                    : size.height * 0.012,
-                                bottom: MediaQuery.of(context).orientation ==
-                                        Orientation.landscape
-                                    ? size.height * 0.03
-                                    : size.height * 0.018,
-                                right: MediaQuery.of(context).orientation ==
-                                        Orientation.landscape
-                                    ? size.height * 0.03
-                                    : size.height * 0.02,
+                                textFormStyle: TextStyle(fontSize: 25.5),
+                                left: size.height * 0.02,
+                                top: size.height * 0.01,
+                                bottom: size.height * 0.010,
+                                right: size.height * 0.02,
+                                hintText: '\t\tContraseña',
+                                controller: bloc.passwordTextController,
+                                autoValidateMode:
+                                    AutovalidateMode.onUserInteraction,
+                                textInputAction: TextInputAction.done,
+                                focusNode: _focusNodePassword,
+                                isObscure: bloc.isObscure,
+                                size: size,
+                                validator: (value) {
+                                  final response =
+                                      validatePassword(value, bloc);
+                                  return response;
+                                },
                                 hintStyle: TextStyle(
-                                  fontSize:
-                                      MediaQuery.of(context).orientation ==
-                                              Orientation.landscape
-                                          ? 30.0
-                                          : 27.0,
+                                  fontSize: 25.0,
+                                ),
+                                prefixIcon: Icon(
+                                  Icons.vpn_key,
+                                  size: 50,
                                 ),
                                 suffixWidget: IconButton(
                                   icon: Icon(
                                     bloc.isObscure
                                         ? Icons.visibility_off
                                         : Icons.visibility,
-                                    size: 45,
+                                    size: 35.0,
                                   ),
                                   onPressed: () {
                                     bloc.showHidePassword();
                                   },
                                 ),
-                                autoValidateMode:
-                                    AutovalidateMode.onUserInteraction,
-                                validator: (value) {
-                                  final response =
-                                      validatePassword(value, bloc);
-                                  return response;
-                                },
-                                textInputAction: TextInputAction.done,
-                                focusNode: _focusNodePassword,
-                                isObscure: bloc.isObscure,
-                                size: size,
-                                prefixIcon: Icon(
-                                  Icons.vpn_key,
-                                  size: 50,
-                                ),
-                                hintText: '\t\tContraseña',
-                                controller: bloc.passwordTextController,
                                 function: (value) {
                                   FocusScope.of(context).unfocus();
                                 },
                               ),
                               RoundedButton(
-                                textFontSize:
-                                    MediaQuery.of(context).orientation ==
-                                            Orientation.landscape
-                                        ? 40.0
-                                        : 34.0,
-                                height: MediaQuery.of(context).orientation ==
-                                        Orientation.landscape
-                                    ? 85.0
-                                    : 75.0,
-                                size: size,
-                                buttonText: "Iniciar sesión",
-                                onPressed: () => login(context),
-                                buttonColor: Colors.orange[500],
-                                buttonTextColor: Colors.black,
-                              ),
+                                  size: size,
+                                  buttonText: "Iniciar sesión",
+                                  onPressed: () => login(context),
+                                  buttonColor: Colors.orange[500],
+                                  buttonTextColor: Colors.black,
+                                  textFontSize: 30.0,
+                                  height: 70.0),
                             ],
                           ),
                         ),
@@ -374,9 +334,9 @@ class LoginPage extends StatelessWidget {
       builder: (BuildContext context, BoxConstraints constraints) {
         print('constraints.maxWidth ${constraints.maxWidth}');
         if (constraints.maxWidth >= 600.0) {
-          return buildLoginLarge(size, bloc, context);
+          return buildLargeLogin(size, bloc, context);
         } else {
-          return buildLoginSmall(size, bloc, context);
+          return buildSmallLogin(size, bloc, context);
         }
       },
     );

@@ -35,8 +35,8 @@ class LoginBLoC extends ChangeNotifier {
         scaffoldKey.currentState.showSnackBar(
           SnackBar(
             backgroundColor: Colors.red,
-            duration: Duration(milliseconds: 1400),
-            content: Text('Formulario Incorrecto'),
+            duration: Duration(milliseconds: 2500),
+            content: Text('Campos incorrectos, vuelva a intentarlo'),
           ),
         );
         return false;
@@ -59,7 +59,7 @@ class LoginBLoC extends ChangeNotifier {
           scaffoldKey.currentState.showSnackBar(
             SnackBar(
               backgroundColor: Colors.red,
-              duration: Duration(milliseconds: 1200),
+              duration: Duration(milliseconds: 2500),
               content: Text('E-mail o contraseña incorrectos.'),
             ),
           );
@@ -71,7 +71,7 @@ class LoginBLoC extends ChangeNotifier {
           scaffoldKey.currentState.showSnackBar(
             SnackBar(
               backgroundColor: Colors.red,
-              duration: Duration(milliseconds: 1200),
+              duration: Duration(milliseconds: 2500),
               content: Text('Error de conexión, intentelo nuevamente.'),
             ),
           );
@@ -82,7 +82,7 @@ class LoginBLoC extends ChangeNotifier {
       scaffoldKey.currentState.showSnackBar(
         SnackBar(
           backgroundColor: Colors.red,
-          duration: Duration(milliseconds: 1200),
+          duration: Duration(milliseconds: 2500),
           content: Text('Ingrese su e-mail y contraseña'),
         ),
       );

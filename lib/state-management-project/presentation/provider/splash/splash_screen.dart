@@ -119,7 +119,7 @@ class _SplashLarge extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CircleAvatar(
-                radius: MediaQuery.of(context).size.height * 0.3,
+                radius: MediaQuery.of(context).size.height * 0.25,
                 backgroundColor: Colors.blue[900],
                 child: Padding(
                   padding: EdgeInsets.all(12.0),

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:arturo_bruna_app/state-management-project/domain/exception/preventa_exception.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
@@ -10,6 +9,7 @@ import 'package:arturo_bruna_app/state-management-project/domain/model/product.d
 import 'package:arturo_bruna_app/state-management-project/domain/model/preventa_cart.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/request/login_request.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/response/login_response.dart';
+import 'package:arturo_bruna_app/state-management-project/domain/exception/preventa_exception.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/exception/auth_exception.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/repository/api_repository.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/exception/client_exception.dart';
