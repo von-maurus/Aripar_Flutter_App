@@ -339,7 +339,7 @@ class ClientesScreen extends StatelessWidget {
                         ),
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 3,
-                          childAspectRatio: 1.6,
+                          childAspectRatio: 1,
                           crossAxisSpacing: 1,
                           mainAxisSpacing: 1,
                         ),
