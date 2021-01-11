@@ -8,6 +8,7 @@ import 'package:arturo_bruna_app/state-management-project/domain/request/login_r
 
 enum LoginState {
   loading,
+  failed,
   initial,
 }
 
@@ -31,7 +32,7 @@ class LoginBLoC extends ChangeNotifier {
     final email = emailTextController.text;
     final password = passwordTextController.text;
     if (email.isNotEmpty && password.isNotEmpty) {
-      if (!isValidEmail || !isValidPassword) {
+        if (!isValidEmail || !isValidPassword) {
         scaffoldKey.currentState.showSnackBar(
           SnackBar(
             backgroundColor: Colors.red,

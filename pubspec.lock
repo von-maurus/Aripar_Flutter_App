@@ -90,13 +90,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_number_picker:
-    dependency: "direct main"
-    description:
-      path: "packages/custom_number_picker"
-      relative: true
-    source: path
-    version: "0.0.8"
   flutter_svg:
     dependency: "direct main"
     description:

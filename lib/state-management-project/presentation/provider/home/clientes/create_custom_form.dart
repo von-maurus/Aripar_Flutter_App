@@ -235,8 +235,8 @@ class CustomForm extends StatelessWidget {
   }
 
   Widget buildFields(BuildContext context) {
+    print("Height: ${MediaQuery.of(context).size.height}");
     return Column(
-      mainAxisSize: MainAxisSize.min,
       children: [
         TextFormField(
           textInputAction: TextInputAction.next,
@@ -432,15 +432,11 @@ class CustomForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Container(
-          width: double.infinity,
-          height: size.height,
-          child: SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: buildFields(context),
-            ),
+        SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Padding(
+            padding: const EdgeInsets.all(25.0),
+            child: buildFields(context),
           ),
         ),
         if (clientsBLoC.clientsState == ClientsState.loading)

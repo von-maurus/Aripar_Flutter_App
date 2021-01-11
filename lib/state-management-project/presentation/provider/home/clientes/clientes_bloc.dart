@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/model/validation_item.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/model/cliente.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/repository/api_repository.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/exception/client_exception.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/repository/local_storage_repository.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 enum ClientsState {
   loading,

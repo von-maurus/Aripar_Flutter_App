@@ -108,8 +108,8 @@ class ClientesScreen extends StatelessWidget {
     }
     return Card(
       margin: EdgeInsets.symmetric(
-        vertical: 25,
-        horizontal: 18,
+        vertical: 18.0,
+        horizontal: 12.0,
       ),
       elevation: 20,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
@@ -119,9 +119,8 @@ class ClientesScreen extends StatelessWidget {
         children: <Widget>[
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(12.0),
+              padding: const EdgeInsets.all(14.0),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Center(
                     child: Text(
@@ -243,7 +242,7 @@ class ClientesScreen extends StatelessWidget {
                       text: "Añadir",
                       onTap: onTap,
                       padding: EdgeInsets.symmetric(
-                        vertical: 12.0,
+                        vertical: 13.0,
                       ),
                     ),
                   ),
@@ -334,49 +333,76 @@ class ClientesScreen extends StatelessWidget {
                   builder: (_, orientation) {
                     if (orientation == Orientation.landscape) {
                       return GridView.builder(
-                          itemCount: clientsBloc.clientList.length,
-                          physics: BouncingScrollPhysics(
-                            parent: AlwaysScrollableScrollPhysics(),
-                          ),
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3,
-                            childAspectRatio: 1,
-                            crossAxisSpacing: 1,
-                            mainAxisSpacing: 1,
-                          ),
-                          itemBuilder: (context, index) {
-                            final client = clientsBloc.clientList[index];
-                            return buildList(
-                              context,
-                              index,
-                              client,
-                              clientsBloc.cardHeight,
-                              () async {
-                                _showMyDialog(
-                                    context, client, clientsBloc, preSaleBloc);
-                              },
-                            );
-                          });
-                    }
-                    return ListView.builder(
                         itemCount: clientsBloc.clientList.length,
                         physics: BouncingScrollPhysics(
                           parent: AlwaysScrollableScrollPhysics(),
                         ),
-                        itemBuilder: (BuildContext context, int index) {
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          childAspectRatio: 1.6,
+                          crossAxisSpacing: 1,
+                          mainAxisSpacing: 1,
+                        ),
+                        itemBuilder: (context, index) {
                           final client = clientsBloc.clientList[index];
                           return buildList(
                             context,
                             index,
                             client,
                             clientsBloc.cardHeight,
-                            () {
+                            () async {
                               _showMyDialog(
                                   context, client, clientsBloc, preSaleBloc);
                             },
                           );
-                        });
+                        },
+                      );
+                    } else if (MediaQuery.of(context).size.width >= 600.0) {
+                      return GridView.builder(
+                        itemCount: clientsBloc.clientList.length,
+                        physics: BouncingScrollPhysics(
+                          parent: AlwaysScrollableScrollPhysics(),
+                        ),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          childAspectRatio: 1.2,
+                          crossAxisSpacing: 1,
+                          mainAxisSpacing: 1,
+                        ),
+                        itemBuilder: (context, index) {
+                          final client = clientsBloc.clientList[index];
+                          return buildList(
+                            context,
+                            index,
+                            client,
+                            clientsBloc.cardHeight,
+                            () async {
+                              _showMyDialog(
+                                  context, client, clientsBloc, preSaleBloc);
+                            },
+                          );
+                        },
+                      );
+                    }
+                    return ListView.builder(
+                      itemCount: clientsBloc.clientList.length,
+                      physics: BouncingScrollPhysics(
+                        parent: AlwaysScrollableScrollPhysics(),
+                      ),
+                      itemBuilder: (BuildContext context, int index) {
+                        final client = clientsBloc.clientList[index];
+                        return buildList(
+                          context,
+                          index,
+                          client,
+                          clientsBloc.cardHeight,
+                          () {
+                            _showMyDialog(
+                                context, client, clientsBloc, preSaleBloc);
+                          },
+                        );
+                      },
+                    );
                   },
                 ),
               )

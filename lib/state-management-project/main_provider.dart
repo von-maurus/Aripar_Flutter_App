@@ -1,13 +1,13 @@
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/productos/productos_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'package:arturo_bruna_app/state-management-project/main_bloc.dart';
+
 import 'package:arturo_bruna_app/state-management-project/data/datasource/api_repository_impl.dart';
 import 'package:arturo_bruna_app/state-management-project/data/datasource/local_repository_impl.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/repository/api_repository.dart';
 import 'package:arturo_bruna_app/state-management-project/domain/repository/local_storage_repository.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/splash/splash_screen.dart';
+import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/productos/productos_bloc.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/preventas/preventas_bloc.dart';
 import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/clientes/clientes_bloc.dart';
 
@@ -47,19 +47,21 @@ class MainProvider extends StatelessWidget {
           ),
         )
       ],
-      child: Builder(builder: (newContext) {
-        return Consumer<MainBLoC>(
-          builder: (context, bloc, _) {
-            return MaterialApp(
-              debugShowCheckedModeBanner: false,
-              // theme: bloc.currentTheme == null
-              //     ? ThemeData.light()
-              //     : bloc.currentTheme,
-              home: SplashScreen.init(newContext),
-            );
-          },
-        );
-      }),
+      child: Builder(
+        builder: (newContext) {
+          return Consumer<MainBLoC>(
+            builder: (context, bloc, _) {
+              return MaterialApp(
+                debugShowCheckedModeBanner: false,
+                // theme: bloc.currentTheme == null
+                //     ? ThemeData.light()
+                //     : bloc.currentTheme,
+                home: SplashScreen.init(newContext),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }
