@@ -84,7 +84,7 @@ class LoginBLoC extends ChangeNotifier {
         SnackBar(
           backgroundColor: Colors.red,
           duration: Duration(milliseconds: 2500),
-          content: Text('Ingrese su e-mail y contraseña'),
+          content: Text('Los campos no pueden ser vacíos.'),
         ),
       );
       return false;

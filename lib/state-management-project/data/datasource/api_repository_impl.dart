@@ -20,7 +20,9 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
   // static const urlBase = 'http://192.168.1.86/sab-backend/';
 
   //Domain URL
-  static const urlBase = 'http://aripar.kuvesoft.cl/backend/';
+  // static const urlBase = 'http://aripar.kuvesoft.cl/backend/'; //v1
+  static const urlBase = 'http://test.kuvesoft.cl/backend/'; //v2 Test
+
   static const apiUrl = urlBase + 'web/index.php?r=';
   static const urlUserImage = urlBase + "assets/avatares/";
   static const urlProductImage = urlBase + "assets/productos/";
