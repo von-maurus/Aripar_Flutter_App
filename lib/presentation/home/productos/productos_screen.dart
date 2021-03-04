@@ -381,8 +381,8 @@ class _ItemProduct extends StatelessWidget {
                 style: TextStyle(
                   fontSize:
                       MediaQuery.of(context).orientation == Orientation.portrait
-                          ? MediaQuery.of(context).size.width * 0.045
-                          : MediaQuery.of(context).size.width * 0.023,
+                          ? 25
+                          : 30,
                   fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.center,
@@ -397,8 +397,8 @@ class _ItemProduct extends StatelessWidget {
                       color: DeliveryColors.darkGrey,
                       fontSize: MediaQuery.of(context).orientation ==
                               Orientation.portrait
-                          ? MediaQuery.of(context).size.width * 0.04
-                          : MediaQuery.of(context).size.width * 0.02,
+                          ? 22
+                          : 25,
                     ),
               ),
               Row(
@@ -412,8 +412,8 @@ class _ItemProduct extends StatelessWidget {
                           color: Theme.of(context).primaryColor,
                           fontSize: MediaQuery.of(context).orientation ==
                                   Orientation.portrait
-                              ? MediaQuery.of(context).size.width * 0.05
-                              : MediaQuery.of(context).size.width * 0.035),
+                              ? 30.0
+                              : 35.0),
                       maxLines: 1,
                     ),
                   ),

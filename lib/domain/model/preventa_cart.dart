@@ -1,4 +1,5 @@
-import 'package:arturo_bruna_app/state-management-project/domain/model/product.dart';
+
+import 'package:arturo_bruna_app/domain/model/product.dart';
 
 class PreSaleCart {
   final Producto product;

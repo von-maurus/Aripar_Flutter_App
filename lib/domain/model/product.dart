@@ -2,9 +2,7 @@
 //
 //     final producto = productoFromJson(jsonString);
 import 'dart:convert';
-import 'package:arturo_bruna_app/state-management-project/data/datasource/api_repository_impl.dart';
-
-import 'impuesto_producto.dart';
+import 'package:arturo_bruna_app/domain/model/impuesto_producto.dart';
 
 Producto productoFromJson(String str) => Producto.fromJson(json.decode(str));
 

@@ -3,7 +3,7 @@
 //     final usuario = usuarioFromJson(jsonString);
 import 'dart:convert';
 
-import 'package:arturo_bruna_app/state-management-project/data/datasource/api_repository_impl.dart';
+import 'file:///C:/Development/fernando-herrera/flutter-advance/arturo_bruna_app/lib/data/api_repository_impl.dart';
 
 Usuario usuarioFromJson(String str) => Usuario.fromJson(json.decode(str));
 
