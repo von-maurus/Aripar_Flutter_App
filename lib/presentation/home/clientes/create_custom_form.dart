@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:arturo_bruna_app/state-management-project/presentation/common/rounded_button.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/clientes/clientes_bloc.dart';
+import 'package:arturo_bruna_app/presentation/common/rounded_button.dart';
+import 'package:arturo_bruna_app/presentation/home/clientes/clientes_bloc.dart';
 
 class CustomForm extends StatelessWidget {
   final ClientesBLoC clientsBLoC;
@@ -16,6 +16,28 @@ class CustomForm extends StatelessWidget {
       this.maskFormatter,
       this.scaffoldKey})
       : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Padding(
+            padding: const EdgeInsets.all(25.0),
+            child: buildFields(context),
+          ),
+        ),
+        if (clientsBLoC.clientsState == ClientsState.loading)
+          Container(
+            color: Colors.black45,
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          )
+      ],
+    );
+  }
 
   void onSubmit(BuildContext context) async {
     FocusScope.of(context).unfocus();
@@ -235,7 +257,6 @@ class CustomForm extends StatelessWidget {
   }
 
   Widget buildFields(BuildContext context) {
-    print("Height: ${MediaQuery.of(context).size.height}");
     return Column(
       children: [
         TextFormField(
@@ -424,28 +445,6 @@ class CustomForm extends StatelessWidget {
           buttonColor: Colors.green[600],
           buttonText: "Registrar",
         ),
-      ],
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: Padding(
-            padding: const EdgeInsets.all(25.0),
-            child: buildFields(context),
-          ),
-        ),
-        if (clientsBLoC.clientsState == ClientsState.loading)
-          Container(
-            color: Colors.black45,
-            child: Center(
-              child: CircularProgressIndicator(),
-            ),
-          )
       ],
     );
   }

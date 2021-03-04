@@ -1,15 +1,14 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:arturo_bruna_app/state-management-project/domain/model/user.dart';
-import 'package:arturo_bruna_app/state-management-project/domain/repository/api_repository.dart';
-import 'package:arturo_bruna_app/state-management-project/domain/repository/local_storage_repository.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/common/alert_dialog.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/home_bloc.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/splash/splash_screen.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/userprofile/user_bloc.dart';
+import 'package:arturo_bruna_app/domain/model/user.dart';
+import 'package:arturo_bruna_app/domain/repository/api_repository.dart';
+import 'package:arturo_bruna_app/domain/repository/local_storage_repository.dart';
+import 'package:arturo_bruna_app/presentation/common/alert_dialog.dart';
+import 'package:arturo_bruna_app/presentation/splash/splash_screen.dart';
+import 'package:arturo_bruna_app/presentation/home/home_bloc.dart';
+import 'package:arturo_bruna_app/presentation/home/userprofile/user_bloc.dart';
 
 class UserScreen extends StatelessWidget {
   UserScreen._();
@@ -186,6 +185,7 @@ class UserScreen extends StatelessWidget {
 
 class _UserInfo extends StatelessWidget {
   final Usuario user;
+
   const _UserInfo({Key key, this.user}) : super(key: key);
 
   @override

@@ -2,12 +2,12 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../home_bloc.dart';
-import 'package:arturo_bruna_app/state-management-project/domain/model/preventa_cart.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/home_screen.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/common/alert_dialog.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/productos/productos_bloc.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/preventas/preventas_bloc.dart';
+import 'package:arturo_bruna_app/domain/model/preventa_cart.dart';
+import 'package:arturo_bruna_app/presentation/common/alert_dialog.dart';
+import 'package:arturo_bruna_app/presentation/home/home_bloc.dart';
+import 'package:arturo_bruna_app/presentation/home/home_screen.dart';
+import 'package:arturo_bruna_app/presentation/home/preventas/preventas_bloc.dart';
+import 'package:arturo_bruna_app/presentation/home/productos/productos_bloc.dart';
 
 class CheckoutPortraitView extends StatelessWidget {
   const CheckoutPortraitView({
@@ -21,6 +21,7 @@ class CheckoutPortraitView extends StatelessWidget {
   final PreSaleBLoC bloc;
   final NumberFormat formatter;
   final HomeBLoC homeBloc;
+
   // final ProductosBLoC productBloc;
 
   Future<void> buildResponseDialog(

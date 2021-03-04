@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/common/theme.dart';
+
+import 'package:arturo_bruna_app/presentation/common/theme.dart';
 
 class DeliveryButton extends StatelessWidget {
   final VoidCallback onTap;
   final String text;
   final EdgeInsets padding;
   final double fontSize;
+
   const DeliveryButton({
     Key key,
     this.onTap,

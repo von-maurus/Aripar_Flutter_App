@@ -5,10 +5,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:numberpicker/numberpicker.dart';
 
-import 'package:arturo_bruna_app/state-management-project/domain/model/product.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/preventas/preventas_bloc.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/productos/productos_bloc.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/common/alert_dialog.dart';
+import 'package:arturo_bruna_app/domain/model/product.dart';
+import 'package:arturo_bruna_app/presentation/common/alert_dialog.dart';
+import 'package:arturo_bruna_app/presentation/home/preventas/preventas_bloc.dart';
+import 'package:arturo_bruna_app/presentation/home/productos/productos_bloc.dart';
 
 class ProductSearchDelegate extends SearchDelegate<Producto> {
   final ProductosBLoC productosBLoC;

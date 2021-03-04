@@ -1,16 +1,15 @@
-import 'file:///C:/Development/fernando-herrera/flutter-advance/arturo_bruna_app/lib/domain/model/cliente.dart';
-import 'package:arturo_bruna_app/state-management-project/domain/model/preventa_cart.dart';
-import 'package:arturo_bruna_app/state-management-project/domain/model/product.dart';
-import 'package:arturo_bruna_app/state-management-project/domain/model/user.dart';
-import 'package:arturo_bruna_app/state-management-project/domain/request/login_request.dart';
-import 'package:arturo_bruna_app/state-management-project/domain/response/login_response.dart';
+import 'package:arturo_bruna_app/domain/model/cliente.dart';
+import 'package:arturo_bruna_app/domain/model/preventa_cart.dart';
+import 'package:arturo_bruna_app/domain/model/product.dart';
+import 'package:arturo_bruna_app/domain/model/user.dart';
+import 'package:arturo_bruna_app/domain/request/login_request.dart';
+import 'package:arturo_bruna_app/domain/response/login_response.dart';
+
 
 abstract class ApiRepositoryInterface {
   Future<Usuario> getUserFromToken(String token);
 
   Future<LoginResponse> login(LoginRequest login);
-
-  Future<void> logout(String token);
 
   Future<List<Producto>> getProducts();
 

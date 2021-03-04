@@ -1,14 +1,13 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'file:///C:/Development/fernando-herrera/flutter-advance/arturo_bruna_app/lib/domain/model/cliente.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/common/alert_dialog.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/common/delivery_button.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/preventas/preventas_bloc.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/clientes/client_search_delegate.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/clientes/cliente_create.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/clientes/clientes_bloc.dart';
+import 'package:arturo_bruna_app/domain/model/cliente.dart';
+import 'package:arturo_bruna_app/presentation/common/alert_dialog.dart';
+import 'package:arturo_bruna_app/presentation/common/delivery_button.dart';
+import 'package:arturo_bruna_app/presentation/home/clientes/client_search_delegate.dart';
+import 'package:arturo_bruna_app/presentation/home/clientes/cliente_create.dart';
+import 'package:arturo_bruna_app/presentation/home/clientes/clientes_bloc.dart';
+import 'package:arturo_bruna_app/presentation/home/preventas/preventas_bloc.dart';
 
 class ClientesScreen extends StatelessWidget {
   @override
@@ -202,43 +201,43 @@ class ClientesScreen extends StatelessWidget {
         context: context,
         barrierDismissible: false,
         builder: (_) => AlertDialogPage(
-          oldContext: _,
-          title: Center(
-            child: Text(
-              "Advertencia",
-              style: TextStyle(
-                fontSize: 25.0,
-                fontWeight: FontWeight.bold,
+              oldContext: _,
+              title: Center(
+                child: Text(
+                  "Advertencia",
+                  style: TextStyle(
+                    fontSize: 25.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-            ),
-          ),
-          content: Text(
-            "Ya existe un cliente en la \nPre-Venta.\n¿Desea reemplazarlo?",
-            style: TextStyle(fontSize: 17.5),
-            textAlign: TextAlign.center,
-          ),
-          actions: [
-            FlatButton(
-              child: Text(
-                "Reemplazar",
-                style: TextStyle(fontSize: 17.0),
+              content: Text(
+                "Ya existe un cliente en la \nPre-Venta.\n¿Desea reemplazarlo?",
+                style: TextStyle(fontSize: 17.5),
+                textAlign: TextAlign.center,
               ),
-              onPressed: () {
-                preSaleBLoC.updateClient(client);
-                Navigator.of(context).pop();
-              },
-            ),
-            FlatButton(
-              child: Text(
-                "Cancelar",
-                style: TextStyle(fontSize: 17.0),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            )
-          ],
-        ));
+              actions: [
+                FlatButton(
+                  child: Text(
+                    "Reemplazar",
+                    style: TextStyle(fontSize: 17.0),
+                  ),
+                  onPressed: () {
+                    preSaleBLoC.updateClient(client);
+                    Navigator.of(context).pop();
+                  },
+                ),
+                FlatButton(
+                  child: Text(
+                    "Cancelar",
+                    style: TextStyle(fontSize: 17.0),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            ));
   }
 
   Widget buildList(BuildContext context, int index, Cliente client,
@@ -294,7 +293,7 @@ class ClientesScreen extends StatelessWidget {
                     Flexible(
                       child: Text(
                         client.direccion.trim().isNotEmpty &&
-                            client.direccion != null
+                                client.direccion != null
                             ? client.direccion
                             : 'Sin información',
                         overflow: TextOverflow.ellipsis,
@@ -313,56 +312,56 @@ class ClientesScreen extends StatelessWidget {
                   children: <Widget>[
                     client.tipopago == 1
                         ? Icon(
-                      Icons.monetization_on_rounded,
-                      color: Colors.black,
-                      size: 25,
-                    )
+                            Icons.monetization_on_rounded,
+                            color: Colors.black,
+                            size: 25,
+                          )
                         : Icon(
-                      Icons.payment,
-                      color: Colors.black,
-                      size: 25,
-                    ),
+                            Icons.payment,
+                            color: Colors.black,
+                            size: 25,
+                          ),
                     SizedBox(
                       width: 5,
                     ),
                     client.tipopago == 1
                         ? Text('Efectivo',
-                        style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14.5,
-                            letterSpacing: .3))
+                            style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 14.5,
+                                letterSpacing: .3))
                         : Text('Crédito',
-                        style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14.5,
-                            letterSpacing: .3)),
+                            style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 14.5,
+                                letterSpacing: .3)),
                   ],
                 ),
                 client.tipopago == 1
                     ? /*SizedBox(
                         height: 25.0,
                       )*/
-                Container()
+                    Container()
                     : client.numerocuotas != null
-                    ? Row(
-                  children: <Widget>[
-                    Icon(
-                      Icons.timer,
-                      color: Colors.black,
-                      size: 25,
-                    ),
-                    SizedBox(
-                      width: 5,
-                    ),
-                    Text('${client.numDias} Días a pagar',
-                        maxLines: 1,
-                        style: TextStyle(
-                            fontSize: 14.5,
-                            letterSpacing: .3,
-                            fontWeight: FontWeight.w400))
-                  ],
-                )
-                    : Container(),
+                        ? Row(
+                            children: <Widget>[
+                              Icon(
+                                Icons.timer,
+                                color: Colors.black,
+                                size: 25,
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text('${client.numDias} Días a pagar',
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                      fontSize: 14.5,
+                                      letterSpacing: .3,
+                                      fontWeight: FontWeight.w400))
+                            ],
+                          )
+                        : Container(),
                 Container(
                   width: MediaQuery.of(context).size.width,
                   child: DeliveryButton(
@@ -383,21 +382,20 @@ class ClientesScreen extends StatelessWidget {
 
   Future toSearch(BuildContext context, ClientesBLoC clientsBloc,
       PreSaleBLoC preSaleBloc) async {
-    final client = await showSearch(
+    final cliente = await showSearch(
         context: context,
         delegate: ClientSearchDelegate('Buscar cliente',
             clientesBLoC: clientsBloc, preSaleBLoC: preSaleBloc));
-    if (client != null) {
+    if (cliente != null) {
       //TODO: Guardar historial de busqueda en SharedPreferences localmente
-      if (!clientsBloc.historial.any((element) => element.id == client.id)) {
+      if (!clientsBloc.historial.any((element) => element.id == cliente.id)) {
         if (clientsBloc.historial.length >= 10) {
           clientsBloc.historial.removeLast();
-          clientsBloc.historial.insert(0, client);
+          clientsBloc.historial.insert(0, cliente);
         } else {
-          clientsBloc.historial.insert(0, client);
+          clientsBloc.historial.insert(0, cliente);
         }
       }
     }
   }
 }
-

@@ -2,9 +2,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:arturo_bruna_app/state-management-project/presentation/common/size_config.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/clientes/create_custom_form.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/clientes/clientes_bloc.dart';
+import 'package:arturo_bruna_app/presentation/common/size_config.dart';
+import 'package:arturo_bruna_app/presentation/home/clientes/clientes_bloc.dart';
+import 'package:arturo_bruna_app/presentation/home/clientes/create_custom_form.dart';
 
 class ClientCreate extends StatelessWidget {
   final _scaffoldKey = GlobalKey<ScaffoldState>();

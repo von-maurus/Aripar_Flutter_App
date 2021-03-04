@@ -1,11 +1,11 @@
 import 'dart:io';
-import 'package:arturo_bruna_app/state-management-project/presentation/common/alert_dialog.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/preventas/preventas_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/clientes/clientes_bloc.dart';
-import 'file:///C:/Development/fernando-herrera/flutter-advance/arturo_bruna_app/lib/domain/model/cliente.dart';
+import 'package:arturo_bruna_app/domain/model/cliente.dart';
+import 'package:arturo_bruna_app/presentation/common/alert_dialog.dart';
+import 'package:arturo_bruna_app/presentation/home/clientes/clientes_bloc.dart';
+import 'package:arturo_bruna_app/presentation/home/preventas/preventas_bloc.dart';
 
 class ClientSearchDelegate extends SearchDelegate<Cliente> {
   final ClientesBLoC clientesBLoC;
@@ -13,6 +13,7 @@ class ClientSearchDelegate extends SearchDelegate<Cliente> {
 
   @override
   final String searchFieldLabel;
+
   ClientSearchDelegate(this.searchFieldLabel,
       {this.clientesBLoC, this.preSaleBLoC});
 

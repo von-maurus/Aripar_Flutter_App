@@ -3,18 +3,19 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:arturo_bruna_app/state-management-project/domain/model/preventa_cart.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/common/alert_dialog.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/common/theme.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/preventas/checkout_landscape_page.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/preventas/checkout_portrait_page.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/home_bloc.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/preventas/preventas_bloc.dart';
+import 'package:arturo_bruna_app/domain/model/preventa_cart.dart';
+import 'package:arturo_bruna_app/presentation/common/alert_dialog.dart';
+import 'package:arturo_bruna_app/presentation/common/theme.dart';
+import 'package:arturo_bruna_app/presentation/home/home_bloc.dart';
+import 'package:arturo_bruna_app/presentation/home/preventas/checkout_landscape_page.dart';
+import 'package:arturo_bruna_app/presentation/home/preventas/checkout_portrait_page.dart';
+import 'package:arturo_bruna_app/presentation/home/preventas/preventas_bloc.dart';
 
 class PreSalePage extends StatelessWidget {
   final VoidCallback onShopping;
 
   PreSalePage({Key key, this.onShopping});
+
   @override
   Widget build(BuildContext context) {
     final bloc = context.watch<PreSaleBLoC>();
@@ -196,6 +197,7 @@ class _CheckoutScreen extends StatelessWidget {
     decimalDigits: 0,
     symbol: '',
   );
+
   @override
   Widget build(BuildContext context) {
     final bloc = context.watch<PreSaleBLoC>();

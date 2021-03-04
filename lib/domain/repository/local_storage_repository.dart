@@ -1,5 +1,4 @@
-//Guardar información local
-import 'package:arturo_bruna_app/state-management-project/domain/model/user.dart';
+import 'package:arturo_bruna_app/domain/model/user.dart';
 
 abstract class LocalRepositoryInterface {
   Future<String> getToken();

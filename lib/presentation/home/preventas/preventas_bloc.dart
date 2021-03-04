@@ -1,14 +1,12 @@
 import 'dart:async';
-
+import 'package:arturo_bruna_app/domain/exception/preventa_exception.dart';
+import 'package:arturo_bruna_app/domain/model/cliente.dart';
+import 'package:arturo_bruna_app/domain/model/preventa_cart.dart';
+import 'package:arturo_bruna_app/domain/model/product.dart';
+import 'package:arturo_bruna_app/domain/repository/api_repository.dart';
+import 'package:arturo_bruna_app/domain/repository/local_storage_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-
-import 'package:arturo_bruna_app/state-management-project/domain/repository/api_repository.dart';
-import 'file:///C:/Development/fernando-herrera/flutter-advance/arturo_bruna_app/lib/domain/exception/preventa_exception.dart';
-import 'package:arturo_bruna_app/state-management-project/domain/repository/local_storage_repository.dart';
-import 'file:///C:/Development/fernando-herrera/flutter-advance/arturo_bruna_app/lib/domain/model/cliente.dart';
-import 'package:arturo_bruna_app/state-management-project/domain/model/product.dart';
-import 'package:arturo_bruna_app/state-management-project/domain/model/preventa_cart.dart';
 
 enum PreSaleState {
   loading,
@@ -31,6 +29,7 @@ class PreSaleBLoC extends ChangeNotifier {
       new MaskTextInputFormatter(mask: '##.###.###-#');
   bool isStockError = false;
   bool isAnyError = false;
+
   PreSaleBLoC({this.apiRepositoryInterface, this.localRepositoryInterface});
 
   int get numDias {

@@ -1,9 +1,8 @@
 import 'dart:async';
-
+import 'package:arturo_bruna_app/domain/exception/auth_exception.dart';
+import 'package:arturo_bruna_app/domain/repository/api_repository.dart';
+import 'package:arturo_bruna_app/domain/repository/local_storage_repository.dart';
 import 'package:flutter/material.dart';
-import 'file:///C:/Development/fernando-herrera/flutter-advance/arturo_bruna_app/lib/domain/exception/auth_exception.dart';
-import 'package:arturo_bruna_app/state-management-project/domain/repository/api_repository.dart';
-import 'package:arturo_bruna_app/state-management-project/domain/repository/local_storage_repository.dart';
 
 class SplashBLoC extends ChangeNotifier {
   final LocalRepositoryInterface localRepositoryInterface;

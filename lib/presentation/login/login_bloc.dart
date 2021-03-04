@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
-import 'file:///C:/Development/fernando-herrera/flutter-advance/arturo_bruna_app/lib/domain/exception/auth_exception.dart';
-import 'file:///C:/Development/fernando-herrera/flutter-advance/arturo_bruna_app/lib/domain/repository/api_repository.dart';
-import 'package:arturo_bruna_app/state-management-project/domain/repository/local_storage_repository.dart';
-import 'file:///C:/Development/fernando-herrera/flutter-advance/arturo_bruna_app/lib/domain/request/login_request.dart';
+import 'package:arturo_bruna_app/domain/exception/auth_exception.dart';
+import 'package:arturo_bruna_app/domain/request/login_request.dart';
+import 'package:arturo_bruna_app/domain/repository/local_storage_repository.dart';
+import 'package:arturo_bruna_app/domain/repository/api_repository.dart';
 
 enum LoginState {
   loading,
@@ -32,7 +32,7 @@ class LoginBLoC extends ChangeNotifier {
     final email = emailTextController.text;
     final password = passwordTextController.text;
     if (email.isNotEmpty && password.isNotEmpty) {
-        if (!isValidEmail || !isValidPassword) {
+      if (!isValidEmail || !isValidPassword) {
         scaffoldKey.currentState.showSnackBar(
           SnackBar(
             backgroundColor: Colors.red,

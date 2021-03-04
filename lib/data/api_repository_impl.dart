@@ -1,19 +1,19 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:arturo_bruna_app/domain/exception/auth_exception.dart';
+import 'package:arturo_bruna_app/domain/exception/client_exception.dart';
+import 'package:arturo_bruna_app/domain/exception/preventa_exception.dart';
+import 'package:arturo_bruna_app/domain/exception/product_exception.dart';
+import 'package:arturo_bruna_app/domain/model/cliente.dart';
+import 'package:arturo_bruna_app/domain/model/preventa_cart.dart';
+import 'package:arturo_bruna_app/domain/model/product.dart';
+import 'package:arturo_bruna_app/domain/model/user.dart';
+import 'package:arturo_bruna_app/domain/repository/api_repository.dart';
+import 'package:arturo_bruna_app/domain/request/login_request.dart';
+import 'package:arturo_bruna_app/domain/response/login_response.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:arturo_bruna_app/state-management-project/domain/model/user.dart';
-import 'package:arturo_bruna_app/state-management-project/domain/model/cliente.dart';
-import 'package:arturo_bruna_app/state-management-project/domain/model/product.dart';
-import 'package:arturo_bruna_app/state-management-project/domain/model/preventa_cart.dart';
-import 'package:arturo_bruna_app/state-management-project/domain/request/login_request.dart';
-import 'package:arturo_bruna_app/state-management-project/domain/response/login_response.dart';
-import 'package:arturo_bruna_app/state-management-project/domain/exception/preventa_exception.dart';
-import 'package:arturo_bruna_app/state-management-project/domain/exception/auth_exception.dart';
-import 'package:arturo_bruna_app/state-management-project/domain/repository/api_repository.dart';
-import 'package:arturo_bruna_app/state-management-project/domain/exception/client_exception.dart';
-import 'package:arturo_bruna_app/state-management-project/domain/exception/product_exception.dart';
 
 class ApiRepositoryImpl extends ApiRepositoryInterface {
   // Localhost URL
@@ -74,13 +74,6 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
       print(e);
       throw e;
     }
-  }
-
-  //Logout (erase local data)
-  @override
-  Future<void> logout(String token) async {
-    print("Remover token del servidor");
-    return;
   }
 
   //Get list of products

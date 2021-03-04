@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'file:///C:/Development/fernando-herrera/flutter-advance/arturo_bruna_app/lib/main_bloc.dart';
 
-import 'file:///C:/Development/fernando-herrera/flutter-advance/arturo_bruna_app/lib/data/api_repository_impl.dart';
-import 'file:///C:/Development/fernando-herrera/flutter-advance/arturo_bruna_app/lib/data/local_repository_impl.dart';
-import 'file:///C:/Development/fernando-herrera/flutter-advance/arturo_bruna_app/lib/domain/repository/api_repository.dart';
-import 'package:arturo_bruna_app/state-management-project/domain/repository/local_storage_repository.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/splash/splash_screen.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/productos/productos_bloc.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/preventas/preventas_bloc.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/home/clientes/clientes_bloc.dart';
+import 'package:arturo_bruna_app/data/api_repository_impl.dart';
+import 'package:arturo_bruna_app/data/local_repository_impl.dart';
+import 'package:arturo_bruna_app/domain/repository/api_repository.dart';
+import 'package:arturo_bruna_app/domain/repository/local_storage_repository.dart';
+import 'package:arturo_bruna_app/presentation/main_bloc.dart';
+import 'package:arturo_bruna_app/presentation/home/clientes/clientes_bloc.dart';
+import 'package:arturo_bruna_app/presentation/home/preventas/preventas_bloc.dart';
+import 'package:arturo_bruna_app/presentation/home/productos/productos_bloc.dart';
+import 'package:arturo_bruna_app/presentation/splash/splash_screen.dart';
 
 class MainProvider extends StatelessWidget {
   @override

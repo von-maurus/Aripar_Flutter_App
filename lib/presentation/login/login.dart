@@ -1,17 +1,17 @@
+import 'package:arturo_bruna_app/domain/repository/api_repository.dart';
+import 'package:arturo_bruna_app/domain/repository/local_storage_repository.dart';
+import 'package:arturo_bruna_app/presentation/common/custom_form_input.dart';
+import 'package:arturo_bruna_app/presentation/common/rounded_button.dart';
+import 'package:arturo_bruna_app/presentation/home/home_screen.dart';
+import 'package:arturo_bruna_app/presentation/login/background.dart';
+import 'package:arturo_bruna_app/presentation/login/bottom_labels_login.dart';
+import 'package:arturo_bruna_app/presentation/login/login_bloc.dart';
+import 'package:arturo_bruna_app/presentation/login/logo.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import 'file:///C:/Development/fernando-herrera/flutter-advance/arturo_bruna_app/lib/domain/repository/api_repository.dart';
-import 'package:arturo_bruna_app/state-management-project/domain/repository/local_storage_repository.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/common/rounded_button.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/common/custom_form_input.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/login/logo.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/login/login_bloc.dart';
-import 'file:///C:/Development/fernando-herrera/flutter-advance/arturo_bruna_app/lib/presentation/home/home_screen.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/login/background.dart';
-import 'package:arturo_bruna_app/state-management-project/presentation/provider/login/bottom_labels_login.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage._();

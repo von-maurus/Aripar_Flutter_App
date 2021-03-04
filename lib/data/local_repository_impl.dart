@@ -1,6 +1,6 @@
+import 'package:arturo_bruna_app/domain/model/user.dart';
+import 'package:arturo_bruna_app/domain/repository/local_storage_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:arturo_bruna_app/state-management-project/domain/model/user.dart';
-import 'package:arturo_bruna_app/state-management-project/domain/repository/local_storage_repository.dart';
 
 const _prefToken = 'TOKEN';
 const _prefId = 'ID';

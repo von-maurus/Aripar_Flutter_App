@@ -1,7 +1,7 @@
+import 'package:arturo_bruna_app/domain/repository/local_storage_repository.dart';
 import 'package:flutter/material.dart';
 
-import 'package:arturo_bruna_app/state-management-project/presentation/common/constants.dart';
-import 'package:arturo_bruna_app/state-management-project/domain/repository/local_storage_repository.dart';
+import 'common/constants.dart';
 
 class MainBLoC extends ChangeNotifier {
   ThemeData currentTheme;
