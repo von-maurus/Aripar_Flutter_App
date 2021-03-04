@@ -7,11 +7,7 @@ import 'package:arturo_bruna_app/presentation/common/delivery_button.dart';
 import 'package:arturo_bruna_app/presentation/common/theme.dart';
 
 class ItemProduct extends StatelessWidget {
-  ItemProduct({
-    Key key,
-    this.product,
-    this.onTap,
-  }) : super(key: key);
+  ItemProduct({Key key, this.product, this.onTap, this.size}) : super(key: key);
   final Producto product;
   final Function onTap;
   final formatter = new NumberFormat.currency(
@@ -19,6 +15,7 @@ class ItemProduct extends StatelessWidget {
     decimalDigits: 0,
     symbol: '',
   );
+  final Size size;
 
   @override
   Widget build(BuildContext context) {
@@ -31,14 +28,14 @@ class ItemProduct extends StatelessWidget {
               ? MediaQuery.of(context).size.width * 0.01
               : MediaQuery.of(context).size.width * 0.0001,
           top: 25),
-      elevation: 20,
+      elevation: 15,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
       color: Theme.of(context).canvasColor,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Stack(
           children: [
-            buildProductInfo(context),
+            buildProductInfo(context, size),
             buildStockViewer(context),
           ],
         ),
@@ -46,22 +43,22 @@ class ItemProduct extends StatelessWidget {
     );
   }
 
-  Widget buildProductInfo(BuildContext context) {
+  Widget buildProductInfo(BuildContext context, Size size) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Expanded(
+          flex: 3,
           child: product.imagen == null
               ? ClipOval(
                   child: SvgPicture.asset(
                     "assets/icons/product-cart.svg",
-                    height: 85,
-                    width: 85,
+                    height: 100,
+                    width: 100,
                     color: Colors.blue,
                   ),
                 )
               : CircleAvatar(
-                  radius: 5,
                   backgroundColor: Colors.transparent,
                   child: ClipOval(
                     child: Image.network(
@@ -72,21 +69,26 @@ class ItemProduct extends StatelessWidget {
                 ),
         ),
         Expanded(
-          flex: 1,
+          flex: 3,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Text(
                 product.nombre,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                maxLines: 1,
                 style: TextStyle(
                   fontSize:
                       MediaQuery.of(context).orientation == Orientation.portrait
-                          ? 25
-                          : 30,
+                          ? size.width >= 600
+                              ? 25
+                              : 15.5
+                          : size.width >= 750
+                              ? 30
+                              : 15.5,
                   fontWeight: FontWeight.bold,
                 ),
-                textAlign: TextAlign.center,
-                maxLines: 1,
               ),
               Text(
                 product.descripcion,
@@ -97,38 +99,46 @@ class ItemProduct extends StatelessWidget {
                       color: DeliveryColors.darkGrey,
                       fontSize: MediaQuery.of(context).orientation ==
                               Orientation.portrait
-                          ? 22
-                          : 25,
+                          ? size.width >= 600
+                              ? 20
+                              : 13.5
+                          : size.width >= 750
+                              ? 20
+                              : 14.0,
                     ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Flexible(
-                    child: Text(
-                      '\$${formatter.format(product.precioVentaFinal)}',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).primaryColor,
-                          fontSize: MediaQuery.of(context).orientation ==
-                                  Orientation.portrait
-                              ? 30.0
-                              : 35.0),
-                      maxLines: 1,
-                    ),
-                  ),
-                ],
+              Text(
+                '\$${formatter.format(product.precioVentaFinal)}',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).primaryColor,
+                  fontSize:
+                      MediaQuery.of(context).orientation == Orientation.portrait
+                          ? size.width >= 600
+                              ? 25.0
+                              : 18.0
+                          : size.width >= 750
+                              ? 26.0
+                              : 19.0,
+                ),
               ),
             ],
           ),
         ),
-        DeliveryButton(
-          onTap: onTap,
-          padding: const EdgeInsets.symmetric(vertical: 9.5),
-          text: "Añadir",
-          fontSize: MediaQuery.of(context).orientation == Orientation.portrait
-              ? MediaQuery.of(context).size.width * 0.04
-              : MediaQuery.of(context).size.width * 0.025,
+        Container(
+          width: double.infinity,
+          child: DeliveryButton(
+            onTap: onTap,
+            padding: const EdgeInsets.symmetric(vertical: 9.5),
+            text: "Añadir",
+            fontSize:
+                MediaQuery.of(context).orientation == Orientation.portrait
+                    ? MediaQuery.of(context).size.width * 0.04
+                    : MediaQuery.of(context).size.width * 0.025,
+          ),
         )
       ],
     );

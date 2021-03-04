@@ -27,49 +27,11 @@ class ProductosScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final productsBloc = context.watch<ProductosBLoC>();
     final preSaleBLoC = context.watch<PreSaleBLoC>();
+    final size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white70,
-        appBar: AppBar(
-          centerTitle: true,
-          elevation: 6.0,
-          backgroundColor: Colors.blue[900],
-          toolbarHeight: 42.0,
-          title: Text(
-            'Productos',
-            style: TextStyle(
-              fontSize: 25.0,
-            ),
-          ),
-          actions: [
-            IconButton(
-              icon: Icon(
-                Icons.search,
-                size: 30,
-              ),
-              color: Colors.white,
-              onPressed: () async {
-                final product = await showSearch(
-                    context: context,
-                    delegate: ProductSearchDelegate('Buscar producto',
-                        productosBLoC: productsBloc, preSaleBLoC: preSaleBLoC));
-                if (product != null) {
-                  //TODO: Guardar historial de busqueda en SharedPreferences localmente
-                  if (!productsBloc.historial
-                      .any((element) => element.id == product.id)) {
-                    if (productsBloc.historial.length >= 10) {
-                      productsBloc.historial.removeLast();
-                      productsBloc.historial.insert(0, product);
-                    } else {
-                      productsBloc.historial.insert(0, product);
-                    }
-                  }
-                }
-              },
-              splashColor: Colors.transparent,
-            )
-          ],
-        ),
+        appBar: buildAppBarProducts(context, productsBloc, preSaleBLoC),
         body: productsBloc.productList.isNotEmpty
             ? RefreshIndicator(
                 color: Colors.white,
@@ -83,12 +45,9 @@ class ProductosScreen extends StatelessWidget {
                             Orientation.landscape
                         ? 4
                         : 2,
-                    childAspectRatio: MediaQuery.of(context).orientation ==
-                            Orientation.landscape
-                        ? 2 / 3.4
-                        : 2 / 3,
-                    crossAxisSpacing: 9,
-                    mainAxisSpacing: 9,
+                    childAspectRatio: 0.5 / MediaQuery.textScaleFactorOf(context),
+                    crossAxisSpacing: 15,
+                    mainAxisSpacing: 15,
                   ),
                   physics: BouncingScrollPhysics(
                     parent: AlwaysScrollableScrollPhysics(),
@@ -96,6 +55,7 @@ class ProductosScreen extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final product = productsBloc.productList[index];
                     return ItemProduct(
+                      size: size,
                       product: product,
                       onTap: () async {
                         if (product.stockminimo != null) {
@@ -269,6 +229,50 @@ class ProductosScreen extends StatelessWidget {
                 ),
               ),
       ),
+    );
+  }
+
+  AppBar buildAppBarProducts(BuildContext context, ProductosBLoC productsBloc,
+      PreSaleBLoC preSaleBLoC) {
+    return AppBar(
+      centerTitle: true,
+      elevation: 6.0,
+      backgroundColor: Colors.blue[900],
+      toolbarHeight: 42.0,
+      title: Text(
+        'Productos',
+        style: TextStyle(
+          fontSize: 25.0,
+        ),
+      ),
+      actions: [
+        IconButton(
+          icon: Icon(
+            Icons.search,
+            size: 30,
+          ),
+          color: Colors.white,
+          onPressed: () async {
+            final product = await showSearch(
+                context: context,
+                delegate: ProductSearchDelegate('Buscar producto',
+                    productosBLoC: productsBloc, preSaleBLoC: preSaleBLoC));
+            if (product != null) {
+              //TODO: Guardar historial de busqueda en SharedPreferences localmente
+              if (!productsBloc.historial
+                  .any((element) => element.id == product.id)) {
+                if (productsBloc.historial.length >= 10) {
+                  productsBloc.historial.removeLast();
+                  productsBloc.historial.insert(0, product);
+                } else {
+                  productsBloc.historial.insert(0, product);
+                }
+              }
+            }
+          },
+          splashColor: Colors.transparent,
+        )
+      ],
     );
   }
 

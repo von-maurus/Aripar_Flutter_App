@@ -17,47 +17,8 @@ class ClientesScreen extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white70,
-        floatingActionButton: FloatingActionButton(
-          heroTag: "btnCreateClient",
-          elevation: 25,
-          backgroundColor: Colors.blue[700],
-          child: Icon(
-            Icons.add,
-            size: 38,
-          ),
-          onPressed: () async {
-            final client = await Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => ClientCreate()));
-            if (client != null) {
-              print('Cliente Creado $client');
-            }
-          },
-        ),
-        appBar: AppBar(
-          centerTitle: true,
-          elevation: 6.0,
-          title: Text(
-            'Clientes',
-            style: TextStyle(
-              fontSize: 25.0,
-            ),
-          ),
-          backgroundColor: Colors.blue[900],
-          toolbarHeight: 42.0,
-          actions: [
-            IconButton(
-              icon: Icon(
-                Icons.search,
-                size: 30,
-              ),
-              color: Colors.white,
-              onPressed: () async {
-                await toSearch(context, clientsBloc, preSaleBloc);
-              },
-              splashColor: Colors.transparent,
-            )
-          ],
-        ),
+        floatingActionButton: buildFloatingActionButton(context),
+        appBar: buildAppBar(context, clientsBloc, preSaleBloc),
         body: clientsBloc.clientList.isNotEmpty
             ? RefreshIndicator(
                 onRefresh: () async {
@@ -74,10 +35,11 @@ class ClientesScreen extends StatelessWidget {
                           parent: AlwaysScrollableScrollPhysics(),
                         ),
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 4,
-                          // childAspectRatio: 2 / 3.4,
-                          crossAxisSpacing: 12,
-                          mainAxisSpacing: 12,
+                          crossAxisCount: 3,
+                          childAspectRatio:
+                              0.75 / MediaQuery.textScaleFactorOf(context),
+                          crossAxisSpacing: 11,
+                          mainAxisSpacing: 11,
                         ),
                         itemBuilder: (context, index) {
                           final client = clientsBloc.clientList[index];
@@ -119,19 +81,26 @@ class ClientesScreen extends StatelessWidget {
                         },
                       );
                     }
-                    return ListView.builder(
+                    return GridView.builder(
                       itemCount: clientsBloc.clientList.length,
                       physics: BouncingScrollPhysics(
                         parent: AlwaysScrollableScrollPhysics(),
                       ),
-                      itemBuilder: (BuildContext context, int index) {
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 1,
+                        childAspectRatio:
+                            1.5 / MediaQuery.textScaleFactorOf(context),
+                        crossAxisSpacing: 11,
+                        mainAxisSpacing: 11,
+                      ),
+                      itemBuilder: (context, index) {
                         final client = clientsBloc.clientList[index];
                         return buildList(
                           context,
                           index,
                           client,
                           clientsBloc.cardHeight,
-                          () {
+                          () async {
                             _showMyDialog(
                                 context, client, clientsBloc, preSaleBloc);
                           },
@@ -147,6 +116,54 @@ class ClientesScreen extends StatelessWidget {
                 ),
               ),
       ),
+    );
+  }
+
+  AppBar buildAppBar(
+      BuildContext context, ClientesBLoC clientsBloc, PreSaleBLoC preSaleBloc) {
+    return AppBar(
+      centerTitle: true,
+      elevation: 6.0,
+      title: Text(
+        'Clientes',
+        style: TextStyle(
+          fontSize: 25.0,
+        ),
+      ),
+      backgroundColor: Colors.blue[900],
+      toolbarHeight: 42.0,
+      actions: [
+        IconButton(
+          icon: Icon(
+            Icons.search,
+            size: 30,
+          ),
+          color: Colors.white,
+          onPressed: () async {
+            await toSearch(context, clientsBloc, preSaleBloc);
+          },
+          splashColor: Colors.transparent,
+        )
+      ],
+    );
+  }
+
+  FloatingActionButton buildFloatingActionButton(BuildContext context) {
+    return FloatingActionButton(
+      heroTag: "btnCreateClient",
+      elevation: 25,
+      backgroundColor: Colors.blue[700],
+      child: Icon(
+        Icons.add,
+        size: 38,
+      ),
+      onPressed: () async {
+        final client = await Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => ClientCreate()));
+        if (client != null) {
+          print('Cliente Creado $client');
+        }
+      },
     );
   }
 

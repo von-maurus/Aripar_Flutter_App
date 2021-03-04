@@ -3,7 +3,7 @@
 //     final usuario = usuarioFromJson(jsonString);
 import 'dart:convert';
 
-import 'file:///C:/Development/fernando-herrera/flutter-advance/arturo_bruna_app/lib/data/api_repository_impl.dart';
+import 'package:arturo_bruna_app/data/api_repository_impl.dart';
 
 Usuario usuarioFromJson(String str) => Usuario.fromJson(json.decode(str));
 
@@ -57,6 +57,7 @@ class Usuario {
         "imagen": imagen,
         "estado": estado,
       };
+
   @override
   String toString() {
     return 'Instancia de Usuario: $nombre - $username - $imagen';
