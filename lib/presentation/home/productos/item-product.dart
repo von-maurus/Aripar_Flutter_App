@@ -51,7 +51,7 @@ class ItemProduct extends StatelessWidget {
           flex: 3,
           child: product.imagen == null
               ? Container(
-                  padding: EdgeInsets.all(50.0),
+                  padding: EdgeInsets.all(size.width >= 750.0 ? 10.0 : 50.0),
                   child: SvgPicture.asset(
                     "assets/icons/product-cart.svg",
                     color: Colors.blue,

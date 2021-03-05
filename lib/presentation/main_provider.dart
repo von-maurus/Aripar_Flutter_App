@@ -52,6 +52,7 @@ class MainProvider extends StatelessWidget {
           return Consumer<MainBLoC>(
             builder: (context, bloc, _) {
               return MaterialApp(
+                title: 'Aripar',
                 debugShowCheckedModeBanner: false,
                 // theme: bloc.currentTheme == null
                 //     ? ThemeData.light()

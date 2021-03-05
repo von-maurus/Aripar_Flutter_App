@@ -370,12 +370,16 @@ class ClientesScreen extends StatelessWidget {
                               SizedBox(
                                 width: 5,
                               ),
-                              Text('${client.numDias} Días a pagar',
-                                  maxLines: 1,
-                                  style: TextStyle(
-                                      fontSize: 14.5,
-                                      letterSpacing: .3,
-                                      fontWeight: FontWeight.w400))
+                              Flexible(
+                                child: Text('${client.numDias} Días a pagar',
+                                    overflow: TextOverflow.ellipsis,
+                                    softWrap: true,
+                                    maxLines: 2,
+                                    style: TextStyle(
+                                        fontSize: 14.5,
+                                        letterSpacing: .3,
+                                        fontWeight: FontWeight.w400)),
+                              )
                             ],
                           )
                         : Container(),
