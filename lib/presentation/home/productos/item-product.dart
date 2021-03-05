@@ -50,21 +50,17 @@ class ItemProduct extends StatelessWidget {
         Expanded(
           flex: 3,
           child: product.imagen == null
-              ? ClipOval(
+              ? Container(
+                  padding: EdgeInsets.all(50.0),
                   child: SvgPicture.asset(
                     "assets/icons/product-cart.svg",
-                    height: 100,
-                    width: 100,
                     color: Colors.blue,
                   ),
                 )
-              : CircleAvatar(
-                  backgroundColor: Colors.transparent,
-                  child: ClipOval(
-                    child: Image.network(
-                      product.imagen,
-                      fit: BoxFit.cover,
-                    ),
+              : Container(
+                  child: Image.network(
+                    product.imagen,
+                    fit: BoxFit.fitHeight,
                   ),
                 ),
         ),
@@ -82,10 +78,10 @@ class ItemProduct extends StatelessWidget {
                   fontSize:
                       MediaQuery.of(context).orientation == Orientation.portrait
                           ? size.width >= 600
-                              ? 25
+                              ? 19.5
                               : 15.5
                           : size.width >= 750
-                              ? 30
+                              ? 19.5
                               : 15.5,
                   fontWeight: FontWeight.bold,
                 ),
@@ -100,10 +96,10 @@ class ItemProduct extends StatelessWidget {
                       fontSize: MediaQuery.of(context).orientation ==
                               Orientation.portrait
                           ? size.width >= 600
-                              ? 20
+                              ? 18.5
                               : 13.5
                           : size.width >= 750
-                              ? 20
+                              ? 19.0
                               : 14.0,
                     ),
               ),
@@ -118,7 +114,7 @@ class ItemProduct extends StatelessWidget {
                   fontSize:
                       MediaQuery.of(context).orientation == Orientation.portrait
                           ? size.width >= 600
-                              ? 25.0
+                              ? 28.0
                               : 18.0
                           : size.width >= 750
                               ? 26.0
@@ -134,10 +130,9 @@ class ItemProduct extends StatelessWidget {
             onTap: onTap,
             padding: const EdgeInsets.symmetric(vertical: 9.5),
             text: "Añadir",
-            fontSize:
-                MediaQuery.of(context).orientation == Orientation.portrait
-                    ? MediaQuery.of(context).size.width * 0.04
-                    : MediaQuery.of(context).size.width * 0.025,
+            fontSize: MediaQuery.of(context).orientation == Orientation.portrait
+                ? 30.0
+                : 22.5,
           ),
         )
       ],

@@ -14,6 +14,7 @@ class ClientesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final clientsBloc = context.watch<ClientesBLoC>();
     final preSaleBloc = context.watch<PreSaleBLoC>();
+    final size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white70,
@@ -35,11 +36,12 @@ class ClientesScreen extends StatelessWidget {
                           parent: AlwaysScrollableScrollPhysics(),
                         ),
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          childAspectRatio:
-                              0.75 / MediaQuery.textScaleFactorOf(context),
-                          crossAxisSpacing: 11,
-                          mainAxisSpacing: 11,
+                          crossAxisCount: size.width >= 750 ? 4 : 3,
+                          childAspectRatio: size.width >= 750
+                              ? 0.92 / MediaQuery.textScaleFactorOf(context)
+                              : 0.75 / MediaQuery.textScaleFactorOf(context),
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
                         ),
                         itemBuilder: (context, index) {
                           final client = clientsBloc.clientList[index];
@@ -55,7 +57,7 @@ class ClientesScreen extends StatelessWidget {
                           );
                         },
                       );
-                    } else if (MediaQuery.of(context).size.width >= 600.0) {
+                    } else if (size.width >= 600.0) {
                       return GridView.builder(
                         itemCount: clientsBloc.clientList.length,
                         physics: BouncingScrollPhysics(
@@ -63,8 +65,8 @@ class ClientesScreen extends StatelessWidget {
                         ),
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 3,
-                          crossAxisSpacing: 1,
-                          mainAxisSpacing: 1,
+                          childAspectRatio:
+                              0.95 / MediaQuery.textScaleFactorOf(context),
                         ),
                         itemBuilder: (context, index) {
                           final client = clientsBloc.clientList[index];
@@ -215,46 +217,47 @@ class ClientesScreen extends StatelessWidget {
   Future<void> showReplaceClientDialog(
       BuildContext context, PreSaleBLoC preSaleBLoC, Cliente client) {
     return showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (_) => AlertDialogPage(
-              oldContext: _,
-              title: Center(
-                child: Text(
-                  "Advertencia",
-                  style: TextStyle(
-                    fontSize: 25.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              content: Text(
-                "Ya existe un cliente en la \nPre-Venta.\n¿Desea reemplazarlo?",
-                style: TextStyle(fontSize: 17.5),
-                textAlign: TextAlign.center,
-              ),
-              actions: [
-                FlatButton(
-                  child: Text(
-                    "Reemplazar",
-                    style: TextStyle(fontSize: 17.0),
-                  ),
-                  onPressed: () {
-                    preSaleBLoC.updateClient(client);
-                    Navigator.of(context).pop();
-                  },
-                ),
-                FlatButton(
-                  child: Text(
-                    "Cancelar",
-                    style: TextStyle(fontSize: 17.0),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                )
-              ],
-            ));
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => AlertDialogPage(
+        oldContext: _,
+        title: Center(
+          child: Text(
+            "Advertencia",
+            style: TextStyle(
+              fontSize: 25.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        content: Text(
+          "Ya existe un cliente en la \nPre-Venta.\n¿Desea reemplazarlo?",
+          style: TextStyle(fontSize: 17.5),
+          textAlign: TextAlign.center,
+        ),
+        actions: [
+          FlatButton(
+            child: Text(
+              "Reemplazar",
+              style: TextStyle(fontSize: 17.0),
+            ),
+            onPressed: () {
+              preSaleBLoC.updateClient(client);
+              Navigator.of(context).pop();
+            },
+          ),
+          FlatButton(
+            child: Text(
+              "Cancelar",
+              style: TextStyle(fontSize: 17.0),
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      ),
+    );
   }
 
   Widget buildList(BuildContext context, int index, Cliente client,
@@ -355,10 +358,7 @@ class ClientesScreen extends StatelessWidget {
                   ],
                 ),
                 client.tipopago == 1
-                    ? /*SizedBox(
-                        height: 25.0,
-                      )*/
-                    Container()
+                    ? Container()
                     : client.numerocuotas != null
                         ? Row(
                             children: <Widget>[

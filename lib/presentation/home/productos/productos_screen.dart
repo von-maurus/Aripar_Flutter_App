@@ -35,19 +35,26 @@ class ProductosScreen extends StatelessWidget {
         body: productsBloc.productList.isNotEmpty
             ? RefreshIndicator(
                 color: Colors.white,
+                backgroundColor: Colors.blue[800],
                 onRefresh: () async {
                   await productsBloc.loadProducts();
                 },
-                backgroundColor: Colors.blue[800],
                 child: GridView.builder(
+                  itemCount: productsBloc.productList.length,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: MediaQuery.of(context).orientation ==
                             Orientation.landscape
-                        ? 4
-                        : 2,
-                    childAspectRatio: 0.5 / MediaQuery.textScaleFactorOf(context),
-                    crossAxisSpacing: 15,
-                    mainAxisSpacing: 15,
+                        ? size.width >= 600
+                            ? 4
+                            : 3
+                        : size.width >= 600
+                            ? 3
+                            : 2,
+                    childAspectRatio: size.width >= 600
+                        ? 0.8 / MediaQuery.textScaleFactorOf(context)
+                        : 0.5 / MediaQuery.textScaleFactorOf(context),
+                    crossAxisSpacing: 20.0,
+                    mainAxisSpacing: 20.0,
                   ),
                   physics: BouncingScrollPhysics(
                     parent: AlwaysScrollableScrollPhysics(),
@@ -220,10 +227,9 @@ class ProductosScreen extends StatelessWidget {
                       },
                     );
                   },
-                  itemCount: productsBloc.productList.length,
                 ),
               )
-            : const Center(
+            : Center(
                 child: CircularProgressIndicator(
                   backgroundColor: Colors.black45,
                 ),
