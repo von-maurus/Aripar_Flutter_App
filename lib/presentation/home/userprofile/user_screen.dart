@@ -28,7 +28,7 @@ class UserScreen extends StatelessWidget {
     await profileBloc.logOut();
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(
-        builder: (_) => SplashScreen.init(context),
+        builder: (_) => SplashScreen(),
       ),
       (route) => false,
     );
@@ -56,19 +56,19 @@ class UserScreen extends StatelessWidget {
           ),
         ),
         actions: [
-          FlatButton(
+          TextButton(
+            style:
+                ButtonStyle(shape: MaterialStateProperty.all(StadiumBorder())),
             child: Text("Si"),
-            shape: StadiumBorder(),
             onPressed: () async {
               await logout(context);
             },
           ),
-          FlatButton(
-            shape: StadiumBorder(),
+          TextButton(
+            style:
+                ButtonStyle(shape: MaterialStateProperty.all(StadiumBorder())),
             child: Text("No"),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
+            onPressed: () => Navigator.of(context).pop(),
           )
         ],
       ),

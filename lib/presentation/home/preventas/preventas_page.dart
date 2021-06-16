@@ -91,43 +91,10 @@ class _ProductCartScreen extends StatelessWidget {
               Container(),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10.0),
-                child: RaisedButton(
-                  onPressed: () {
-                    if (bloc.preSaleList.isNotEmpty) {
-                      showDialog(
-                        context: context,
-                        builder: (_) => AlertDialogPage(
-                          oldContext: _,
-                          content: Text(
-                            "Se limpiará el carrito de ventas. ¿Desea continuar?",
-                            style: TextStyle(fontSize: 22.0),
-                            textAlign: TextAlign.center,
-                          ),
-                          actions: [
-                            FlatButton(
-                              onPressed: () {
-                                bloc.cleanSalesCart();
-                                Navigator.of(context).pop();
-                              },
-                              child: Text(
-                                "Continuar",
-                                style: TextStyle(fontSize: 18.0),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            FlatButton(
-                              onPressed: () => Navigator.of(context).pop(),
-                              child: Text(
-                                "Cancelar",
-                                style: TextStyle(fontSize: 18.0),
-                                textAlign: TextAlign.center,
-                              ),
-                            )
-                          ],
-                        ),
-                      );
-                    }
-                  },
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                      shape: MaterialStateProperty.all(StadiumBorder())),
+                  onPressed: () => _clearCart(bloc, context),
                   child: Row(
                     children: [
                       Text(
@@ -147,7 +114,6 @@ class _ProductCartScreen extends StatelessWidget {
                       )
                     ],
                   ),
-                  shape: StadiumBorder(),
                 ),
               )
             ],
@@ -188,6 +154,43 @@ class _ProductCartScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _clearCart(PreSaleBLoC bloc, BuildContext context) {
+    if (bloc.preSaleList.isNotEmpty) {
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialogPage(
+          oldContext: _,
+          content: Text(
+            "Se limpiará el carrito de ventas. ¿Desea continuar?",
+            style: TextStyle(fontSize: 22.0),
+            textAlign: TextAlign.center,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                bloc.cleanSalesCart();
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                "Continuar",
+                style: TextStyle(fontSize: 18.0),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                "Cancelar",
+                style: TextStyle(fontSize: 18.0),
+                textAlign: TextAlign.center,
+              ),
+            )
+          ],
+        ),
+      );
+    }
   }
 }
 
@@ -517,12 +520,14 @@ class EmptyCart extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               Center(
-                child: RaisedButton(
-                  elevation: 10,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  color: DeliveryColors.purple,
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                      elevation: MaterialStateProperty.all(10),
+                      shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      )),
+                      backgroundColor:
+                          MaterialStateProperty.all(DeliveryColors.purple)),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: Text(

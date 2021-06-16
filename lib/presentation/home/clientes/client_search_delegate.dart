@@ -132,8 +132,10 @@ class ClientSearchDelegate extends SearchDelegate<Cliente> {
           textAlign: TextAlign.center,
         ),
         actions: [
-          FlatButton(
-            shape: StadiumBorder(),
+          TextButton(
+            style: ButtonStyle(
+              shape: MaterialStateProperty.all(StadiumBorder()),
+            ),
             child: Text(
               "Agregar",
               style: TextStyle(fontSize: 17.0),
@@ -150,8 +152,10 @@ class ClientSearchDelegate extends SearchDelegate<Cliente> {
               }
             },
           ),
-          FlatButton(
-            shape: StadiumBorder(),
+          TextButton(
+            style: ButtonStyle(
+              shape: MaterialStateProperty.all(StadiumBorder()),
+            ),
             child: Text(
               "Cancelar",
               style: TextStyle(fontSize: 17.0),
@@ -188,7 +192,7 @@ class ClientSearchDelegate extends SearchDelegate<Cliente> {
           textAlign: TextAlign.center,
         ),
         actions: [
-          FlatButton(
+          TextButton(
             child: Text(
               "Reemplazar",
               style: TextStyle(fontSize: 17.0),
@@ -199,7 +203,7 @@ class ClientSearchDelegate extends SearchDelegate<Cliente> {
               this.close(context, client);
             },
           ),
-          FlatButton(
+          TextButton(
             child: Text(
               "Cancelar",
               style: TextStyle(fontSize: 17.0),

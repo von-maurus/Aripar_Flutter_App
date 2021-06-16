@@ -50,9 +50,12 @@ class ProductosScreen extends StatelessWidget {
                         : size.width >= 600
                             ? 3
                             : 2,
-                    childAspectRatio: size.width >= 600
-                        ? 0.8 / MediaQuery.textScaleFactorOf(context)
-                        : 0.5 / MediaQuery.textScaleFactorOf(context),
+                    childAspectRatio: MediaQuery.of(context).orientation ==
+                            Orientation.portrait
+                        ? size.width >= 600.0
+                            ? 0.5 / MediaQuery.textScaleFactorOf(context)
+                            : 0.6 / MediaQuery.textScaleFactorOf(context)
+                        : 0.4 / MediaQuery.textScaleFactorOf(context),
                     crossAxisSpacing: 20.0,
                     mainAxisSpacing: 20.0,
                   ),
@@ -86,27 +89,30 @@ class ProductosScreen extends StatelessWidget {
                                     textAlign: TextAlign.center,
                                   ),
                                   actions: [
-                                    FlatButton(
+                                    TextButton(
+                                      style: ButtonStyle(
+                                          shape: MaterialStateProperty.all(
+                                              StadiumBorder())),
                                       child: Text(
                                         "Seguir...",
                                         style: TextStyle(fontSize: 17.0),
                                       ),
-                                      shape: StadiumBorder(),
                                       onPressed: () {
                                         Navigator.of(context).pop();
                                         _showNumberPicker(context, product,
                                             productsBloc, preSaleBLoC);
                                       },
                                     ),
-                                    FlatButton(
+                                    TextButton(
                                       child: Text(
                                         "Volver",
                                         style: TextStyle(fontSize: 17.0),
                                       ),
-                                      shape: StadiumBorder(),
-                                      onPressed: () async {
-                                        Navigator.of(context).pop();
-                                      },
+                                      style: ButtonStyle(
+                                          shape: MaterialStateProperty.all(
+                                              StadiumBorder())),
+                                      onPressed: () async =>
+                                          Navigator.of(context).pop(),
                                     ),
                                   ],
                                 ),
@@ -128,12 +134,14 @@ class ProductosScreen extends StatelessWidget {
                                   ),
                                 ),
                                 actions: [
-                                  FlatButton(
+                                  TextButton(
+                                    style: ButtonStyle(
+                                        shape: MaterialStateProperty.all(
+                                            StadiumBorder())),
                                     child: Text(
                                       "Seguir...",
                                       style: TextStyle(fontSize: 17.0),
                                     ),
-                                    shape: StadiumBorder(),
                                     onPressed: () {
                                       print(
                                           'Cantidad:  ${productsBloc.cantidadProducto}');
@@ -142,12 +150,14 @@ class ProductosScreen extends StatelessWidget {
                                       Navigator.of(context).pop();
                                     },
                                   ),
-                                  FlatButton(
+                                  TextButton(
                                     child: Text(
                                       "Volver",
                                       style: TextStyle(fontSize: 17.0),
                                     ),
-                                    shape: StadiumBorder(),
+                                    style: ButtonStyle(
+                                        shape: MaterialStateProperty.all(
+                                            StadiumBorder())),
                                     onPressed: () async {
                                       Navigator.of(context).pop();
                                     },
@@ -174,14 +184,14 @@ class ProductosScreen extends StatelessWidget {
                                   textAlign: TextAlign.center,
                                 ),
                                 actions: [
-                                  FlatButton(
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
                                     child: Text(
                                       "Aceptar",
                                       style: TextStyle(fontSize: 17.0),
                                     ),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
                                   ),
                                 ],
                               ),
@@ -210,14 +220,14 @@ class ProductosScreen extends StatelessWidget {
                                   textAlign: TextAlign.center,
                                 ),
                                 actions: [
-                                  FlatButton(
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
                                     child: Text(
                                       "Aceptar",
                                       style: TextStyle(fontSize: 17.0),
                                     ),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
                                   ),
                                 ],
                               ),
@@ -310,12 +320,13 @@ class ProductosScreen extends StatelessWidget {
           },
         ),
         actions: [
-          FlatButton(
+          TextButton(
+            style:
+                ButtonStyle(shape: MaterialStateProperty.all(StadiumBorder())),
             child: Text(
               "Agregar",
               style: TextStyle(fontSize: 17.0),
             ),
-            shape: StadiumBorder(),
             onPressed: () async {
               print('Cantidad:  ${productsBLoC.cantidadProducto}');
               preSaleBLoC.add(product, productsBLoC.cantidadProducto);
@@ -323,8 +334,9 @@ class ProductosScreen extends StatelessWidget {
               Navigator.of(context).pop();
             },
           ),
-          FlatButton(
-            shape: StadiumBorder(),
+          TextButton(
+            style:
+                ButtonStyle(shape: MaterialStateProperty.all(StadiumBorder())),
             child: Text(
               "Cancelar",
               style: TextStyle(fontSize: 17.0),

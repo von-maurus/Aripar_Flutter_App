@@ -48,12 +48,13 @@ class CheckoutLandscapeView extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
         actions: [
-          FlatButton(
+          TextButton(
+            style:
+                ButtonStyle(shape: MaterialStateProperty.all(StadiumBorder())),
             child: Text(
               "Aceptar",
               style: TextStyle(fontSize: 17.0),
             ),
-            shape: StadiumBorder(),
             onPressed: () async {
               Navigator.of(context).pop();
             },
@@ -185,8 +186,11 @@ class CheckoutLandscapeView extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: SizedBox(
                   width: double.infinity,
-                  child: RaisedButton(
-                    color: Colors.green,
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.green),
+                      shape: MaterialStateProperty.all(StadiumBorder()),
+                    ),
                     onPressed: () async {
                       if (bloc.client.id != null) {
                         return showDialog(
@@ -207,7 +211,7 @@ class CheckoutLandscapeView extends StatelessWidget {
                               textAlign: TextAlign.center,
                             ),
                             actions: [
-                              FlatButton(
+                              TextButton(
                                 onPressed: () async {
                                   Navigator.of(context).pop();
                                   //Esperar respuesta
@@ -220,7 +224,7 @@ class CheckoutLandscapeView extends StatelessWidget {
                                   style: TextStyle(fontSize: 18.0),
                                 ),
                               ),
-                              FlatButton(
+                              TextButton(
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
@@ -251,7 +255,7 @@ class CheckoutLandscapeView extends StatelessWidget {
                             textAlign: TextAlign.center,
                           ),
                           actions: [
-                            FlatButton(
+                            TextButton(
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                   homeBloc.updateIndexSelected(1);
@@ -264,7 +268,6 @@ class CheckoutLandscapeView extends StatelessWidget {
                         ),
                       );
                     },
-                    shape: StadiumBorder(),
                     child: Text(
                       "Confirmar Pre-venta",
                       style: TextStyle(

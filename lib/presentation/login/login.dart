@@ -12,10 +12,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-
 class LoginPage extends StatelessWidget {
   LoginPage._();
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  final _scaffoldKey = GlobalKey<ScaffoldMessengerState>();
   final FocusNode _focusNodeEmail = new FocusNode();
   final FocusNode _focusNodePassword = new FocusNode();
 
@@ -32,6 +32,22 @@ class LoginPage extends StatelessWidget {
         localRepositoryInterface: context.read<LocalRepositoryInterface>(),
       ),
       builder: (_, __) => LoginPage._(),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    final bloc = context.watch<LoginBLoC>();
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        print('constraints.maxWidth ${constraints.maxWidth}');
+        if (constraints.maxWidth >= 600.0) {
+          return buildLargeLogin(size, bloc, context);
+        } else {
+          return buildSmallLogin(size, bloc, context);
+        }
+      },
     );
   }
 
@@ -75,129 +91,20 @@ class LoginPage extends StatelessWidget {
 
   Widget buildSmallLogin(Size size, LoginBLoC bloc, BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.blue[700],
+      child: ScaffoldMessenger(
         key: _scaffoldKey,
-        body: Stack(
-          children: [
-            Container(
-              width: double.infinity,
-              height: size.height,
-              child: Background(
-                size: size,
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Logo(
-                        size: size,
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: size.height * 0.02),
-                        padding: EdgeInsets.symmetric(
-                            horizontal: size.width * 0.051),
-                        child: Column(
-                          children: <Widget>[
-                            CustomFormInput(
-                              right: 0,
-                              bottom: 0,
-                              left: 0,
-                              top: 0,
-                              autoValidateMode:
-                                  AutovalidateMode.onUserInteraction,
-                              validator: (value) {
-                                final response = validateEmail(value, bloc);
-                                return response;
-                              },
-                              textInputAction: TextInputAction.next,
-                              focusNode: _focusNodeEmail,
-                              size: size,
-                              prefixIcon: Icon(Icons.email),
-                              hintText: 'Email',
-                              controller: bloc.emailTextController,
-                              textInputType: TextInputType.emailAddress,
-                              function: (value) {
-                                _focusNodePassword.requestFocus();
-                              },
-                            ),
-                            CustomFormInput(
-                              right: 0,
-                              bottom: 0,
-                              left: 0,
-                              top: 0,
-                              suffixWidget: IconButton(
-                                icon: Icon(bloc.isObscure
-                                    ? Icons.visibility_off
-                                    : Icons.visibility),
-                                onPressed: () {
-                                  bloc.showHidePassword();
-                                },
-                              ),
-                              autoValidateMode:
-                                  AutovalidateMode.onUserInteraction,
-                              validator: (value) {
-                                final response = validatePassword(value, bloc);
-                                return response;
-                              },
-                              textInputAction: TextInputAction.done,
-                              focusNode: _focusNodePassword,
-                              isObscure: bloc.isObscure,
-                              size: size,
-                              prefixIcon: Icon(Icons.vpn_key),
-                              hintText: 'Contraseña',
-                              controller: bloc.passwordTextController,
-                              function: (value) {
-                                FocusScope.of(context).unfocus();
-                              },
-                            ),
-                            RoundedButton(
-                              size: size,
-                              buttonText: "Iniciar sesión",
-                              onPressed: () => login(context),
-                              buttonColor: Colors.orange[500],
-                              buttonTextColor: Colors.black,
-                            ),
-                          ],
-                        ),
-                      ),
-                      BottomLabels(
-                        fontSizeTerms: 15.5,
-                        indent: 10,
-                        endIndent: 10,
-                        size: size,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            if (bloc.loginState == LoginState.loading)
+        child: Scaffold(
+          backgroundColor: Colors.blue[700],
+          body: Stack(
+            children: [
               Container(
-                color: Colors.black45,
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              )
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget buildLargeLogin(Size size, LoginBLoC bloc, BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.blue[700],
-        key: _scaffoldKey,
-        body: Stack(
-          children: [
-            Container(
                 width: double.infinity,
                 height: size.height,
                 child: Background(
                   size: size,
                   child: SingleChildScrollView(
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
                         Logo(
                           size: size,
@@ -205,140 +112,239 @@ class LoginPage extends StatelessWidget {
                         Container(
                           margin: EdgeInsets.only(top: size.height * 0.02),
                           padding: EdgeInsets.symmetric(
-                              horizontal: MediaQuery.of(context).orientation ==
-                                      Orientation.landscape
-                                  ? size.width * 0.09
-                                  : size.width * 0.075,
-                              vertical: MediaQuery.of(context).orientation ==
-                                      Orientation.landscape
-                                  ? size.width * 0.009
-                                  : size.width * 0.005),
+                              horizontal: size.width * 0.051),
                           child: Column(
                             children: <Widget>[
                               CustomFormInput(
-                                textFormStyle: TextStyle(fontSize: 25.5),
+                                right: 0,
+                                bottom: 0,
+                                left: 0,
+                                top: 0,
                                 autoValidateMode:
                                     AutovalidateMode.onUserInteraction,
+                                validator: (value) {
+                                  final response = validateEmail(value, bloc);
+                                  return response;
+                                },
                                 textInputAction: TextInputAction.next,
                                 focusNode: _focusNodeEmail,
                                 size: size,
-                                hintText: '\t\tEmail',
+                                prefixIcon: Icon(Icons.email),
+                                hintText: 'Email',
                                 controller: bloc.emailTextController,
                                 textInputType: TextInputType.emailAddress,
                                 function: (value) {
                                   _focusNodePassword.requestFocus();
                                 },
-                                prefixIcon: Icon(
-                                  Icons.email,
-                                  size: 50,
-                                ),
-                                validator: (value) {
-                                  final response = validateEmail(value, bloc);
-                                  return response;
-                                },
-                                hintStyle: TextStyle(fontSize: 25.0),
-                                top: size.height * 0.01,
-                                left: size.height * 0.02,
-                                bottom: size.height * 0.010,
-                                right: size.height * 0.009,
                               ),
                               CustomFormInput(
-                                textFormStyle: TextStyle(fontSize: 25.5),
-                                left: size.height * 0.02,
-                                top: size.height * 0.01,
-                                bottom: size.height * 0.010,
-                                right: size.height * 0.02,
-                                hintText: '\t\tContraseña',
-                                controller: bloc.passwordTextController,
+                                right: 0,
+                                bottom: 0,
+                                left: 0,
+                                top: 0,
+                                suffixWidget: IconButton(
+                                  icon: Icon(bloc.isObscure
+                                      ? Icons.visibility_off
+                                      : Icons.visibility),
+                                  onPressed: () {
+                                    bloc.showHidePassword();
+                                  },
+                                ),
                                 autoValidateMode:
                                     AutovalidateMode.onUserInteraction,
-                                textInputAction: TextInputAction.done,
-                                focusNode: _focusNodePassword,
-                                isObscure: bloc.isObscure,
-                                size: size,
                                 validator: (value) {
                                   final response =
                                       validatePassword(value, bloc);
                                   return response;
                                 },
-                                hintStyle: TextStyle(
-                                  fontSize: 25.0,
-                                ),
-                                prefixIcon: Icon(
-                                  Icons.vpn_key,
-                                  size: 50,
-                                ),
-                                suffixWidget: IconButton(
-                                  icon: Icon(
-                                    bloc.isObscure
-                                        ? Icons.visibility_off
-                                        : Icons.visibility,
-                                    size: 35.0,
-                                  ),
-                                  onPressed: () {
-                                    bloc.showHidePassword();
-                                  },
-                                ),
+                                textInputAction: TextInputAction.done,
+                                focusNode: _focusNodePassword,
+                                isObscure: bloc.isObscure,
+                                size: size,
+                                prefixIcon: Icon(Icons.vpn_key),
+                                hintText: 'Contraseña',
+                                controller: bloc.passwordTextController,
                                 function: (value) {
                                   FocusScope.of(context).unfocus();
                                 },
                               ),
                               RoundedButton(
-                                  size: size,
-                                  buttonText: "Iniciar sesión",
-                                  onPressed: () => login(context),
-                                  buttonColor: Colors.orange[500],
-                                  buttonTextColor: Colors.black,
-                                  textFontSize: 30.0,
-                                  height: 70.0),
+                                size: size,
+                                buttonText: "Iniciar sesión",
+                                onPressed: () => login(context),
+                                buttonColor: Colors.orange[500],
+                                buttonTextColor: Colors.black,
+                              ),
                             ],
                           ),
                         ),
-                        SizedBox(
-                          height: 18,
-                        ),
                         BottomLabels(
-                          fontSizeContact: 18.0,
-                          fontSizeNotAccount: 18.0,
-                          sizeForgotPass: 22.0,
-                          indent: 22.0,
-                          endIndent: 22.0,
+                          fontSizeTerms: 15.5,
+                          indent: 10,
+                          endIndent: 10,
                           size: size,
-                          fontSizeTerms: 19.0,
                         ),
                       ],
                     ),
                   ),
-                )),
-            if (bloc.loginState == LoginState.loading)
-              Container(
-                color: Colors.black45,
-                child: Center(
-                  child: CircularProgressIndicator(
-                    strokeWidth: 10,
-                    backgroundColor: Colors.black,
-                  ),
                 ),
-              )
-          ],
+              ),
+              if (bloc.loginState == LoginState.loading)
+                Container(
+                  color: Colors.black45,
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                )
+            ],
+          ),
         ),
       ),
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    final bloc = context.watch<LoginBLoC>();
-    return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        print('constraints.maxWidth ${constraints.maxWidth}');
-        if (constraints.maxWidth >= 600.0) {
-          return buildLargeLogin(size, bloc, context);
-        } else {
-          return buildSmallLogin(size, bloc, context);
-        }
-      },
+  Widget buildLargeLogin(Size size, LoginBLoC bloc, BuildContext context) {
+    return SafeArea(
+      child: ScaffoldMessenger(
+        key: _scaffoldKey,
+        child: Scaffold(
+          backgroundColor: Colors.blue[700],
+          body: Stack(
+            children: [
+              Container(
+                  width: double.infinity,
+                  height: size.height,
+                  child: Background(
+                    size: size,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: <Widget>[
+                          Logo(
+                            size: size,
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(top: size.height * 0.02),
+                            padding: EdgeInsets.symmetric(
+                                horizontal:
+                                    MediaQuery.of(context).orientation ==
+                                            Orientation.landscape
+                                        ? size.width * 0.09
+                                        : size.width * 0.075,
+                                vertical: MediaQuery.of(context).orientation ==
+                                        Orientation.landscape
+                                    ? size.width * 0.009
+                                    : size.width * 0.005),
+                            child: Column(
+                              children: <Widget>[
+                                CustomFormInput(
+                                  textFormStyle: TextStyle(fontSize: 25.5),
+                                  autoValidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  textInputAction: TextInputAction.next,
+                                  focusNode: _focusNodeEmail,
+                                  size: size,
+                                  hintText: '\t\tEmail',
+                                  controller: bloc.emailTextController,
+                                  textInputType: TextInputType.emailAddress,
+                                  function: (value) {
+                                    _focusNodePassword.requestFocus();
+                                  },
+                                  prefixIcon: Icon(
+                                    Icons.email,
+                                    size: 50,
+                                  ),
+                                  validator: (value) {
+                                    final response = validateEmail(value, bloc);
+                                    return response;
+                                  },
+                                  hintStyle: TextStyle(fontSize: 25.0),
+                                  top: size.height * 0.01,
+                                  left: size.height * 0.02,
+                                  bottom: size.height * 0.010,
+                                  right: size.height * 0.009,
+                                ),
+                                CustomFormInput(
+                                  textFormStyle: TextStyle(fontSize: 25.5),
+                                  left: size.height * 0.02,
+                                  top: size.height * 0.01,
+                                  bottom: size.height * 0.010,
+                                  right: size.height * 0.02,
+                                  hintText: '\t\tContraseña',
+                                  controller: bloc.passwordTextController,
+                                  autoValidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  textInputAction: TextInputAction.done,
+                                  focusNode: _focusNodePassword,
+                                  isObscure: bloc.isObscure,
+                                  size: size,
+                                  validator: (value) {
+                                    final response =
+                                        validatePassword(value, bloc);
+                                    return response;
+                                  },
+                                  hintStyle: TextStyle(
+                                    fontSize: 25.0,
+                                  ),
+                                  prefixIcon: Icon(
+                                    Icons.vpn_key,
+                                    size: 50,
+                                  ),
+                                  suffixWidget: IconButton(
+                                    icon: Icon(
+                                      bloc.isObscure
+                                          ? Icons.visibility_off
+                                          : Icons.visibility,
+                                      size: 35.0,
+                                    ),
+                                    onPressed: () {
+                                      bloc.showHidePassword();
+                                    },
+                                  ),
+                                  function: (value) {
+                                    FocusScope.of(context).unfocus();
+                                  },
+                                ),
+                                RoundedButton(
+                                    size: size,
+                                    buttonText: "Iniciar sesión",
+                                    onPressed: () => login(context),
+                                    buttonColor: Colors.orange[500],
+                                    buttonTextColor: Colors.black,
+                                    textFontSize: 30.0,
+                                    height: 70.0),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 18,
+                          ),
+                          BottomLabels(
+                            fontSizeContact: 18.0,
+                            fontSizeNotAccount: 18.0,
+                            sizeForgotPass: 22.0,
+                            indent: 22.0,
+                            endIndent: 22.0,
+                            size: size,
+                            fontSizeTerms: 19.0,
+                          ),
+                        ],
+                      ),
+                    ),
+                  )),
+              if (bloc.loginState == LoginState.loading)
+                Container(
+                  color: Colors.black45,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 10,
+                      backgroundColor: Colors.black,
+                    ),
+                  ),
+                )
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

@@ -25,8 +25,8 @@ class RecoverPasswordScreen extends StatelessWidget {
       DeviceOrientation.portraitDown,
       DeviceOrientation.portraitUp,
     ]);
-    Size size = MediaQuery.of(context).size;
-    final bloc = context.watch<LoginBLoC>();
+    // Size size = MediaQuery.of(context).size;
+    // final bloc = context.watch<LoginBLoC>();
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         print('constraints.maxWidth ${constraints.maxWidth}');

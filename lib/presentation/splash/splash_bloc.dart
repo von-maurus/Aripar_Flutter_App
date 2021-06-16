@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:arturo_bruna_app/domain/exception/auth_exception.dart';
 import 'package:arturo_bruna_app/domain/repository/api_repository.dart';
 import 'package:arturo_bruna_app/domain/repository/local_storage_repository.dart';
+import 'package:arturo_bruna_app/presentation/home/home_screen.dart';
+import 'package:arturo_bruna_app/presentation/login/login.dart';
 import 'package:flutter/material.dart';
 
 class SplashBLoC extends ChangeNotifier {
@@ -15,7 +17,27 @@ class SplashBLoC extends ChangeNotifier {
     this.apiRepositoryInterface,
   });
 
-  Future<bool> validateSession(GlobalKey<ScaffoldState> scaffoldKey) async {
+  void init(BuildContext context, GlobalKey<ScaffoldMessengerState> scaffoldKey) async {
+    final result = await validateSession(scaffoldKey);
+    await Future.delayed(Duration(milliseconds: 1100));
+    if (result) {
+      await Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (_) => HomePage.init(context),
+        ),
+      );
+    } else {
+      if (!isTimeoutException) {
+        await Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (_) => LoginPage.init(context),
+          ),
+        );
+      }
+    }
+  }
+
+  Future<bool> validateSession(GlobalKey<ScaffoldMessengerState> scaffoldKey) async {
     final token = await localRepositoryInterface.getToken();
     isTimeoutException = false;
     notifyListeners();

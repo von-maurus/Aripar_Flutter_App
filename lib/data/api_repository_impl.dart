@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
 import 'package:arturo_bruna_app/domain/exception/auth_exception.dart';
 import 'package:arturo_bruna_app/domain/exception/client_exception.dart';
 import 'package:arturo_bruna_app/domain/exception/preventa_exception.dart';
@@ -11,8 +13,6 @@ import 'package:arturo_bruna_app/domain/model/user.dart';
 import 'package:arturo_bruna_app/domain/repository/api_repository.dart';
 import 'package:arturo_bruna_app/domain/request/login_request.dart';
 import 'package:arturo_bruna_app/domain/response/login_response.dart';
-import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
 
 
 class ApiRepositoryImpl extends ApiRepositoryInterface {
@@ -20,8 +20,8 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
   // static const urlBase = 'http://192.168.1.86/sab-backend/';
 
   //Domain URL
-  // static const urlBase = 'http://aripar.kuvesoft.cl/backend/'; //v1
-  static const urlBase = 'http://test.kuvesoft.cl/backend/'; //v2 Test
+  static const urlBase = 'http://aripar.kuvesoft.cl/backend/'; //v1
+  // static const urlBase = 'http://test.kuvesoft.cl/backend/'; //v2 Test
 
   static const apiUrl = urlBase + 'web/index.php?r=';
   static const urlUserImage = urlBase + "assets/avatares/";

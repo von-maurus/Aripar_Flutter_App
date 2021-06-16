@@ -81,7 +81,7 @@ class ItemProduct extends StatelessWidget {
                               ? 19.5
                               : 15.5
                           : size.width >= 750
-                              ? 19.5
+                              ? 18.0
                               : 15.5,
                   fontWeight: FontWeight.bold,
                 ),
@@ -96,7 +96,7 @@ class ItemProduct extends StatelessWidget {
                       fontSize: MediaQuery.of(context).orientation ==
                               Orientation.portrait
                           ? size.width >= 600
-                              ? 18.5
+                              ? 16.5
                               : 13.5
                           : size.width >= 750
                               ? 19.0
@@ -114,7 +114,7 @@ class ItemProduct extends StatelessWidget {
                   fontSize:
                       MediaQuery.of(context).orientation == Orientation.portrait
                           ? size.width >= 600
-                              ? 28.0
+                              ? 26.5
                               : 18.0
                           : size.width >= 750
                               ? 26.0
@@ -131,8 +131,8 @@ class ItemProduct extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 9.5),
             text: "Añadir",
             fontSize: MediaQuery.of(context).orientation == Orientation.portrait
-                ? 30.0
-                : 22.5,
+                ? 20.5
+                : 25.5,
           ),
         )
       ],

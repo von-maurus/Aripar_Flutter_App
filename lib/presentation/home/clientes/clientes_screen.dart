@@ -66,7 +66,7 @@ class ClientesScreen extends StatelessWidget {
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 3,
                           childAspectRatio:
-                              0.95 / MediaQuery.textScaleFactorOf(context),
+                              0.7 / MediaQuery.textScaleFactorOf(context),
                         ),
                         itemBuilder: (context, index) {
                           final client = clientsBloc.clientList[index];
@@ -182,12 +182,13 @@ class ClientesScreen extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
         actions: [
-          FlatButton(
+          TextButton(
+            style:
+                ButtonStyle(shape: MaterialStateProperty.all(StadiumBorder())),
             child: Text(
               "Agregar",
               style: TextStyle(fontSize: 17.0),
             ),
-            shape: StadiumBorder(),
             onPressed: () async {
               bool response = await preSaleBLoC.addClient(client);
               print(response);
@@ -199,8 +200,9 @@ class ClientesScreen extends StatelessWidget {
               }
             },
           ),
-          FlatButton(
-            shape: StadiumBorder(),
+          TextButton(
+            style:
+                ButtonStyle(shape: MaterialStateProperty.all(StadiumBorder())),
             child: Text(
               "Cancelar",
               style: TextStyle(fontSize: 17.0),
@@ -236,7 +238,7 @@ class ClientesScreen extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
         actions: [
-          FlatButton(
+          TextButton(
             child: Text(
               "Reemplazar",
               style: TextStyle(fontSize: 17.0),
@@ -246,7 +248,7 @@ class ClientesScreen extends StatelessWidget {
               Navigator.of(context).pop();
             },
           ),
-          FlatButton(
+          TextButton(
             child: Text(
               "Cancelar",
               style: TextStyle(fontSize: 17.0),

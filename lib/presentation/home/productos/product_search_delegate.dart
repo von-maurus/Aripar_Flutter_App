@@ -141,19 +141,21 @@ class ProductSearchDelegate extends SearchDelegate<Producto> {
                       textAlign: TextAlign.center,
                     ),
                     actions: [
-                      FlatButton(
+                      TextButton(
+                        style: ButtonStyle(
+                            shape: MaterialStateProperty.all(StadiumBorder())),
                         child: Text(
                           "Seguir...",
                           style: TextStyle(fontSize: 17.0),
                         ),
-                        shape: StadiumBorder(),
                         onPressed: () async {
                           Navigator.of(context).pop();
                           showSearchDialog(context, product);
                         },
                       ),
-                      FlatButton(
-                        shape: StadiumBorder(),
+                      TextButton(
+                        style: ButtonStyle(
+                            shape: MaterialStateProperty.all(StadiumBorder())),
                         child: Text(
                           "Cancelar",
                           style: TextStyle(fontSize: 17.0),
@@ -186,12 +188,13 @@ class ProductSearchDelegate extends SearchDelegate<Producto> {
                     textAlign: TextAlign.center,
                   ),
                   actions: [
-                    FlatButton(
+                    TextButton(
+                      style: ButtonStyle(
+                          shape: MaterialStateProperty.all(StadiumBorder())),
                       child: Text(
                         "Volver",
                         style: TextStyle(fontSize: 17.0),
                       ),
-                      shape: StadiumBorder(),
                       onPressed: () async {
                         Navigator.of(context).pop();
                         this.close(context, product);
@@ -232,12 +235,13 @@ class ProductSearchDelegate extends SearchDelegate<Producto> {
           },
         ),
         actions: [
-          FlatButton(
+          TextButton(
+            style:
+                ButtonStyle(shape: MaterialStateProperty.all(StadiumBorder())),
             child: Text(
               "Agregar",
               style: TextStyle(fontSize: 17.0),
             ),
-            shape: StadiumBorder(),
             onPressed: () async {
               preSaleBLoC.add(product, productosBLoC.cantidadProducto);
               productosBLoC.cantidadProducto = 1;
@@ -245,8 +249,9 @@ class ProductSearchDelegate extends SearchDelegate<Producto> {
               this.close(context, product);
             },
           ),
-          FlatButton(
-            shape: StadiumBorder(),
+          TextButton(
+            style:
+                ButtonStyle(shape: MaterialStateProperty.all(StadiumBorder())),
             child: Text(
               "Cancelar",
               style: TextStyle(fontSize: 17.0),

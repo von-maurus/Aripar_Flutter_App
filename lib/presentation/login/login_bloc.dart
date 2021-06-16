@@ -28,7 +28,7 @@ class LoginBLoC extends ChangeNotifier {
   final passwordTextController = TextEditingController();
   var loginState = LoginState.initial;
 
-  Future<bool> login(GlobalKey<ScaffoldState> scaffoldKey) async {
+  Future<bool> login(GlobalKey<ScaffoldMessengerState> scaffoldKey) async {
     final email = emailTextController.text;
     final password = passwordTextController.text;
     if (email.isNotEmpty && password.isNotEmpty) {

@@ -54,29 +54,14 @@ class CheckoutPortraitView extends StatelessWidget {
                 ),
               ),
         actions: [
-          FlatButton(
+          TextButton(
+            style:
+                ButtonStyle(shape: MaterialStateProperty.all(StadiumBorder())),
             child: Text(
               "Aceptar",
               style: TextStyle(fontSize: 17.0),
             ),
-            splashColor: Colors.grey,
-            shape: StadiumBorder(),
-            onPressed: () async {
-              if (bloc.isAnyError || bloc.isStockError) {
-                //Permanecer en la vista
-                Navigator.of(context).pop();
-              } else {
-                //Vaciar carrito de compras, redirigir a pantalla Productos y recargar lista de productos
-                bloc.cleanSalesCart();
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => HomePage.init(context),
-                  ),
-                  (route) => false,
-                );
-              }
-            },
+            onPressed: () async => _exitCheckOut(context),
           ),
           SizedBox(
             width: 85.0,
@@ -84,6 +69,23 @@ class CheckoutPortraitView extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _exitCheckOut(BuildContext context) {
+    if (bloc.isAnyError || bloc.isStockError) {
+      //Permanecer en la vista
+      Navigator.of(context).pop();
+    } else {
+      //Vaciar carrito de compras, redirigir a pantalla Productos y recargar lista de productos
+      bloc.cleanSalesCart();
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => HomePage.init(context),
+        ),
+        (route) => false,
+      );
+    }
   }
 
   Future buildEditDialog(BuildContext context, PreSaleBLoC bloc) {
@@ -229,12 +231,9 @@ class CheckoutPortraitView extends StatelessWidget {
           },
         ),
         actions: [
-          FlatButton(
-            child: Text("Aceptar"),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
+          TextButton(
+              child: Text("Aceptar"),
+              onPressed: () => Navigator.of(context).pop()),
         ],
       ),
     );
@@ -384,88 +383,15 @@ class CheckoutPortraitView extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: SizedBox(
                   width: double.infinity,
-                  child: RaisedButton(
-                    elevation: 8.0,
-                    color: Colors.green,
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      elevation: MaterialStateProperty.all(8.0),
+                      backgroundColor: MaterialStateProperty.all(Colors.green),
+                      shape: MaterialStateProperty.all(StadiumBorder()),
+                    ),
                     onPressed: () async {
-                      if (bloc.client.id != null) {
-                        return showDialog(
-                          context: context,
-                          builder: (_) => AlertDialogPage(
-                            oldContext: _,
-                            title: Center(
-                                child: Text(
-                              "Aviso",
-                              style: TextStyle(
-                                fontSize: 25.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            )),
-                            content: Text(
-                              "Se creará una Pre-Venta.\n¿Desea continuar?...",
-                              style: TextStyle(fontSize: 18.0),
-                              textAlign: TextAlign.center,
-                            ),
-                            actions: [
-                              FlatButton(
-                                onPressed: () async {
-                                  Navigator.of(context).pop();
-                                  //Esperar respuesta
-                                  final response = await bloc.checkOut();
-                                  //Mostrar AlertDialog con respuesta
-                                  return buildResponseDialog(
-                                      context, response, productBloc);
-                                },
-                                child: Text(
-                                  "Aceptar",
-                                  style: TextStyle(fontSize: 18.0),
-                                ),
-                              ),
-                              FlatButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text(
-                                  "Cancelar",
-                                  style: TextStyle(fontSize: 18.0),
-                                ),
-                              )
-                            ],
-                          ),
-                        );
-                      }
-                      return showDialog(
-                        context: context,
-                        builder: (_) => AlertDialogPage(
-                          oldContext: _,
-                          title: Center(
-                              child: Text(
-                            "Alerta",
-                            style: TextStyle(
-                              fontSize: 25.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          )),
-                          content: Text(
-                            "Debe seleccionar un cliente",
-                            style: TextStyle(fontSize: 18.0),
-                            textAlign: TextAlign.center,
-                          ),
-                          actions: [
-                            FlatButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                  homeBloc.updateIndexSelected(1);
-                                },
-                                child: Text(
-                                  "Aceptar",
-                                  style: TextStyle(fontSize: 18.0),
-                                ))
-                          ],
-                        ),
-                      );
+                      return await _confirmSale(context, productBloc);
                     },
-                    shape: StadiumBorder(),
                     child: Text(
                       "Confirmar Pre-venta",
                       style: TextStyle(
@@ -481,5 +407,87 @@ class CheckoutPortraitView extends StatelessWidget {
         )
       ],
     );
+  }
+
+  _confirmSale(BuildContext context, ProductosBLoC productBloc) async {
+    if (bloc.client.id != null) {
+      return showDialog(
+        context: context,
+        builder: (_) => AlertDialogPage(
+          oldContext: _,
+          title: Center(
+              child: Text(
+            "Aviso",
+            style: TextStyle(
+              fontSize: 25.0,
+              fontWeight: FontWeight.bold,
+            ),
+          )),
+          content: Text(
+            "Se creará una Pre-Venta.\n¿Desea continuar?...",
+            style: TextStyle(fontSize: 18.0),
+            textAlign: TextAlign.center,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                return await _onCheckOut(context, productBloc);
+              },
+              child: Text(
+                "Aceptar",
+                style: TextStyle(fontSize: 18.0),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                "Cancelar",
+                style: TextStyle(fontSize: 18.0),
+              ),
+            )
+          ],
+        ),
+      );
+    }
+    return showDialog(
+      context: context,
+      builder: (_) => AlertDialogPage(
+        oldContext: _,
+        title: Center(
+            child: Text(
+          "Alerta",
+          style: TextStyle(
+            fontSize: 25.0,
+            fontWeight: FontWeight.bold,
+          ),
+        )),
+        content: Text(
+          "Debe seleccionar un cliente",
+          style: TextStyle(fontSize: 18.0),
+          textAlign: TextAlign.center,
+        ),
+        actions: [
+          TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                homeBloc.updateIndexSelected(1);
+              },
+              child: Text(
+                "Aceptar",
+                style: TextStyle(fontSize: 18.0),
+              ))
+        ],
+      ),
+    );
+  }
+
+  _onCheckOut(BuildContext context, ProductosBLoC productBloc) async {
+    Navigator.of(context).pop();
+    //Esperar respuesta
+    final response = await bloc.checkOut();
+    //Mostrar AlertDialog con respuesta
+    return buildResponseDialog(context, response, productBloc);
   }
 }

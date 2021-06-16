@@ -47,19 +47,15 @@ class MainProvider extends StatelessWidget {
           ),
         )
       ],
-      child: Builder(
-        builder: (newContext) {
-          return Consumer<MainBLoC>(
-            builder: (context, bloc, _) {
-              return MaterialApp(
-                title: 'Aripar',
-                debugShowCheckedModeBanner: false,
-                // theme: bloc.currentTheme == null
-                //     ? ThemeData.light()
-                //     : bloc.currentTheme,
-                home: SplashScreen.init(newContext),
-              );
-            },
+      child: Consumer<MainBLoC>(
+        builder: (context, bloc, _) {
+          return MaterialApp(
+            title: 'Aripar',
+            debugShowCheckedModeBanner: false,
+            // theme: bloc.currentTheme == null
+            //     ? ThemeData.light()
+            //     : bloc.currentTheme,
+            home: SplashScreen(),
           );
         },
       ),
