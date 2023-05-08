@@ -1,6 +1,6 @@
-# AriApp
+# Aripar App
 
-Aplicación para la distribuidora de insumos variados Aripar.
+Aplicación para la distribuidora de insumos variados Aripar en la ciudad de Arica, Chile.
 
 ## Getting Started
 
